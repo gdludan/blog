@@ -1,0 +1,108 @@
+blockquote,body,button,dd,dl,dt,fieldset,form,h1,h2,h3,h4,h5,h6,hr,input,legend,li,ol,p,pre,td,textarea,th,ul {
+	margin: 0;
+	padding: 0
+}
+.page-box {
+	position: relative;
+	zoom: 1
+}
+.pagebar {
+	padding: 0 0 40px;
+	font-size: 14px;
+	font-family: arial;
+	line-height: 34px;
+	text-align: center
+}
+
+.pagebar span {
+	margin: 0 3px 0 2px
+}
+
+.pagebar_2 {
+	padding: 0;
+	height: 38px;
+	width: 200px;
+	overflow: hidden;
+	margin: 0 auto
+}
+
+.pagebar span.historySel,.pagebar span.sel {
+	font-family: arial
+}
+
+.pagebar .historySel,.pagebar .sel,.pagebar a {
+	display: inline-block;
+	border: 1px solid #e6e6e6;
+	padding: 0 7px;
+	height: 34px;
+	min-width: 20px;
+	white-space: nowrap;
+	margin: 0 3px 0 2px;
+	vertical-align: top
+}
+
+.pagebar a {
+	color: #333
+}
+
+.pagebar .history,.pagebar .historyStart {
+	color: #ccc
+}
+
+.pagebar .sel,.pagebar a:hover {
+	background: #30C37E;
+	color: #fff;
+	border-color: #30C37E
+}
+
+.pagebar .historySel,.pagebar .historyStart:hover,.pagebar a.history:hover {
+	background: #ccc;
+	color: #fff;
+	border-color: #ccc
+}
+
+.pagebar a:hover {
+	text-decoration: none
+}
+
+.pagebar .prev {
+	padding: 0 11px 0 25px;
+	position: relative
+}
+
+.pagebar .next {
+	padding: 0 24px 0 12px;
+	position: relative
+}
+
+.pagebar .next i,.pagebar .prev i {
+	position: absolute;
+	width: 7px;
+	height: 12px;
+	font: 0/0 arial;
+	top: 11px
+}
+
+.pagebar .prev i {
+	left: 12px;
+	background-position: 0 -76px
+}
+
+.pagebar .next i {
+	right: 12px;
+	background-position: -11px -76px
+}
+
+.pagebar .prev:hover i {
+	left: 12px;
+	background-position: -22px -76px
+}
+
+.pagebar .next:hover i {
+	right: 12px;
+	background-position: -33px -76px
+}
+a:hover {
+	color: #aaa
+}
+a{color: black;}

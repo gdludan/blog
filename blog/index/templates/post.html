@@ -1,0 +1,151 @@
+{% extends "title_base.html"  %}
+{% block title %}{{ title }}{% endblock %}{% load staticfiles %}
+{% block content  %}
+    {% if not post.Prohibited  %}
+        {% if post %}
+            <div class="form-actions well well-sm" >
+                <h2 style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">{{ post.title }}</h2><br>
+                <div style="line-height: 1.42857143;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">{{ post.content | safe }}</div><br>
+                <div style="padding-left: 5px;">
+                    <a  href="javascript:;" onclick="{% if is_login %}onLike(){% else %}onLoginError(){% endif %};"
+                        title="{% if like %}已{% endif %}点赞{{ num_like }}" style="text-decoration:none;">
+                        <input style="display: none" value="{{ post.id }}" id="post_like" title="{{ like }}">
+                        {% if like %}
+                        <img src="{% static 'images/like_blue.png' %}" width="15px" height="15px" id="img_like">
+                        {% else %}
+                        <img src="{% static 'images/like_none.png' %}" width="15px" height="15px" id="img_like">
+                        {% endif %}
+                        <span id="num_like" style="color: red;">{{ num_like }}</span>
+                    </a>
+                    <a  href="javascript:;" onclick="{% if is_login %}onCcollection(){% else %}onLoginError(){% endif %};"
+                        title="{% if collection %}已{% endif %}收藏{{ num_collection }}" style="text-decoration:none;">
+                        <input style="display: none" value="{{ post.id }}" id="post_collection" title="{{collection}}">
+                        {% if collection %}
+                        <img src="{% static 'images/collection_blue.png' %}" width="15px" height="15px" id="img_collection">
+                        {% else %}
+                        <img src="{% static 'images/collection_none.png' %}" width="15px" height="15px" id="img_collection">
+                        {% endif %}
+                        <span id="num_collection" style="color: red;">{{ num_collection }}</span>
+                    </a>
+                    &ensp;&ensp;&ensp;&ensp;(阅读{{ post.readnumber }})
+                </div><br>
+                <div>
+                    <a href="{% url 'user' post.user.username %}">
+                        <img src="{{ post.user.avatar }}" width="30px" height="30px" style="border:2px solid;border-radius:10px;">
+                    </a>{% include 'user_attention.html' %}
+                    {{ post.time }}
+                </div>
+            </div>
+        {% endif %}
+        <link type="text/css" rel="stylesheet" href="{% static "css/prism.css" %}">
+        <script src="{%  static 'js/prism.js' %}"></script>
+        <div class="form-actions well well-sm">
+            <h3>评论列表:<span style="font-size: 18px;">({{number}}条)</span></h3><hr>
+            <div style="margin:10px 0px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
+            {% if request.user.is_authenticated %}
+            <form action="" method="post" id="usrform">
+                {% csrf_token %}
+    {#            <textarea id="content" name="content">#}
+                <textarea id="content" name="content" style="width:100%;height: 80px;font-size: 20px" ></textarea><br>
+                <input type="submit" value="发表评论" style="width: 100%;height:30px;">
+            </form>
+            {% else %}
+                <div>你还没登陆，不能评论。<a href="{% url 'login' %}" style="color: blue;">点我去登陆</a></div>
+            {% endif %}
+            </div>
+            {% for comment in pageInfo %}
+                {% if not comment.Prohibited %}
+                <div style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
+                    <div style="float: left">
+                        <a href="{% url 'user' comment.user.username  %}"><img src="{{ comment.user.avatar }}" width="30px" height="30px" style="border:2px solid;border-radius:10px;"></a>
+                    </div>
+                    <div>{{ comment.content | safe }}</div><hr><div>{{ post.time }}</div>
+                </div>
+                {% else %}<div style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;height: 40px;"><div style="float: left;">此评论因为{% if comment.Prohibited %}{{ comment.Prohibited_info }}{% endif %}违规已删除</div></div>{% endif %}
+            {% endfor %}
+        </div>
+        <link type="text/css" rel="stylesheet" href="{% static "css/common.css" %}">
+        <div class="page-box">
+            <div class="pagebar" id="pageBar" style="padding: 0 0 10px;">
+                {% if pageInfo.has_previous %}
+                <a href="{% url 'post' id %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"><i></i>上一页</a>
+                {% endif %}
+                {% for page in pageInfo.paginator.page_range %}
+                    {% if pageInfo.number == page %}
+                        <span class="sel">{{ page }}</span>
+                    {% else %}
+                        <a href="{% url 'post' id %}?page={{ page }}" target="_self">{{ page }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pageInfo.has_next %}
+                <a href="{% url 'post' id %}?page={{ pageInfo.next_page_number }}" class="next" target="_self">下一页<i></i></a>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <h1>本文章因为{% if post.Prohibited %}{{ post.Prohibited_info}}{% endif %}违规已删除</h1>
+    {% endif %}
+{% endblock  %}
+{% block script %}
+<script>
+    function onLike() {
+        var id = document.getElementById("post_like");
+        var img_like = document.getElementById("img_like");
+        var num_like =document.getElementById("num_like");
+        if(parseInt(id.title) ==1 ){
+            id.title = 0;
+            img_like.src ="{% static 'images/like_none.png' %}";
+            if(parseInt(num_like.innerHTML)>0){
+                num_like.innerHTML = parseInt(num_like.innerHTML)-1;
+            }
+        } else{
+            id.title = 1;
+            img_like.src ="{% static 'images/like_blue.png' %}";
+            num_like.innerHTML = parseInt(num_like.innerHTML)+1;
+        };
+        $.ajax({
+            url:"/post/like/"+id.value,
+            type:"GET",
+            async : false,
+            success:function(data){
+                console.log("response success: ", data["status"],data["message"]);
+            },
+            error:function(XMLHttpRequest, textStatus) {
+                   alert(XMLHttpRequest.status);//状态码
+                   alert(XMLHttpRequest.readyState);//状态
+                   alert(textStatus);//错误信息
+             }
+        });
+    }
+    function onCcollection() {
+        var id = document.getElementById("post_collection");
+        var img_like = document.getElementById("img_collection");
+        var num_like =document.getElementById("num_collection");
+        if(parseInt(id.title) ==1 ){
+            id.title = 0;
+            img_like.src ="{% static 'images/collection_none.png' %}";
+            if(parseInt(num_like.innerHTML)>0){
+                num_like.innerHTML = parseInt(num_like.innerHTML)-1;
+            }
+        } else{
+            id.title = 1;
+            img_like.src ="{% static 'images/collection_blue.png' %}";
+            num_like.innerHTML = parseInt(num_like.innerHTML)+1;
+        };
+        $.ajax({
+            url:"/post/collection/"+id.value,
+            type:"GET",
+            async : false,
+            success:function(data){
+                console.log("response success: ", data["status"],data["message"]);
+            },
+            error:function(XMLHttpRequest, textStatus) {
+                   alert(XMLHttpRequest.status);//状态码
+                   alert(XMLHttpRequest.readyState);//状态
+                   alert(textStatus);//错误信息
+             }
+        });
+    }
+</script>
+{% endblock %}

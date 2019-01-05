@@ -1,0 +1,65 @@
+{% extends "title_base.html"  %}
+{% block title %}登陆{% endblock %}
+{% block search %}{% endblock %}
+{% load staticfiles %}
+{% block content  %}
+    <div style="height: 360px;float: left;margin-right: 210px">
+        <link type="text/css" rel="stylesheet" href="{% static "css/register.css" %}">
+        <div id="unauth_main" class="login-regist" >
+            <div class="login-box switch_box" style="width: 400px;">
+                <div class="title">用户登录</div>
+                <form id="loginForm" class="formBox" action="" method="post">
+                    {% csrf_token %}
+                    <div  class="itembox user-name" style="width: 400px;">
+                        {{ form.username.label }}:<br>
+                        <input type="text" name="username" required="" id="id_username" placeholder="{{ form.username.label }}">
+                    </div>
+                    <div class="itembox user-pwd" style="width: 400px;">
+                        {{ form.password.label }}:<br>
+                        <input type="password" name="password" required id="id_password" placeholder="{{ form.password.label }}">
+                    </div>
+                    <div class="itembox user-pwd" style="width: 400px;">
+                        {{ form.captcha.label }}:
+                        {{ form.captcha }}
+                    </div>
+                    <div id="loginBtnBox" class="login-btn">
+                        <input id="J_LoginButton" type="submit" value="马上登陆" class="btn btn-primary btn-block" />
+                    </div>
+                </form>
+                <div  class="pass-reglink">还没有注册，
+                    <a href="{% url 'regist' %}">点击我去注册</a>
+                    <a href="{% url 'findPassword' %}">找回密码</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="float: left;">
+        <img src="{% static 'images/views.png' %}" width="680px" height="400px">
+    </div>
+    <script>
+        $(function(){
+            $('.captcha').click(function(){{# ajax 刷新验证码 #}
+                console.log('click');
+                    $.getJSON("/captcha/refresh/",
+                function(result){
+                    $('.captcha').attr('src', result['image_url']);
+                    $('#id_captcha_0').val(result['key'])
+            });});
+            $('#id_captcha_1').blur(function(){// #id_captcha_1为输入框的id，当该输入框失去焦点就会触发函数
+                json_data={// 获取输入框和隐藏字段id_captcha_0的数值
+                    'response':$('#id_captcha_1').val(),
+                    'hashkey':$('#id_captcha_0').val()
+                }
+                $.getJSON('/user/ajax_val', json_data, function(data){
+                    $('#captcha_status').remove()
+                    //status返回1为验证码正确， status返回0为验证码错误， 在输入框的后面写入提示信息
+                    if(data['status']){
+                        $('#id_captcha_1').after('<span id="captcha_status"style="color:green;">*验证码正确</span>')
+                    }else{
+                        $('#id_captcha_1').after('<span id="captcha_status" style="color:red;">*验证码错误</span>')
+                    }
+                });
+            });
+        })
+    </script>
+{% endblock %}

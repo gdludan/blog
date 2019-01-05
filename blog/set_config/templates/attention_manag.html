@@ -1,0 +1,46 @@
+{% extends "title_base.html"  %}
+{% block title %}{{ title }}{% endblock %}
+{% block content_left %}{% include 'manag_home_left.html' %}{% endblock %}
+{% block content  %}{% load staticfiles %}
+    {% if pageInfo %}
+        {% for item in pageInfo %}
+            {% if item.is_attention %}
+                <a href="{% url 'user' item.attention_id.username %}">
+                    <div class="navbar-collapse collapse" style="float: left;width: 82%">
+                        <div class="form-actions well well-sm" style="font-size: 1.2em;color: blue">
+                            <img src="{{ item.attention_id.avatar }}" width="60px" height="60px" style="border:2px solid;border-radius:10px;">
+                                用户名：
+                               {% if item.attention_id.first_name %}{{ item.attention_id.first_name }}
+                               {% else %}{{ item.attention_id.username }}{% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <div class="navbar-collapse collapse" style="float: left;width: 82%">
+            <div class="form-actions well well-sm" style="font-size: 1.2em;color: blue">
+                   找不到任何信息
+            </div>
+        </div>
+    {% endif %}
+    <link type="text/css" rel="stylesheet" href="{% static "css/common.css" %}">
+        <div class="page-box" style="width: 80%;float: left;">
+            <div class="pagebar" id="pageBar" style="padding: 0 0 10px;">
+                {% if pageInfo.has_previous %}
+                <a href="{% url 'attention_management' %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"><i></i>上一页</a>
+                {% endif %}
+                {% for page in pageInfo.paginator.page_range %}
+                    {% if pageInfo.number == page %}
+                        <span class="sel">{{ page }}</span>
+                    {% else %}
+                        <a href="{% url 'attention_management' %}?page={{ page }}" target="_self">{{ page }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pageInfo.has_next %}
+                <a href="{% url 'attention_management'  %}?page={{ pageInfo.next_page_number }}" class="next" target="_self">下一页<i></i></a>
+                {% endif %}
+            </div>
+        </div>
+{% endblock  %}

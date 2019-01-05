@@ -1,0 +1,47 @@
+{% load staticfiles %}
+<a  href="javascript:;" onclick="{% if is_login %}onAttention(){% else %}onLoginError(){% endif %};"
+    title="{% if attention %}已{% endif %}关注{{ num_attention }}" style="text-decoration:none;">
+    <input style="display: none;" value="{{ user_info.id }}" id="user_attention" title="{{attention}}">
+    {% if attention %}
+    <img src="{% static 'images/attention_blue.png' %}" width="20px" height="20px" id="img_attention">
+    {% else %}
+    <img src="{% static 'images/attention_none.png' %}" width="20px" height="20px" id="img_attention">
+    {% endif %}
+    <span id="num_attention" style="color: red;">{{ num_attention }}</span>
+</a>
+<script type="text/javascript">
+    function onAttention() {
+        var userid = {{ request.user.id }};
+        var id = document.getElementById("user_attention");
+        var img_like = document.getElementById("img_attention");
+        var num_like =document.getElementById("num_attention");
+        if(userid == id.value){
+            alert('你不能自己关注自己')
+            return 0
+        }
+        if(parseInt(id.title) ==1 ){
+            id.title = 0;
+            img_like.src ="{% static 'images/attention_none.png' %}";
+            if(parseInt(num_like.innerHTML)>0){
+                num_like.innerHTML = parseInt(num_like.innerHTML)-1;
+            }
+        } else{
+            id.title = 1;
+            img_like.src ="{% static 'images/attention_blue.png' %}";
+            num_like.innerHTML = parseInt(num_like.innerHTML)+1;
+        };
+        $.ajax({
+            url:"/user/attention/"+id.value,
+            type:"GET",
+            async : false,
+            success:function(data){
+                console.log("response success: ", data["status"],data["message"]);
+            },
+            error:function(XMLHttpRequest, textStatus) {
+                   alert(XMLHttpRequest.status);//状态码
+                   alert(XMLHttpRequest.readyState);//状态
+                   alert(textStatus);//错误信息
+             }
+        });
+    }
+</script>

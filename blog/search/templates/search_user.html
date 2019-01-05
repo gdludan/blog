@@ -1,0 +1,93 @@
+{% extends "title_base.html"  %}
+{% block title %}搜索  {% if query %}{{ query }}{% else %}全部 {% endif %} 用户
+{% endblock %}{% load staticfiles %}{% block search %}{% endblock %}
+{% block content  %}
+    <div class="form-actions well well-sm" style="height: 70px">
+    <input style="width: 75%;float: left;margin-top: 8px; margin-right: 3%;" id="searchbar" class="form-control" type="text" name="q" value="{{ query }}" placeholder="站内搜索  用户">
+    <div style="float: left;width: 20%;">
+        <button class="btn btn-primary" type="submit" style="margin-top: 8px;margin-right: 1% " id="search_user">搜索</button>
+        <button class="btn btn-primary" type="submit" style="margin-top: 8px;" id="post_search">搜索文章</button>
+        <button class="btn btn-primary" type="submit" style="margin-top: 8px;" id="goole_search">谷歌搜索</button>
+    </div>
+    </div>
+    <div class="form-actions well well-sm">
+    {% if show_all %}
+        {% for item in page.object_list %}
+            <a href="{% url 'user' item.username %}" class="js_song" target="play" >
+            <div style="height: 80px; margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
+                <img src="{{ item.avatar }}" width="60px" height="60px" style="float: left;border:2px solid;border-radius:25px;">
+                <div style="float: left;font-size: 1.5em">
+                <div>用户名:{{item.username}}</div><hr>
+                <div>邮件：{{item.email}}</div>
+{#                <div>手机号码：{{item.mobile}}</div>#}
+                </div>
+            </div>
+            </a>
+        {% endfor %}
+    {% else %}
+        {# 导入自带高亮功能 #}
+        {% load highlight %}
+        {% if  page.object_list %}
+            {% for item in page.object_list %}
+                 <a href="{% url 'user' item.object.username %}" class="js_song" target="play" >
+                    <div style="height: 80px;margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
+                        <img src="{{ item.object.avatar }}" width="60px" height="60px" style="float: left;border:2px solid;border-radius:25px;">
+                        <div style="float: left;font-size: 1.5em">
+                        <div>用户名:{% highlight item.object.username with query %}</div><hr>
+                        <div>邮件：{% highlight item.object.email with query %}</div>
+{#                        <div>手机号码：{% highlight item.object.mobile with query %}</div>#}
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}
+            <div style="margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
+            <div style="margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">找不到关于 {{ query }} 的用户</div></div>
+        {% endif %}
+    {% endif %}
+    </div>
+    <link type="text/css" rel="stylesheet" href="{% static "css/common.css" %}">
+    {# 分页导航 #}
+    <div class="page-box">
+    <div class="pagebar" id="pageBar">
+    {# 上一页的URL地址 #}
+    {% if page.has_previous %}
+        {% if query %}
+            <a href="{% url 'haystack_user'%}?q={{ query }}&amp;page={{ page.previous_page_number }}" class="prev">上一页</a>
+        {% else %}
+            <a href="{% url 'haystack_user'%}?page={{ page.previous_page_number }}" class="prev">上一页</a>
+        {% endif %}
+    {% endif %}
+    {# 列出所有的URL地址 #}
+    {% for num in page.paginator.page_range %}
+        {% if num == page.number %}
+            <span class="sel">{{ page.number }}</span>
+        {% else %}
+            {% if query %}
+                <a href="{% url 'haystack_user' %}?q={{ query }}&amp;page={{ num }}" target="_self">{{num}}</a>
+            {% else %}
+                <a href="{% url 'haystack_user' %}?page={{ num }}" target="_self">{{num}}</a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    {# 下一页的URL地址 #}
+    {% if page.has_next %}
+        {% if query %}
+            <a href="{% url 'haystack_user' %}?q={{ query }}&amp;page={{ page.next_page_number }}" class="next">下一页</a>
+        {% else %}
+            <a href="{% url 'haystack_user' %}?page={{ page.next_page_number }}" class="next">下一页</a>
+        {% endif %}
+    {% endif %}
+    </div>
+    </div>
+{% endblock  %}
+{% block script %}
+<script type="text/javascript">
+    document.getElementById("search_user").onclick=function(){
+        window.open('/search/user?q='+document.getElementById("searchbar").value, "_self");
+    }
+    document.getElementById("post_search").onclick=function(){
+        window.open('/search/post?q='+document.getElementById("searchbar").value, "_self");
+    }
+</script>
+{% endblock %}

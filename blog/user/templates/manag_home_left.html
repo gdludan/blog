@@ -1,0 +1,18 @@
+<div id="left-side" class="col-sm-1 col-md-2" style="float: left;">
+        <ul class="well nav nav-pills nav-stacked nav-sitemenu hide-sm" style="height: 600px;">
+            <li class="nav-header;" style="color: red;width: 100%;">管理菜单</li>
+            {% if user.is_Auxiliary or user.is_superuser %}
+            <li> <a href="/admin" style="color: cornflowerblue;">后台管理(普通版)</a></li>
+            <li> <a href="/xadmin" style="color: cornflowerblue;">后台管理(加强版)</a></li>
+            {% endif %}
+            <li> <a href="{% url 'home' %}" style="color: cornflowerblue;">用户首页</a> </li>
+            <li> <a href="{% url 'collection_management' %}" style="color: cornflowerblue;">收藏的文章</a> </li>
+            <li> <a href="{% url 'attention_management' %}" style="color: cornflowerblue;">关注的博主</a> </li><br/>
+            <li class="nav-header;" style="color: green;" style="color: cornflowerblue;width: 100%;">功能菜单</li><br/>
+            <li> <a href="{% url 'edit_gravatar' %}" style="color:blue;"> 更换头像</a></li>
+            <li> <a href="{% url 'password' %}" style="color:blue;">更换密码</a></li>
+            <li> <a href="{% url 'new' %}" style="color:blue;"> 新建文章</a></li>
+            <li> <a href="{% url 'edit_profile' %}" style="color:blue;">修改个人信息</a></li>
+{% if user.is_upload %}<li> <a href="{% url 'Upload_file' %}" style="color:blue;">  上传文件</a></li>{% endif %}
+        </ul>
+    </div>

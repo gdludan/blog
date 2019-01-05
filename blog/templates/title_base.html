@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-cn">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title>{% block title %}欢迎{% endblock %} | 卤蛋博客</title>{% load staticfiles %}
+    <link type="image/x-icon" rel="shortcut icon" href="{% static "favicon.ico" %}">
+    <link type="text/css" rel="stylesheet" href="{% static "css/bootstrap-theme.min.css" %}">
+    <link type="text/css" rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+    <style type="text/css">a{ text-decoration:none;}</style>
+{#    <script src="{% static "js/npm.js" %}"></script>#}
+    </head>
+    <body>
+        {% block navbar %}
+        <div class="navbar navbar-inverse" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle"
+                    data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">切换导航</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">卤蛋博客</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">首页</a></li>
+                        {% if Open_source %}
+                        <li><a href="https://github.com/cang-meng/blog">开源</a></li>
+                        {% endif %}
+                        <li class="nav-item"><a href="{% url 'chat_xiaoi'  %}">一些小玩意</a></li>
+                        {% if not user.is_authenticated %}
+                        <li class="nav-item"><a href="{% url 'login' %}">登录</a></li>
+                        <li class="nav-item"><a href="{% url 'regist' %}">注册</a></li>
+                        <li class="nav-item"><a href="{% url 'findPassword' %}">找回密码</a></li>
+                        {% else %}
+                        <li class="nav-item"><a href="{% url 'home'  %}">用户中心</a></li>
+                        <li class="nav-item"><a href="{% url 'logout' %}">退出</a></li>
+                        {% endif %}
+                    </ul>
+                    {% block search %}
+                    <ul class="nav navbar-nav pull-right" >
+                        <li  class="nav-item">
+                            <form class="navbar-form navbar-left" action="{% url 'haystack_post' %}" method="get">
+                                <div class="input-group search-group">
+                                <input id="searchbar" class="form-control" type="text" name="q" value="" placeholder="站内搜索">
+                                <span class="input-group-btn"><button class="btn btn-primary" type="submit">搜索<i class="fa fa-search"></i></button></span>
+                                </div>
+                            </form>
+                            <button class="btn btn-primary" type="submit" style="margin-top: 8px;" id="goole_search">谷歌搜索</button>
+                        </li>
+                    </ul>
+                    <script>
+                        var searchbar = document.getElementById("searchbar");
+                        document.getElementById("goole_search").onclick=function(){
+                            window.open("https://www.google.com.hk/search?q="+searchbar.value, "_search");
+                        }
+                    </script>
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+        {% if tips %}
+            <div class="alert alert-dismissable alert-success">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                {{ tips }}
+            </div>
+        {% endif %}
+        <div style="float: top;">
+        {% block content_left %}{% endblock %}
+        {% block content %}{% endblock %}
+        </div>
+        <div style="float: bottom;">
+            <div id="footer" style="float: left;width: 100%;margin-top: 10px;">
+                <hr style="border-color: black" />
+                <footer class="text-center">
+                    <p>&copy; 2018 卤蛋版权所有</p>
+                    <p>部分资源来自网络，侵权联系必删</p>
+                </footer>
+            </div>
+        </div>
+    </body>
+</html>
+<script type="text/javascript">
+    function onLoginError() {
+        alert("你还没登录，不能对文章进行此操作。");
+    }
+</script>
+<script type="text/javascript">
+function randomHexColor() { //随机生成十六进制颜色
+    var hex = Math.floor(Math.random() * 16777216).toString(16); //生成ffffff以内16进制数
+    while (hex.length < 6) { //while循环判断hex位数，少于6位前面加0凑够6位
+    hex = '0' + hex;
+    }
+    return '#' + hex; //返回‘#'开头16进制颜色
+}
+function randomRgbaColor() { //随机生成RGBA颜色
+ var r = Math.floor(Math.random() * 256); //随机生成256以内r值
+ var g = Math.floor(Math.random() * 256); //随机生成256以内g值
+ var b = Math.floor(Math.random() * 256); //随机生成256以内b值
+ var alpha = Math.random(); //随机生成1以内a值
+ return `rgb(${r},${g},${b},${alpha})`; //返回rgba(r,g,b,a)格式颜色
+}
+function randomRgbColor() { //随机生成RGB颜色
+ var r = Math.floor(Math.random() * 256); //随机生成256以内r值
+ var g = Math.floor(Math.random() * 256); //随机生成256以内g值
+ var b = Math.floor(Math.random() * 256); //随机生成256以内b值
+ return `rgb(${r},${g},${b})`; //返回rgb(r,g,b)格式颜色
+}
+var a_idx = 0;
+jQuery(document).ready(function($) {
+    $("html").click(function(e) {
+        var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善");
+        var $i = $("<span/>").text(a[a_idx]);
+        a_idx = (a_idx + 1) % a.length;
+        var x = e.pageX,
+        y = e.pageY;
+        var color =randomHexColor();
+        var color2 = randomRgbaColor();
+        var rcolor3 = randomRgbColor();
+        $i.css({
+            "z-index": 2147483647,
+            "top": y - 20,
+            "left": x,
+            "position": "absolute",
+            "font-weight": "bold",
+            "color": rcolor3
+        });
+        $("body").append($i);
+        $i.animate({
+            "top": y - 180,
+            "opacity": 0
+        },
+        1500,
+        function() {
+            $i.remove();
+        });
+    });
+});
+</script>
+{% block script %}{% endblock %}

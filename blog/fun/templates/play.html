@@ -1,0 +1,62 @@
+{% extends "title_base.html"  %}
+{% block title %}{{ name }}{% endblock %}
+{% block content_left %}{% include 'fun_left.html' %}{% endblock %}
+{% block content %}{% load staticfiles %}
+    <div style="margin: 20px;float: right;width: 78%;margin-top: 0px;">
+        {% if mp3 %}
+            <form action="">
+                <div style="width: 100%">
+                    <input type="text" name="name" placeholder="输入歌名" style="width: 80%;" value="{{ value }}" title="歌名：{{ value }}">
+                    <select name="website" style="height: 26px;background: black;color: white">
+                        {% if website == "tencent" %}
+                        <option name="netease" title="网易云" value="netease">网易云</option>
+                        <option name="tencent" title="腾讯" selected="selected" value="tencent">腾讯</option>
+                        {% else%}
+                        <option name="netease" title="网易云" selected="selected" value="netease">网易云</option>
+                        <option name="tencent" title="腾讯" value="tencent">腾讯</option>
+                        {% endif %}
+                    </select>
+                    <input type="submit" value="播放" style="width: 10%;background: black;color: white;">
+                </div>
+            </form><br/>
+            <center>
+                {% if url %}
+                    <div>
+                        歌名：{{ music_dict.name }}<br/>
+                        歌手：{% if website == "netease" %}{{ music_dict.artists }}{% else %}{{ music_dict.singer }}{% endif %}<br/>
+                        {% if website == "netease" %}
+                        专辑名字：{{ music_dict.name }}<br/>
+                        专辑地址：<a target="_Blank" href="https://music.163.com/#/album?id={{ music_dict.album_id }}">https://music.163.com/#/album?id={{ music_dict.album_id }}</a><br/>
+                        网易云地址：<a target="_Blank" href="{{ music_dict.page | safe }}">{{ music_dict.page | safe }}</a><br/>
+                        {% endif %}
+                        歌曲地址：<a target="_Blank" href="{{ music_dict.url | safe }}">{{ music_dict.url | safe }}</a><br/>
+                        <img src="{{ music_dict.picUrl }}"  style="width: 300px;height: 300px"/>
+                    </div><br/>
+                    <video controls="" autoplay="" name="media" style="width: 100%;height:30px;">
+                        <source src="{{ url }}" type="audio/mpeg">
+                    </video>
+                {% endif %}
+                <center>
+                    <p>接口仅提供学习交流，不能作为商业使用</p>
+                    <p>接口官网地址:<a href="https://www.bzqll.com/" target="_blank">https://www.bzqll.com/</a></p>
+                </center>
+            </center>
+        {% else %}
+            <form action="">
+                <div style="width: 100%">
+                    <input type="text" name="url" placeholder="输入要解析的地址" style="width: 88%;" value="{{ url }}">
+                    <input type="submit" value="提交解析" style="width: 10%;background: black;color: white;"">
+                </div>
+            </form><br/>
+            {% if url %}
+            <iframe id="baiyug" scrolling="no" src="http://app.baiyug.cn:2019/vip/index.php?url={{ url }}" marginwidth="0"
+                    marginheight="0" hspace="0" vspace="0" frameborder="0" height="600px" width="100%" allowfullscreen="true">
+            </iframe>
+            {% endif %}
+            <center>
+                <p>接口仅提供学习交流，不能作为商业使用</p>
+                <p>接口官网地址:<a href="http://app.baiyug.cn:2019/" target="_blank">http://app.baiyug.cn:2019/</a></p>
+            </center>
+        {% endif %}
+    </div>
+{% endblock %}
