@@ -29,7 +29,6 @@ def postView(request,id):
     #title = "文章"
     form = CommentForm()
     post = Post.objects.get(id = id)
-    post.readnumber = str(int(post.readnumber)+1)
     post.save()
     title = post.title
     if request.method == 'POST':
@@ -56,6 +55,7 @@ def postView(request,id):
     user_info = post.user
     if request.user.id:
         is_login = True
+        post.readnumber = str(int(post.readnumber)+1)
         user = User.objects.get(id = request.user.id)
         for i in like_list:
             if i.user.id == user.id and i.is_like== 1: like = 1
