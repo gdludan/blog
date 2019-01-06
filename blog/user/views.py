@@ -109,30 +109,17 @@ def loginView(request):
 def registView(request):
     if request.user.is_authenticated :
         return redirect('/')
-    form =CaptchaRegistForm()
+    form =MyUserCreationForm()
     if request.method == 'POST':
-        form = CaptchaRegistForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password1 = form.cleaned_data['password1']
-            password2 = form.cleaned_data['password2']
-            email = form.cleaned_data['email']
-            if not User.objects.filter(Q(username=username)|Q(email=email)):
-                if password1 != password2:
-                    tips = "两次密码不一致"
-                else:
-                    user = User(username=username,mobile='',email=email,
-                              is_upload=0,avatar='/static/images/default.jpg',is_Auxiliary=0)
-                    user.set_password(password2)
-                    user.save()
-                    profile = Profile(user=user,self_reprot=' 这个人很懒，什么也没有写！')
-                    profile.save()
-                    tips = '注册成功'
-                    return redirect('/user/login')
-            else:
-                tips = '注册失败，用户已存在！'
+        user = MyUserCreationForm(request.POST)
+        if user.is_valid():
+            user.save()
+            profile = Profile(user=user, self_reprot=' 这个人很懒，什么也没有写！')
+            profile.save()
+            tips = '注册成功'
+            return redirect('/user/login')
         else:
-            tips='验证码错误'
+            tips='注册失败'
     return render(request, 'regist.html', locals())
 
 def userView(request,username):

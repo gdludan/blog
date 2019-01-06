@@ -9,7 +9,16 @@
                 <div class="title">用户注册</div>
                 <form id="loginForm" class="formBox" action="/user/regist" method="post">
                     {% csrf_token %}
-                    {{ form }}
+                    {{ form.username.label }}:
+                    {{ form.username }}{{ form.username.errors }}
+                    {{ form.email.label }}:
+                    {{ form.email }}{{ form.email.errors }}
+                    {{ form.password1.label }}:
+                    {{ form.password1 }}{{ form.password1.errors }}
+                    {{ form.password2.label }}:
+                    {{ form.password2 }}{{ form.password2.errors }}
+                    {{ form.captcha.label }}:
+                    {{ form.captcha }}{{ form.captcha.errors }}
                     <input id="J_LoginButton" type="submit" value="立即注册" class="btn btn-primary btn-block" />
                 </form>
                 <div  class="pass-reglink">已经有账号，<a href="{% url 'login' %}">点击我去登陆</a>
