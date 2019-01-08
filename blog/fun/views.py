@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from blog_Plugin.robot import get_reply_free,get_reply_xiaoi
 from blog_Plugin.music import get_163MusicUrl,get_tencent
 from blog_Plugin.images import get_img
+from django.conf import settings
 import requests,os
 # Create your views here.
 def chatfreeView(request):
@@ -89,7 +90,7 @@ def ImageCompressionView(request):
             response = HttpResponse(img.read(), content_type='application/octet-stream')
             response['Content-Disposition'] = 'attachment; filename="' + path + '"'
             img.close()
-            os.remove(path)
+            os.remove(settings.BASE_DIR+'/'+path)
             return response
         else:
             pathUrl = '/fun/images?redirect=1&grade=%s&url=%s'%(grade,url)
