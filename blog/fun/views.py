@@ -1,8 +1,9 @@
 from django.shortcuts import render,redirect,HttpResponse
 from django.http import JsonResponse
 from blog_Plugin.robot import get_reply_free,get_reply_xiaoi
-from blog_Plugin.music_163 import get_163MusicUrl
-import requests,json
+from blog_Plugin.music import get_163MusicUrl,get_tencent
+from blog_Plugin.images import get_img
+import requests,os
 # Create your views here.
 def chatfreeView(request):
     Open_source = True
@@ -76,8 +77,20 @@ def videoView(request):
     name = '视频解析'
     return render(request,'play.html',locals())
 
-def get_tencent(name=""):
-    url = "https://api.bzqll.com/music/tencent/search?key=579621905&s=%s&limit=1&offset=0&type=song"%name
-    data = json.loads(requests.get(url).text)
-    if data["data"]:return data["data"][0]
-    else:return {}
+def ImageCompressionView(request):
+    url = request.GET.get('url','')
+    grade = int(request.GET.get('grade',2))
+    redirecton = int(request.GET.get('redirect',0))
+    name = "图片压缩"
+    if url :
+        if redirecton == 1:
+            path = get_img(url, grade)
+            img = open(path, 'rb')
+            response = HttpResponse(img.read(), content_type='application/octet-stream')
+            response['Content-Disposition'] = 'attachment; filename="' + path + '"'
+            img.close()
+            os.remove(path)
+            return response
+        else:
+            pathUrl = '/fun/images?redirect=1&grade=%s&url=%s'%(grade,url)
+    return render(request, 'imagecompression.html', locals())

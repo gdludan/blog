@@ -19,4 +19,9 @@ def get_163MusicUrl(music=''):
         return music_dict
         # return {'url': ''}
     else:return {'url':''}
-# print(get_163MusicUrl('你好'))
+
+def get_tencent(name=""):
+    url = "https://api.bzqll.com/music/tencent/search?key=579621905&s=%s&limit=1&offset=0&type=song"%name
+    data = json.loads(requests.get(url).text)
+    if data["data"]:return data["data"][0]
+    else:return {}

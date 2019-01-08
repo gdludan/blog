@@ -10,4 +10,5 @@ urlpatterns = [
     ])),#二级路由
     path('music', views.musicView, name='music'),#网易云音乐
     path('video', views.videoView, name='video_vip'),#视频解析
+    path('images',views.ImageCompressionView,name="ImageCompression"),#图片压缩
 ]
