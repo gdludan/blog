@@ -14,8 +14,8 @@ def get_img(url,grade):
     elif grade == 1: quality=70
     elif grade == 2: quality=50
     elif grade == 3: quality=30
-    path = str(random.randint(10000,99999))+'.jpg'
-    name = str(random.randint(1000,9999))+'.jpg'
+    path = str(random.randint(10000,99999))+'.png'
+    name = str(random.randint(1000,9999))+'.png'
     img = web_open(url,path)
     Image.save(img,name, quality=quality)
     os.remove(path)
