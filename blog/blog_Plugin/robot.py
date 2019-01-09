@@ -7,7 +7,7 @@ def get_reply_xiaoi(data):
     cookie = {"cnonce": "808116", "sig": "0c3021aa5552fe597bb55448b40ad2a90d2dead5",
               "XISESSIONID": "hlbnd1oiwar01dfje825gavcn", "nonce": "273765", "hibext_instdsigdip2": "1"}
     r = requests.get(url, cookies=cookie)
-    pattern = re.compile(b'\"fontColor\":0,\"content\":\"(.*?)\"')
+    pattern = re.compile(u'\"fontColor\":0,\"content\":\"(.*?)\"')
     result = pattern.findall(r.text)
     arr=['真心听不懂你在说什么，要么你换种问法试试如何？','看不懂，大侠，能不能换个说法？？？','虽然小i读不懂你的话，但小i却能用心感受你对我的爱。']
     import random
