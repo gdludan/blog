@@ -198,3 +198,15 @@ EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+DANDANLOCAL = True
+DANDANAPIKEY = "" 
+DANDANAPISECRET = ""
+
+'''
+http://www.itpk.cn/     注册 api
+DANDANLOCAL = False  #拿到了api后设置成False
+DANDANAPIKEY = ""   #你的api key
+DANDANAPISECRET = ""  #你的 api secret
+'''
+
