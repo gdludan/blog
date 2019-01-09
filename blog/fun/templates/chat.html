@@ -17,6 +17,18 @@
             <textarea style="width:80%;float: left;height: 80px" id="data" onkeydown="keySend(event);"></textarea>
             <input type="submit" style="float: left;height: 80px;width: 20%;" value="发送(按ctrl+enter直接发送)" onclick="send()" id ="submit">
         </div>
+        <center>
+            <p>接口仅提供学习交流，不能作为商业使用</p>
+            <p>接口官网地址:
+            {% if title == '菲菲' %}
+               <a href="http://api.qingyunke.com/" target="_blank">http://api.qingyunke.com/</a>
+            {% elif title == '蛋蛋'%}
+                <a href="http://www.itpk.cn/" target="_blank">http://www.itpk.cn/</a>
+            {% else %}
+               <a href="http://www.xiaoi.com/" target="_blank">http://www.xiaoi.com/</a>
+            {% endif %}
+            </p>
+        </center>
     </div>
 {% endblock %}
 
@@ -48,10 +60,12 @@
         $('#div1')[0].scrollTop =$('#div1')[0].scrollHeight;
         $('#data')[0].value='';
         $.ajax({
-            {% if title != '菲菲' %}
-            url:"{% url 'ajax_chat_xiaoi'%}",
-            {% else %}
+            {% if title == '菲菲' %}
             url:"{% url 'ajax_chat_free'%}",
+            {% elif title == '蛋蛋'%}
+            url:"{% url 'ajax_chat_dandan'%}",
+            {% else %}
+            url:"{% url 'ajax_chat_xiaoi'%}",
             {% endif %}
             type:"GET",
             data:{data:data},

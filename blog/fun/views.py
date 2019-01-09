@@ -1,23 +1,43 @@
 from django.shortcuts import render,redirect,HttpResponse
 from django.http import JsonResponse
-from blog_Plugin.robot import get_reply_free,get_reply_xiaoi
+from blog_Plugin.robot import get_reply_free,get_reply_xiaoi,get_reply_dandan
 from blog_Plugin.music import get_163MusicUrl,get_tencent
 from blog_Plugin.images import get_img
+from django.conf import settings
 import requests,os
 # Create your views here.
 def chatfreeView(request):
     Open_source = True
     title = '菲菲'
     return render(request,'chat.html',locals())
+
 def chatxiaoiView(request):
     Open_source = True
     title='小i'
+    return render(request,'chat.html',locals())
+
+def chatdandanView(request):
+    Open_source = True
+    title='蛋蛋'
     return render(request,'chat.html',locals())
 
 def ajax_chat_free(request):
     res = {'status': 0, 'message': '未知错误','data':''}
     if request.is_ajax():
         data = get_reply_free(request.GET['data'])
+        res['data'] = data
+        res['message'] = 'successful'
+        return JsonResponse(res)
+    return JsonResponse(res)
+
+from blog_Plugin.like import Unicode_or_chinese
+def ajax_chat_dandan(request):
+    res = {'status': 0, 'message': '未知错误','data':''}
+    if request.is_ajax():
+        getdata = request.GET['data']
+        data = get_reply_dandan(getdata)
+        if getdata == "笑话" or getdata == "观音灵签" or getdata == "月老灵签" or getdata == "财神爷灵签":
+            data = Unicode_or_chinese(data)
         res['data'] = data
         res['message'] = 'successful'
         return JsonResponse(res)
@@ -89,7 +109,7 @@ def ImageCompressionView(request):
             response = HttpResponse(img.read(), content_type='application/octet-stream')
             response['Content-Disposition'] = 'attachment; filename="' + path + '"'
             img.close()
-            os.remove(path)
+            os.remove(settings.BASE_DIR+'/'+path)
             return response
         else:
             pathUrl = '/fun/images?redirect=1&grade=%s&url=%s'%(grade,url)

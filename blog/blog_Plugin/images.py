@@ -11,9 +11,9 @@ def web_open(url,name):
 def get_img(url,grade):
     quality=50
     if grade == 0: quality=90
-    if grade == 1: quality=70
-    if grade == 2: quality=50
-    if grade == 3: quality=30
+    elif grade == 1: quality=70
+    elif grade == 2: quality=50
+    elif grade == 3: quality=30
     path = str(random.randint(10000,99999))+'.jpg'
     name = str(random.randint(1000,9999))+'.jpg'
     img = web_open(url,path)
