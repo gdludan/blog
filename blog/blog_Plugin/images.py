@@ -28,7 +28,11 @@ def get_img(url,grade):
     elif grade == 3: quality=30
     path = str(random.randint(10000,99999))+'.png'
     name = str(random.randint(1000,9999))+'.png'
+<<<<<<< HEAD
     img = web_open_image(url,path)
+=======
+    img = web_open(url,path)
+>>>>>>> aeeff182a610104a9cc0e7d9fc18f21768e53ee9
     Image.save(img,name, quality=quality)
     os.remove(path)
     return name
