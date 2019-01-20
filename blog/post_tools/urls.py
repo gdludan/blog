@@ -1,5 +1,5 @@
-from django.urls import path
 from . import views
+from django.urls import path
 # 设置首页的URL地址信息
 urlpatterns = [
     path('post_new',views.NewVisew,name='new'),# 新建文章

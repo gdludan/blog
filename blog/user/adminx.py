@@ -1,5 +1,4 @@
 import xadmin
-
 from .models import Profile,UPfile,Attention,Dynamic
 
 #数据库表单模型

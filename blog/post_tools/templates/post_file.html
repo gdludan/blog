@@ -8,8 +8,8 @@
             {# <h1>卤蛋博客 </h1>#}
             <form class="form" action="" method="post">
                 {% csrf_token %}
-                <div>{{ form.title.label }}<input id="title" name="title" style="width: 100%" value="{{ post__title }}"></div>
-                <div>{{ form.content.label }}<textarea id="content" name="content">{{ post__content }}</textarea></div>
+                <div>{{ form.title.label }}<input id="title" name="title" style="width: 100%" value="{{ post.title }}"></div>
+                <div>{{ form.content.label }}<textarea id="content" name="content">{{ post.content }}</textarea></div>
                 <button type="submit" class="btn btn-primary btn-block">{{ title__post }}</button>
             </form>
             <link type="text/css" rel="stylesheet" href="{% static "css/prism.css" %}">

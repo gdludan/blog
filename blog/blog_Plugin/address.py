@@ -8,12 +8,22 @@ header = [{'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N)
 
 
 def get_taobao_ipaddress(ip="0.0.0.0"):
+    '''
+    传入IP地址到淘宝 获取ip物理地址
+    :param ip:IP网络地址
+    :return:ip物理地址
+    '''
     url = "http://ip.taobao.com/service/getIpInfo.php?ip=%s"%ip
     request= requests.session()
     reque = request.get(url,headers=header[random.randint(0, len(header)-1)]).text
     return json.loads(reque)
 
 def get_360_ipaddres(ip="0.0.0.0"):
+    '''
+    传入IP地址到360 获取ip物理地址
+    :param ip:IP网络地址
+    :return:ip物理地址
+    '''
     url = "https://www.so.com/s?q=%s"%ip
     request= requests.session()
     html = request.get(url,headers=header[random.randint(0, len(header)-1)]).text
@@ -26,10 +36,14 @@ def get_360_ipaddres(ip="0.0.0.0"):
     return value[0].replace('&nbsp;',' ')
 
 def XX_remove(value=''):
+    '''
+    消除XX
+    :param value:字符串内容
+    :return: 当value不为xx时返回value，否则返回空字符串
+    '''
     if value=='':return ''
     elif value=='xx':return ''
     elif value=='XX':return ''
     elif value=='Xx':return ''
     elif value=='xX':return ''
     else:return value
-#http://ip.taobao.com/service/getIpInfo.php?ip=120.79.41.11

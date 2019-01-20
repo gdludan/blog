@@ -1,21 +1,23 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout,authenticate
-from .forms import *
-from django.db.models import Q
-from index.models import Post
-from user.models import Profile,Attention,Dynamic,MyUser as User
-#from django.http import HttpResponse
-from django.contrib.auth.hashers import check_password
-from django.conf import settings
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.hashers import make_password
-from blog_Plugin.address import get_360_ipaddres
 import random
+from .forms import CaptchaLoginForm,MyUserCreationForm
+from index.models import Post
+from django.db.models import Q
+from django.conf import settings
+from django.shortcuts import render, redirect
+from blog_Plugin.address import get_360_ipaddres
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, logout,authenticate
+from user.models import Profile,Attention,Dynamic,MyUser as User
+from django.contrib.auth.hashers import make_password,check_password
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-#更换密码
 @login_required(login_url='/user/login')
 def passwdView(request):
+    '''
+    更换密码
+    :param request: 客户端请求头
+    :return: html页面
+    '''
     if request.method == 'POST':
         username = request.user.username
         old_password = request.POST.get('old_password', '')
@@ -23,8 +25,7 @@ def passwdView(request):
         user = User.objects.filter(username=username)
         if User.objects.filter(username=username):
             user = authenticate(username=username, password=old_password)
-            if not user:
-                tips = '原始密码错误'
+            if not user:tips = '原始密码错误'
             else:
                 # 密码加密处理并保存到数据库
                 user.password = make_password(new_password, None, 'pbkdf2_sha256')
@@ -33,10 +34,14 @@ def passwdView(request):
                 tips = '更改密码成功'
     return render(request,'passwd.html',locals())
 
-#找回密码
 def findPassword(request):
+    '''
+    找回密码
+    :param request: 客户端请求头
+    :return: html页面
+    '''
     button = '获取验证码'
-    new_password = False
+    display = False
     if request.method == 'POST':
         username = request.POST.get('username', 'root')
         VerificationCode = request.POST.get('VerificationCode', '')
@@ -77,29 +82,30 @@ def findPassword(request):
     return render(request, 'findpassswd.html', locals())
 
 def loginView(request):
-    if request.user.is_authenticated :
-        return redirect('/')
+    '''
+    登录
+    :param request: 客户端请求头
+    :return: html页面,登录成功跳转首页
+    '''
+    if request.user.is_authenticated :return redirect('/')#已登录用户跳转到首页
     form =CaptchaLoginForm()
     if request.method == 'POST':
         form,ip = CaptchaLoginForm(request.POST),''
         # 验证表单数据
         if form.is_valid():
             username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
             if User.objects.filter(Q(mobile=username) | Q(username=username)|Q(email=username)):
                 user = User.objects.filter(Q(mobile=username) | Q(username=username)|Q(email=username)).first()
-                if check_password(password, user.password):
-                    # if request.META.has_key('HTTP_X_FORWARDED_FOR'):ip = request.META['HTTP_X_FORWARDED_FOR']
-                    # else:ip = request.META['REMOTE_ADDR']
+                if check_password(form.cleaned_data['password'], user.password):#检查用户密码
                     ip=request.META['REMOTE_ADDR']
                     user.ip=ip
-                    user.ipaddress=get_360_ipaddres(user.ip)
+                    user.ipaddress=get_360_ipaddres(user.ip)#获取ip的物理地址
                     user.save()
                     login(request, user)
                     tips = '登录成功'
                     return redirect(request.GET.get('next', '/'))
                 else:
-                    tips = '账号密码错误，请重新输入'
+                    tips = '账号或者密码错误，请重新输入'
             else:
                 tips = '用户不存在，请注册'
         else:
@@ -107,14 +113,18 @@ def loginView(request):
     return render(request, 'login.html', locals())
 
 def registView(request):
-    if request.user.is_authenticated :
-        return redirect('/')
+    '''
+
+    :param request: 客户端请求头
+    :return: html页面,注册成功跳转登录页面
+    '''
+    if request.user.is_authenticated :return redirect('/')#已登录用户跳转到首页
     form =MyUserCreationForm()
     if request.method == 'POST':
         user = MyUserCreationForm(request.POST)
-        if user.is_valid():
-            user.save()
-            profile = Profile(user=user, self_reprot=' 这个人很懒，什么也没有写！')
+        if user.is_valid():#检查信息
+            user.save()#添加新用户
+            profile = Profile(user=user, self_reprot=' 这个人很懒，什么也没有写')#添加新用户的信息
             profile.save()
             tips = '注册成功'
             return redirect('/user/login')
@@ -123,22 +133,26 @@ def registView(request):
     return render(request, 'regist.html', locals())
 
 def userView(request,username):
+    '''
+    用户信息
+    :param request: 客户端请求头
+    :param username: 用户的id
+    :return: html页面
+    '''
     page = request.GET.get('page',1)
     user_info = User.objects.filter(username=username).first()
     profile = Profile.objects.get(user=user_info)
     post_list = Post.objects.filter(user=user_info).order_by('-time').all()
     dynamic = Dynamic.objects.filter(user=user_info).first()
-    if not dynamic:
-        dynamic = Dynamic(user=user_info)
-        dynamic.save()
+    if not dynamic:dynamic = Dynamic(user=user_info);dynamic.save()
     num_attention = dynamic.dynamic_attention
-    attention_list = Attention.objects.filter(attention_id=user_info.id)
+    attention_list = Attention.objects.filter(attention_id=user_info.id).all()
     if request.user.id:
         is_login = True
         for i in attention_list :
             if i.user == request.user and i.is_attention == 1: attention = 1
-    else:
-        is_login ,attention= False,0
+    else:is_login ,attention= False,0
+    num_fan = len(attention_list)
     post_num = len(post_list)
     paginator = Paginator(post_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
     try:
@@ -151,14 +165,23 @@ def userView(request,username):
 
 @login_required(login_url='/user/login')
 def homeView(request):
+    '''
+    用户中心
+    :param request: 客户端请求头
+    :return: html页面
+    '''
     user = User.objects.get(id = request.user.id)
     page = request.GET.get('page',1)
     profile = Profile.objects.filter(user=user).first()
     if not profile:
-        profile=Profile(user=user)
+        profile=Profile(user=user,self_reprot='这个人很懒，什么也没有写！')
         profile.save()
     post_list = Post.objects.filter(user=user).order_by('-time').all()
     paginator = Paginator(post_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+    attention_list = Attention.objects.filter(user=user).all()
+    num_attentiom=len(attention_list)
+    fan_list = Attention.objects.filter(attention_id=user.id).all()
+    num_fan=len(fan_list)
     try:
         pageInfo = paginator.page(page)
     except PageNotAnInteger:
@@ -168,6 +191,11 @@ def homeView(request):
     return render(request, 'home.html', locals())
 
 def logoutView(request):
+    '''
+    注销登录
+    :param request: 客户端请求头
+    :return: html页面
+    '''
     logout(request)
     return redirect('/')
 
@@ -175,6 +203,11 @@ def logoutView(request):
 from django.http import JsonResponse
 from captcha.models import CaptchaStore
 def ajax_val(request):
+    '''
+    检查码验证ajax接口
+    :param request: 客户端请求数据
+    :return: json数据
+    '''
     if request.is_ajax():
         response = request.GET['response']# 用户输入的验证码结果
         hashkey = request.GET['hashkey']# 隐藏域的value值
@@ -187,33 +220,33 @@ def ajax_val(request):
         return JsonResponse(json_data)
 
 def ajax_userattention(request,id):
+    '''
+    用户关注
+    :param request:客户端请求数据
+    :param id: 要关注用户的id
+    :return:json数据
+    '''
     res = {'status': 0, 'message': '未知错误'}
     if request.is_ajax():
         if not request.user:
             res = {'status': 401, 'message': '用户未登录'}
             return JsonResponse(res)
         user = User.objects.get(id=request.user.id)
-        attention = Attention.objects.filter(user=user).first()
-        user_info = User.objects.get(id=id)
-        dynamic = Dynamic.objects.filter(user=user_info).first()
-        if not attention:
-            attention = Attention(user=user, attention_id=id,is_attention=0)
-            attention.save()
-        if not dynamic:
-            dynamic = Dynamic(user=user_info)
-            dynamic.save()
-        if attention.is_attention == 1:
+        attention = Attention.objects.filter(user=user,attention_id=id).first()
+        dynamic = Dynamic.objects.filter(user=User.objects.filter(id=id).first()).first()
+        if not dynamic:dynamic = Dynamic(user=User.objects.filter(id=id).first())#用户动态信息列表不存在就创建
+        if not attention:attention = Attention(user=user, attention_id=id, is_attention=0)#用户关注列表不存在就创建
+        if attention.is_attention ==1:
             attention.is_attention = 0
-            if int(dynamic.dynamic_attention)>=1:
-                dynamic.dynamic_attention = int(dynamic.dynamic_attention)-1
+            if int(dynamic.dynamic_attention)>=1:dynamic.dynamic_attention = int(dynamic.dynamic_attention)-1#防止出现负数
             res['status'] = 200
             res['message'] = '取消关注'
-        else:
+        elif attention.is_attention ==0:
             attention.is_attention = 1
             dynamic.dynamic_attention = int(dynamic.dynamic_attention) + 1
             res['status'] = 200
             res['message'] = '关注成功'
-        dynamic.save()
-        attention.save()
-        return JsonResponse(res)
+        if dynamic.save() or attention.save():
+            res['status'] = 401
+            res['message'] = '写入数据库失败'
     return JsonResponse(res)

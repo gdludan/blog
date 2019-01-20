@@ -1,12 +1,23 @@
 import requests
 from bs4 import BeautifulSoup
 def web_open(url,name):
+    '''
+    保存网络文件到硬盘
+    :param url: 文件的url地址
+    :param name: 写到硬盘的名字
+    :return: 一个PIL.Image.Image.open对象
+    '''
     r = requests.get(url)
     with open(name, 'wb') as f:
         f.write(r.content)
     f = open(name, 'rb')
     return f
 def Unicode_or_chinese(data):
+    '''
+    Unicode转UTF-8
+    :param data: Unicode编码的字符串
+    :return: 正常utf-8的字符串
+    '''
     url="http://tool.chinaz.com/tools/unicode.aspx"
     data = {
         "content":data,

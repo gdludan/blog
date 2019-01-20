@@ -1,6 +1,6 @@
 from haystack import indexes
 from user.models import MyUser
-# 类名必须为模型名+Index，比如模型Song,则索引类为SongIndex
+# 类名必须为模型名+Index，比如模型Post,则索引类为PostIndex
 
 class MyUserIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)

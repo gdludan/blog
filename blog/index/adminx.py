@@ -1,6 +1,4 @@
-import xadmin
-from xadmin.views import CommAdminView
-from xadmin import views
+import xadmin,xadmin.views as views
 from .models import Post,Comment,Dynamic,Like,Collection
 
 #数据库表单模型
@@ -79,4 +77,4 @@ class CustomAdmin(object):
     #menu_style='accordion'
 
 xadmin.site.register(views.BaseAdminView, BaseSetting)
-xadmin.site.register(CommAdminView,CustomAdmin)
+xadmin.site.register(views.CommAdminView,CustomAdmin)

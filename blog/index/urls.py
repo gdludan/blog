@@ -1,5 +1,5 @@
-from django.urls import path,include
 from . import views
+from django.urls import path,include
 # 设置首页的URL地址信息
 urlpatterns = [
     path('', views.indexView, name='index'),#首页

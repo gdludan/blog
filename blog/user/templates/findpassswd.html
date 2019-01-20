@@ -10,7 +10,7 @@
             <form class="form" action="{% url 'findPassword' %}" method="post">
                 {% csrf_token %}
                 <div>用户名/邮箱:<input type="text" name='username' value="{{ username }}"></div>
-                {% if new_password %}
+                {% if display %}
                     <div>验证码:<input type="text" name='VerificationCode'></div>
                     <div>新密码:<input type="password" name='password'></div>
                 {% endif %}

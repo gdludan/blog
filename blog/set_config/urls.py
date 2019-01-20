@@ -1,5 +1,5 @@
-from django.urls import path
 from . import views
+from django.urls import path
 # 设置首页的URL地址信息
 urlpatterns = [
     path('edit_gravatar',views.edit_gravatarView,name='edit_gravatar'),#更改头像

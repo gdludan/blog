@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os ,blog
-
+import config
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -57,6 +57,7 @@ HAYSTACK_CONNECTIONS = {
         'INCLUDE_SPELLING': True,
     },
 }
+
 # 设置每页显示的数据量
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 10
 # 当数据库改变时，会自动更新索引，非常方便
@@ -68,22 +69,23 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 CAPTCHA_OUTPUT_FORMAT = ' %(image)s&ensp;%(text_field)s%(hidden_field)s'
 # 设置图片噪点
 CAPTCHA_NOISE_FUNCTIONS = ( 'captcha.helpers.noise_null',# 设置样式
-                           'captcha.helpers.noise_arcs',# 设置干扰线
-                           'captcha.helpers.noise_dots',# 设置干扰点
+                           # 'captcha.helpers.noise_arcs',# 设置干扰线
+                           'captcha.helpers.noise_arcs_random',  # 设置自定义的干扰线
+                           #'captcha.helpers.noise_dots',# 设置干扰点
                         )
+
 # 图片大小
 CAPTCHA_IMAGE_SIZE = (120, 30)
 # 设置图片背景颜色
 #CAPTCHA_BACKGROUND_COLOR = '#76EE00'
 CAPTCHA_BACKGROUND_COLOR  = blog.RGB()
-# 图片中的文字为随机英文字母，如 mdsh
-# CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge'
-# 图片中的文字为英文单词
-# CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.word_challenge'
-# 图片中的文字为数字表达式，如1+2=</span>
-CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+CAPTCHA_CHALLENGE_FUNCTARRAY=['captcha.helpers.random_char_challenge',# 图片中的文字为随机英文字母,
+                              'captcha.helpers.word_challenge',# 图片中的文字为英文单词
+                              'captcha.helpers.math_challenge',# 图片中的文字为数字表达式
+                               ]
+CAPTCHA_CHALLENGE_FUNCT = CAPTCHA_CHALLENGE_FUNCTARRAY[blog.get_config(config.CAPTCHA_CHALLENGE_FUNCT,2)]
 # 设置字符个数
-CAPTCHA_LENGTH = 4
+CAPTCHA_LENGTH = blog.get_config(config.CAPTCHA_LENGTH,4)
 # 设置超时(minutes)
 CAPTCHA_TIMEOUT = 1
 
@@ -125,39 +127,43 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'blog.wsgi.application'
 
-
+# 数据库配置
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+MYSQL = blog.get_config(config.MYSQL,False)
+if MYSQL == True:
+    DATABASES ={'default': {'ENGINE': 'django.db.backends.mysql',
+                            'NAME': blog.get_config(config.MYSQLDBNAME,'blog_db'),
+                            'USER': blog.get_config(config.MYSQLDBUSER,'root'),
+                            'PASSWORD':blog.get_config(config.MYSQLDBPASSWD,'password'),
+                            'HOST': blog.get_config(config.MYSQLDBHOST,'127.0.0.1'),
+                            'PORT': blog.get_config(config.MYSQLDBPORT,'3306'),
+                            'OPTIONS': {"init_command": "SET default_storage_engine='INNODB'"}}}
+    DATABASES['default']['OPTIONS']['init_command'] = "SET sql_mode='STRICT_TRANS_TABLES'"#排除错误
+else:
+    DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3','NAME': os.path.join(BASE_DIR, 'db.sqlite3'),}}
 
-DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3','NAME': os.path.join(BASE_DIR, 'db.sqlite3'),}}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
+#时区配置
 #LANGUAGE_CODE = 'en-us'
-LANGUAGE_CODE = 'zh-hans'
+LANGUAGE_CODE = blog.get_config(config.LANGUAGE_CODE,'en-us')
 
 #TIME_ZONE = 'UTC'
-TIME_ZONE = 'Asia/Shanghai'
+TIME_ZONE = blog.get_config(config.TIME_ZONE,'UTC')
 
 USE_I18N = True
 
@@ -168,13 +174,14 @@ USE_TZ = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #项目上线时设置 DEBUG = False
-DEBUG = True
+DEBUG = blog.get_config(config.DEBUG,True)
 #允许所有域名访问
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = blog.get_config(config.ALLOWED_HOSTS,['*'])
 
 # 配置自定义用户表MyUser
 AUTH_USER_MODEL = 'user.MyUser'
 
+#静态文件配置
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 # STATIC_ROOT用于项目部署上线的静态资源文件
@@ -183,30 +190,19 @@ STATIC_URL = '/static/'
 # STATICFILES_DIRS用于收集admin的静态资源文件
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 
+#文件上传地址
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/uploads/hp/')
 MEDIA_ROOT_FILE = os.path.join(BASE_DIR, 'static/uploads/file/')
-#邮件配置
-# 邮件配置信息
-EMAIL_USE_SSL = True
-# 邮件服务器，如果是 163 改成 smtp.163.com
-EMAIL_HOST = 'smtp.qq.com'
-# 邮件服务器端口
-EMAIL_PORT = 465
-# 发送邮件的账号
-EMAIL_HOST_USER = ''
-# SMTP服务密码
-EMAIL_HOST_PASSWORD = ''
 
+# 邮件配置信息
+EMAIL_USE_SSL = blog.get_config(config.EMAIL_USE_SSL,True)
+EMAIL_HOST = blog.get_config(config.EMAIL_HOST,'smtp.qq.com')
+EMAIL_PORT = blog.get_config(config.EMAIL_PORT,465)
+EMAIL_HOST_USER = blog.get_config(config.EMAIL_HOST_USER,'')
+EMAIL_HOST_PASSWORD = blog.get_config(config.EMAIL_HOST_PASSWORD,'')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-DANDANLOCAL = True
-DANDANAPIKEY = "" 
-DANDANAPISECRET = ""
-
-'''
-http://www.itpk.cn/     注册 api
-DANDANLOCAL = False  #拿到了api后设置成False
-DANDANAPIKEY = ""   #你的api key
-DANDANAPISECRET = ""  #你的 api secret
-'''
-
+#蛋蛋机器人配置
+DANDANLOCAL = blog.get_config(config.DANDANLOCAL,True)
+DANDANAPIKEY = blog.get_config(config.DANDANAPIKEY,"")
+DANDANAPISECRET = blog.get_config(config.DANDANAPISECRET,"")

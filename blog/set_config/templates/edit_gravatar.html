@@ -11,11 +11,11 @@
                      <a class="btn btn-success upload" placeholder="上传头像" ><p id="show_gt">选择您要上传的头像~</p>
                          <input class="change" id="photo" name="photo" onchange="c()" placeholder="上传头像" required type="file">
                      </a><br/>
-                     {% if file_url %}
-                     <br><img src="{{ file_url }}" width="256" height="256">
+                     {% if user.avatar %}
+                     <br><img src="{{ user.avatar }}" width="256" height="256">
                      {% endif %}
                      <a class="btn btn-success"><-之前 之后-></a>
-                     <img src="{{ file_url }}" id='show' width="256" height="256"><br/><br/>
+                     <img src="{{ user.avatar }}" id='show' width="256" height="256"><br/><br/>
                      <input class="btn btn-primary" id="submit" name="submit" type="submit" value="确认上传">
                 </form>
             </div>

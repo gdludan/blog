@@ -15,3 +15,6 @@ def EN():
 def randNmae():
     return str(round(time.time()* 1000))+str(random.randint(1000,9999))
 
+def get_config(value,str=None):
+    if value == None or value == '' or value==[] or value=={} or value == ():return str
+    return value

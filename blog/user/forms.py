@@ -1,8 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 from .models import MyUser
-####
 from captcha.fields import CaptchaField
+from django.contrib.auth.forms import UserCreationForm
 
 class CaptchaLoginForm(forms.Form):
     username = forms.CharField(label='用户名或邮箱',error_messages={"invalid":u"用户名填写错误或不存在此用户"})

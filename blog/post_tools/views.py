@@ -1,21 +1,24 @@
-from django.shortcuts import render,redirect
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from .forms import *
-from user.models import MyUser,UPfile
-from index.models import *
 import datetime,pytz,blog
+from index.models import Post
 from django.conf import settings
+from django.shortcuts import render,redirect
+from user.models import MyUser as User,UPfile
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 @login_required(login_url='/user/login')
 def NewVisew(request):
+    '''
+    新建文章
+    :param request: 客户端请求头
+    :return: html页面或者跳转到主页
+    '''
     form = PostForm()
-    title__post ='发布文章'
+    title__post ='发布文章'#按钮名称
     if request.method == 'POST':
-        form =PostForm(request.POST)
-        user = MyUser.objects.get(id= request.user.id)
+        user = User.objects.get(id= request.user.id)
         post = Post(title=request.POST.get('title',''),content=request.POST.get('content',''),user=user,time=datetime.datetime.now(tz=pytz.timezone('UTC')))
         post.save()
         return redirect('/user/home')
@@ -23,28 +26,35 @@ def NewVisew(request):
 
 @login_required(login_url='/user/login')
 def EidtorVisew(request,post_id):
+    '''
+    修改文章
+    :param request: 客户端请求头
+    :param post_id: 博客文章id
+    :return: html页面或者跳转到主页
+    '''
     form = PostForm()
-    title__post ='确定修改'
+    title__post ='确定修改'#按钮名称
     post =Post.objects.get(id = post_id)
+    if User.objects.get(id=request.user.id) == post.user:return redirect('/')#判断当前用户是否为此文章作者
     if request.method == 'POST':
-        user = User.objects.get(id=request.user.id)
-        if user == post.user or user.is_superuser:
-            post.title = request.POST.get('title',post.title)
-            post.content = request.POST.get('content',post.content)
-            post.last_time = datetime.datetime.now(tz=pytz.timezone('UTC'))
-            post.save()
-            return redirect('/user/home')
-        else:
-            tips = '你不是'+post.title+'的作者或管理员，不能更改此文章任何内容!'
+        post.title = request.POST.get('title',post.title)
+        post.content = request.POST.get('content',post.content)
+        post.last_time = datetime.datetime.now(tz=pytz.timezone('UTC'))
+        post.save()
+        return redirect('/user/home')
     post__title = post.title
     post__content = post.content
     return render(request, 'post_file.html', locals())
 
 @login_required(login_url='/user/login')
 def UploadFileView(request):
+    '''
+    上传文件
+    :param request: 客户端请求头
+    :return: html页面
+    '''
     user = User.objects.get(id=request.user.id)
-    if user.is_upload ==0:
-        return redirect('/')
+    if user.is_upload == 0 : return redirect('/')#检测用户上传权限
     form = UPfileForm()
     page = request.GET.get('page',1)
     if request.method == 'POST':
@@ -55,9 +65,8 @@ def UploadFileView(request):
             for file_bytes in file.chunks():
                 f.write(file_bytes)
         import platform
-        str =''
-        if platform.system() !='Windows':
-            str='stat'
+        if platform.system() !='Windows':str='stat'#UNIX和类UNIX(例如linux)系统会少四个字符
+        else:str =''
         upfile=UPfile(name=filename,file='/'+str+Upload_file.lstrip(settings.BASE_DIR) ,
                       user=user,time=datetime.datetime.now(tz=pytz.timezone('UTC')))
         upfile.save()

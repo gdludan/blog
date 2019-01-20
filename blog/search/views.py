@@ -1,10 +1,10 @@
-from django.shortcuts import render
-from django.conf import settings
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from index.models import Post
+from django.conf import settings
+from django.shortcuts import render
 from haystack.views import SearchView as Search
+#from index.models import Dynamic as PostDynamic
 from user.models import MyUser,Dynamic as UserDynamic
-from index.models import Dynamic as PostDynamic
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # 视图以通用视图实现
 #站内搜索
 class MySearchPostView(Search):# 文章搜索
