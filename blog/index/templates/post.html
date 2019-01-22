@@ -3,8 +3,8 @@
 {% block content  %}
     {% if not post.Prohibited  %}
         {% if post %}
-            <div class="form-actions well well-sm" >
-                <h2 style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">{{ post.title }}</h2><br>
+            <div class="well well-sm" >
+                <div class="title" style="text-align: center;font-size: 30px">{{ post.title }}</div><br>
                 <div style="line-height: 1.42857143;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">{{ post.content | safe }}</div><br>
                 <div style="padding-left: 5px;">
                     <a  href="javascript:;" onclick="{% if is_login %}onLike(){% else %}onLoginError(){% endif %};"
@@ -39,14 +39,14 @@
         {% endif %}
         <link type="text/css" rel="stylesheet" href="{% static "css/prism.css" %}">
         <script src="{%  static 'js/prism.js' %}"></script>
-        <div class="form-actions well well-sm">
+        <div class="well well-sm">
             <h3>评论列表:<span style="font-size: 18px;">({{number}}条)</span></h3><hr>
             <div style="margin:10px 0px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
             {% if request.user.is_authenticated %}
             <form action="" method="post" id="usrform">
                 {% csrf_token %}
     {#            <textarea id="content" name="content">#}
-                <textarea id="content" name="content" style="width:100%;height: 80px;font-size: 20px" ></textarea><br>
+                <textarea id="content" name="content" style="width:100%;height: 80px;font-size: 16px" ></textarea><br>
                 <input type="submit" value="发表评论" style="width: 100%;height:30px;">
             </form>
             {% else %}
@@ -59,7 +59,7 @@
                     <div style="float: left">
                         <a href="{% url 'user' comment.user.username  %}"><img src="{{ comment.user.avatar }}" width="30px" height="30px" style="border:2px solid;border-radius:10px;"></a>
                     </div>
-                    <div>{{ comment.content | safe }}</div><hr><div>{{ post.time }}</div>
+                    <div>{{ comment.content | safe }}</div><hr><div>{{ comment.time }}</div>
                 </div>
                 {% else %}<div style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;height: 40px;"><div style="float: left;">此评论因为{% if comment.Prohibited %}{{ comment.Prohibited_info }}{% endif %}违规已删除</div></div>{% endif %}
             {% endfor %}

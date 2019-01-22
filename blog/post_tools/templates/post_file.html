@@ -1,8 +1,9 @@
 {% extends "title_base.html"  %}
 {% block title %}新建文章{% endblock %}
+{% block content_class %}col-xs-12 col-sm-9{% endblock %}
 {% block content_left %}{% include 'manag_home_left.html' %}{% endblock %}
 {% block content  %}{% load staticfiles %}
-    <div style="width: 80%;float: right;">
+    <div style="width: 100%;float: right;">
         <script src="{%  static 'tinymce/js/tinymce/tinymce.min.js' %}"></script>
         <div style="width: 95%;margin: 0 20px;">
             {# <h1>卤蛋博客 </h1>#}

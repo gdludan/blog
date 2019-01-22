@@ -14,7 +14,6 @@ def chatfreeView(request):
     :param request: 客户端请求数据
     :return: html页面
     '''
-    Open_source = True
     title = '菲菲'
     return render(request,'chat.html',locals())
 
@@ -24,7 +23,6 @@ def chatxiaoiView(request):
     :param request: 客户端请求数据
     :return: html页面
     '''
-    Open_source = True
     title='小i'
     return render(request,'chat.html',locals())
 
@@ -34,7 +32,6 @@ def chatdandanView(request):
     :param request: 客户端请求数据
     :return: html页面
     '''
-    Open_source = True
     title='蛋蛋'
     return render(request,'chat.html',locals())
 
@@ -85,7 +82,7 @@ def musicView(request):
     :param request: 客户端请求头
     :return: html页面或json数据
     '''
-    Open_source,mp3 = True,True#和video共享一个html文件
+    mp3 = True#和video共享一个html文件
     #获取客户端请求的数据
     name=request.GET.get('name', '')#歌曲名字
     redirecton = int(request.GET.get('redirect', '0'))#放回数据类型
@@ -116,7 +113,6 @@ def videoView(request):
     :param request: 客户端请求头
     :return: html页面
     '''
-    Open_source = True
     url = request.GET.get('url','')
     name = '视频解析'
     return render(request,'play.html',locals())
@@ -127,7 +123,6 @@ def ImageCompressionView(request):
     :param request: 客户端请求头
     :return: html页面或跳转到压缩后的图片url
     '''
-    Open_source = True
     #获取客户端请求的数据
     url = request.GET.get('url','')
     grade = int(request.GET.get('grade',2))

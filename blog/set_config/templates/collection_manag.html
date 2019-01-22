@@ -1,12 +1,13 @@
 {% extends "title_base.html"  %}
 {% block title %}{{ title }}{% endblock %}
+{% block content_class %}col-xs-12 col-sm-9{% endblock %}
 {% block content_left %}{% include 'manag_home_left.html' %}{% endblock %}
 {% block content  %}{% load staticfiles %}
     {% if pageInfo %}
         {% for item in pageInfo %}
             {% if item.is_collection %}
                 <a href="{% url 'post' item.post.id %}">
-                    <div class="navbar-collapse collapse" style="float: left;width: 82%">
+                    <div class="navbar-collapse collapse" style="width: 100%">
                         <div class="form-actions well well-sm" style="font-size: 1.2em;color: blue">
                             标题：{{ item.post.title }}<br/>
                             作者：{% if item.post.user.first_name %}{{ item.post.user.first_name }}

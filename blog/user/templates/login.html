@@ -3,37 +3,35 @@
 {% block search %}{% endblock %}
 {% load staticfiles %}
 {% block content  %}
-    <div style="height: 360px;float: left;margin-right: 210px">
-        <link type="text/css" rel="stylesheet" href="{% static "css/register.css" %}">
-        <div id="unauth_main" class="login-regist" >
-            <div class="login-box switch_box" style="width: 400px;">
-                <div class="title">用户登录</div>
-                <form id="loginForm" class="formBox" action="" method="post">
-                    {% csrf_token %}
-                    <div  class="itembox user-name" style="width: 400px;">
-                        {{ form.username.label }}:<br>
-                        <input type="text" name="username" required="" id="id_username" placeholder="{{ form.username.label }}">
-                    </div>
-                    <div class="itembox user-pwd" style="width: 400px;">
-                        {{ form.password.label }}:<br>
-                        <input type="password" name="password" required id="id_password" placeholder="{{ form.password.label }}">
-                    </div>
-                    <div class="itembox user-pwd" style="width: 400px;">
-                        {{ form.captcha.label }}:
-                        {{ form.captcha }}
-                    </div>
-                    <div id="loginBtnBox" class="login-btn">
-                        <input id="J_LoginButton" type="submit" value="马上登陆" class="btn btn-primary btn-block" />
-                    </div>
-                </form>
-                <div  class="pass-reglink">还没有注册，
-                    <a href="{% url 'regist' %}">点击我去注册</a>
-                    <a href="{% url 'findPassword' %}">找回密码</a>
+    <link type="text/css" rel="stylesheet" href="{% static "css/register.css" %}">
+    <div id="unauth_main" style="float: left;" >
+        <div class="login-box " style="width: 400px;">
+            <form action="" method="post" style="width: 360px;margin-left: auto;margin-right: auto">
+            <div class="title" style="text-align: center;font-size: 20px">用户登录</div>
+                {% csrf_token %}
+                <div  class="itembox user-name" style="width: 100%;">
+                    {{ form.username.label }}:<br>
+                    <input type="text" name="username" required="" id="id_username" placeholder="{{ form.username.label }}">
                 </div>
+                <div class="itembox user-pwd" style="width: 100%;">
+                    {{ form.password.label }}:<br>
+                    <input type="password" name="password" required id="id_password" placeholder="{{ form.password.label }}">
+                </div>
+                <div class="itembox user-pwd" style="width: 100%;">
+                    {{ form.captcha.label }}:
+                    {{ form.captcha }}
+                </div>
+                <div id="loginBtnBox" class="login-btn">
+                    <input id="J_LoginButton" type="submit" value="马上登陆" class="btn btn-primary btn-block" />
+                </div>
+            </form>
+            <div  class="pass-reglink">还没有注册，
+                <a href="{% url 'regist' %}">点击我去注册</a>
+                <a href="{% url 'findPassword' %}">找回密码</a>
             </div>
         </div>
     </div>
-    <div style="float: left;">
+    <div style="float: right;">
         <img src="{% static 'images/views.png' %}" width="680px" height="400px">
     </div>
     <script>

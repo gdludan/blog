@@ -3,7 +3,7 @@
 {% block content  %}{% load staticfiles %}
     {% for post in pageInfo %}
         {% if not post.Prohibited  %}
-        <div class="form-actions well well-sm" >
+        <div class="well " >
         <a href="{% url 'post'  post.id %}"><span style="font-size: 20px;">{{ post.title }}</span></a><hr>
             <a href="{% url 'user' post.user.username %}">
                 <img src="{{ post.user.avatar }}" width="30px" height="30px" style="border:2px solid;border-radius:10px;"></a>

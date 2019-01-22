@@ -35,7 +35,7 @@ def EidtorVisew(request,post_id):
     form = PostForm()
     title__post ='确定修改'#按钮名称
     post =Post.objects.get(id = post_id)
-    if User.objects.get(id=request.user.id) == post.user:return redirect('/')#判断当前用户是否为此文章作者
+    if User.objects.get(id=request.user.id) != post.user:return redirect('/')#判断当前用户是否为此文章作者
     if request.method == 'POST':
         post.title = request.POST.get('title',post.title)
         post.content = request.POST.get('content',post.content)

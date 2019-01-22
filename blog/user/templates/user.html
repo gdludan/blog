@@ -2,7 +2,7 @@
 {% block title %}{% if user_info.first_name %}{{ user_info.first_name }}{% else %}{{ user_info.username }}{% endif %}的主页{% endblock %}
 {% block search %}{% endblock %}
 {% block content  %}{% load staticfiles %}
-    <div class="form-actions well well-sm" style="height: 140px">
+    <div class="well well-sm" style="height: 140px">
         <div style="width: 10%;float: left;">
             <img src="{{ user_info.avatar }}" width="90%" height="120px" style="border:2px solid;border-radius:25px;">
         </div>
@@ -37,7 +37,7 @@
             </div>
         </div>
         </div>
-        <div class="form-actions well well-sm" style="font-size: 1.2em;">
+        <div class="well well-sm" style="font-size: 1.2em;">
         <h2 style="margin-bottom: 5px;">发布过的文章:({{ post_num }}篇)</h2>
         {% for post in pageInfo %}
             <a href="{% url 'post' post.id %}" style="text-decoration: none;">

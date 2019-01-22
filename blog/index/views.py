@@ -15,7 +15,6 @@ def indexView(request):
     :param request: 客户端请求头
     :return: html页面
     '''
-    Open_source = True
     page = request.GET.get('page', 1)
     title = "首页"
     post_list = Post.objects.all().order_by('-id')#博客文章列表
@@ -82,6 +81,9 @@ def postView(request,id):
     except EmptyPage:
         pageInfo = paginator.page(paginator.num_pages)
     return render(request, 'post.html',locals())
+
+def aboutView(request):
+    return render(request,'about.html')
 
 @require_http_methods(['GET'])
 def ajax_postlike(request,id):

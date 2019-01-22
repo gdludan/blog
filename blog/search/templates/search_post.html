@@ -2,15 +2,17 @@
 {% block title %}搜索  {% if query %}{{ query }}{% else %}全部 {% endif %} 文章
 {% endblock %}{% load staticfiles %}{% block search %}{% endblock %}
 {% block content  %}
-    <div class="form-actions well well-sm" style="height: 70px">
-    <input style="width: 75%;float: left;margin-top: 8px; margin-right: 3%;" id="searchbar" class="form-control" type="text" name="q" value="{{ query }}" placeholder="站内搜索  文章">
-    <div style="float: left;width: 20%;">
-        <button class="btn btn-primary" type="submit" style="margin-top: 8px;margin-right: 1% " id="search_post">搜索</button>
-        <button class="btn btn-primary" type="submit" style="margin-top: 8px;" id="user_search">搜索用户</button>
-        <button class="btn btn-primary" type="submit" style="margin-top: 8px;" id="goole_search">谷歌搜索</button>
+    <div class=" well well-sm" style="height: 70px">
+        <form class="" action="" method="get" style="width: 74%;float: left;margin-top: 8px; margin-right: 3%;" >
+            <input type="text" class="form-control" placeholder="搜索文章"  name="q" id="searchbar" value="{{ query }}">
+        </form>
+    <div style="float: right;width: 22%;">
+        <button class="btn btn-primary" type="submit" style="margin-top: 8px;" onclick="search_post()">搜索</button>
+        <button class="btn btn-primary" type="submit" style="margin-top: 8px;" onclick="search_user()">搜索用户</button>
+        <button class="btn btn-primary" type="submit" style="margin-top: 8px;" onclick="goole_search()">谷歌搜索</button>
     </div>
     </div>
-    <div class="form-actions well well-sm">
+    <div class=" well well-sm">
     {% if show_all %}
         {% if  page.object_list %}
         {% for item in page.object_list %}
@@ -88,13 +90,4 @@
     </div>
     </div>
 {% endblock  %}
-{% block script %}
-<script type="text/javascript">
-    document.getElementById("search_post").onclick=function(){
-        window.open('/search/post?q='+document.getElementById("searchbar").value, "_self");
-    }
-    document.getElementById("user_search").onclick=function(){
-        window.open('/search/user?q='+document.getElementById("searchbar").value, "_self");
-    }
-</script>
-{% endblock %}
+{% block script %}{% endblock %}

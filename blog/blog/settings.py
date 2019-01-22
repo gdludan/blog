@@ -160,10 +160,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 #时区配置
 #LANGUAGE_CODE = 'en-us'
-LANGUAGE_CODE = blog.get_config(config.LANGUAGE_CODE,'en-us')
+LANGUAGE_CODE = blog.get_config(config.LANGUAGE_CODE,'zh-hans')
 
 #TIME_ZONE = 'UTC'
-TIME_ZONE = blog.get_config(config.TIME_ZONE,'UTC')
+TIME_ZONE = blog.get_config(config.TIME_ZONE,'Asia/Shanghai')
 
 USE_I18N = True
 

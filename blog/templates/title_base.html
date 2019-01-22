@@ -1,85 +1,92 @@
-<!doctype html>
-<html lang="zh-cn">
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-CN">
     <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="renderer" content="webkit">
-    <meta name="keywords" content="">
-    <meta name="description" content="">
-    <title>{% block title %}欢迎{% endblock %} | 卤蛋博客</title>{% load staticfiles %}
-    <link type="image/x-icon" rel="shortcut icon" href="{% static "favicon.ico" %}">
-    <link type="text/css" rel="stylesheet" href="{% static "css/bootstrap-theme.min.css" %}">
-    <link type="text/css" rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
-    <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
-    <script src="{% static "js/bootstrap.min.js" %}"></script>
-    <style type="text/css">
-        a{ text-decoration:none;}
-        @media (min-width: 520px) {.test{display: none;}}
-        @media (min-width: 768px) {
-            .test{display: none;}
-            #test{display: none;}
-        }
-        @media (min-width: 992px) {
-            .test{display: inline-block;}
-            #test{display: inline-block;}
-        }
-    </style>
-{#    <script src="{% static "js/npm.js" %}"></script>#}
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="renderer" content="webkit">
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <link type="image/x-icon" rel="shortcut icon" href="{% static "favicon.ico" %}">
+        <title>{% block title %}欢迎{% endblock %} | 卤蛋博客</title>{% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        <link type="text/css" rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+        {% block style %}{% endblock %}
     </head>
     <body>
-        {% block navbar %}
-        <div class="navbar navbar-inverse" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle"
-                    data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">切换导航</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/">卤蛋博客</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="/">首页</a></li>
-                        {% if Open_source %}
-                        <li><a href="https://github.com/cang-meng/blog">开源</a></li>
-                        {% endif %}
-                        <li class="nav-item"><a href="{% url 'chat_xiaoi'  %}">一些小玩意</a></li>
-                        {% if not user.is_authenticated %}
-                        <li class="nav-item"><a href="{% url 'login' %}">登录</a></li>
-                        <li class="nav-item"><a href="{% url 'regist' %}">注册</a></li>
-                        <li class="nav-item"><a href="{% url 'findPassword' %}">找回密码</a></li>
-                        {% else %}
-                        <li class="nav-item"><a href="{% url 'home'  %}">用户中心</a></li>
-                        <li class="nav-item"><a href="{% url 'logout' %}">退出</a></li>
-                        {% endif %}
-                    </ul>
-                    {% block search %}
-                    <ul class="nav navbar-nav pull-right"  id="test" style="margin: 0;">
-                        <li  class="nav-item">
-                            <form class="navbar-form navbar-left" action="{% url 'haystack_post' %}" method="get">
-                                <div class="input-group search-group">
-                                <input id="searchbar" class="form-control" type="text" name="q" value="" placeholder="站内搜索">
-                                <span class="input-group-btn"><button class="btn btn-primary" type="submit">搜索<i class="fa fa-search"></i></button></span>
-                                </div>
-                            </form>
-                            <span class="btn btn-primary test" type="submit" style="margin-top: 8px;" id="goole_search">谷歌搜索</span>
-                        </li>
-                    </ul>
-                    <script>
-                        var searchbar = document.getElementById("searchbar");
-                        document.getElementById("goole_search").onclick=function(){
-                            window.open("https://www.google.com.hk/search?q="+searchbar.value, "_search");
-                        }
-                    </script>
-                    {% endblock %}
-                </div>
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">切换导航</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'index' %}"><b>卤蛋博客</b></a>
             </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item"><a href="{% url 'index'  %}">首页</a></li>
+                    <li class="nav-item"><a href="https://github.com/cang-meng/blog">开源</a></li>
+                    <li class="nav-item"><a href="{% url 'chat_xiaoi'  %}">一些小玩意</a></li>
+                    <li class="nav-item"><a href="{% url 'about'  %}">关于</a></li>
+                    {% block search %}
+                        <li>
+                            <form class="navbar-form navbar-right" action="{% url 'haystack_post' %}" method="get" id="search_blog">
+                                <input type="text" class="form-control" placeholder="搜索文章"  name="q">
+                            </form>
+                        </li>
+                    {% endblock %}
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if not user.is_authenticated %}
+                        <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="游客"
+                           role="button" aria-haspopup="true" aria-expanded="false">
+                            游客
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'login'  %}">登录</a></li>
+                            <li><a href="{% url 'regist' %}">注册</a></li>
+                            <li><a href="{% url 'findPassword' %}">找回密码</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                           title="{% if user.first_name %}{{ user.first_name }}
+                                {% else %}{{ user.username }}{% endif %}"
+                           role="button" aria-haspopup="true" aria-expanded="false">
+                            <img src="{{ user.avatar }}" width="25px" height="25px"/>
+                            {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">欢迎，
+                                {% if user.first_name %}{{ user.first_name }}
+                                {% else %}{{ user.username }}{% endif %}</li>
+                            <li role="separator" class="divider"></li>
+                            {% if user.is_Auxiliary or user.is_superuser %}
+                            <li><a href="/admin" >原生后台</a></li>
+                            <li><a href="/xadmin" >增强后台</a></li>
+                            <li role="separator" class="divider"></li>
+                            {% endif %}
+                            <li><a href="{% url 'home'  %}">用户中心</a></li>
+                            <li><a href="{% url 'edit_gravatar' %}">更换头像</a></li>
+                            <li><a href="{% url 'edit_profile' %}">修改信息</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="{% url 'password' %}">更换密码</a></li>
+                            <li><a href="{% url 'logout' %}">退出</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div><!--/.nav-collapse -->
         </div>
-        {% endblock %}
-
+    </nav>
         {% block tips %}
         {% if tips %}
             <div class="alert alert-dismissable alert-success">
@@ -88,76 +95,23 @@
             </div>
         {% endif %}
         {% endblock %}
-        <div style="margin: 0 20px;">
-        {% block content_left %}{% endblock %}
-        {% block content %}{% endblock %}
-        </div>
-        <div style="float: bottom;">
-            <div id="footer" style="float: left;width: 100%;margin-top: 10px;">
-                <hr style="border-color: black" />
-                <footer class="text-center">
-                    <p>&copy; 2018 卤蛋版权所有</p>
-                    <p>部分资源来自网络，侵权联系必删</p>
-                </footer>
-            </div>
-        </div>
+        <div class="container">
+            <div class="row row-offcanvas row-offcanvas-right">
+                {% block content_left %}{% endblock %}
+                <div class="{% block content_class %}col-xs-12 col-sm-12{% endblock %}">
+                {% block content %}{% endblock %}
+                </div>
+            </div><!--/row-->
+        </div><!--/.container-->
+        <footer class="blog-footer" style="text-align: center;">
+            {#            http://yshblog.com/#}
+            <p>&copy; 2018 - 2019 By:卤蛋</p>
+            <p>部分资源来自网络，侵权请联系</p>
+            <p>作者:卤蛋 &ensp;<a href="mailto:gdcanmeng@qq.com" style="color: #843534">gdcanmeng@qq.com</a></p>
+        </footer>
     </body>
 </html>
-<script type="text/javascript">
-    function onLoginError() {
-        alert("你还没登录，不能对文章进行此操作。");
-    }
-</script>
-<script type="text/javascript">
-function randomHexColor() { //随机生成十六进制颜色
-    var hex = Math.floor(Math.random() * 16777216).toString(16); //生成ffffff以内16进制数
-    while (hex.length < 6) { //while循环判断hex位数，少于6位前面加0凑够6位
-    hex = '0' + hex;
-    }
-    return '#' + hex; //返回‘#'开头16进制颜色
-}
-function randomRgbaColor() { //随机生成RGBA颜色
- var r = Math.floor(Math.random() * 256); //随机生成256以内r值
- var g = Math.floor(Math.random() * 256); //随机生成256以内g值
- var b = Math.floor(Math.random() * 256); //随机生成256以内b值
- var alpha = Math.random(); //随机生成1以内a值
- return `rgb(${r},${g},${b},${alpha})`; //返回rgba(r,g,b,a)格式颜色
-}
-function randomRgbColor() { //随机生成RGB颜色
- var r = Math.floor(Math.random() * 256); //随机生成256以内r值
- var g = Math.floor(Math.random() * 256); //随机生成256以内g值
- var b = Math.floor(Math.random() * 256); //随机生成256以内b值
- return `rgb(${r},${g},${b})`; //返回rgb(r,g,b)格式颜色
-}
-var a_idx = 0;
-jQuery(document).ready(function($) {
-    $("html").click(function(e) {
-        var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善");
-        var $i = $("<span/>").text(a[a_idx]);
-        a_idx = (a_idx + 1) % a.length;
-        var x = e.pageX,
-        y = e.pageY;
-        var color =randomHexColor();
-        var color2 = randomRgbaColor();
-        var rcolor3 = randomRgbColor();
-        $i.css({
-            "z-index": 2147483647,
-            "top": y - 20,
-            "left": x,
-            "position": "absolute",
-            "font-weight": "bold",
-            "color": rcolor3
-        });
-        $("body").append($i);
-        $i.animate({
-            "top": y - 180,
-            "opacity": 0
-        },
-        1500,
-        function() {
-            $i.remove();
-        });
-    });
-});
-</script>
+<script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+<script src="{% static "js/base.js" %}"></script>
 {% block script %}{% endblock %}

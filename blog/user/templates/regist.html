@@ -2,12 +2,13 @@
 {% block title %}注册{% endblock %}
 {% block search %}{% endblock %}
 {% block content  %}{% load staticfiles %}
-    <div style="height: 260px;float: left;margin-right: 200px;margin-bottom: 140px">
-        <link type="text/css" rel="stylesheet" href="{% static "css/register.css" %}">
-        <div id="unauth_main" class="login-regist" >
-            <div class="login-box switch_box" style="width: 400px;">
-                <div class="title">用户注册</div>
-                <form id="loginForm" class="formBox" action="/user/regist" method="post">
+
+    <link type="text/css" rel="stylesheet" href="{% static "css/register.css" %}">
+    <div id="unauth_main" style="float: left; " >
+        <div class="login-box" style="width: 400px;">
+            <form action="" method="post" style="width: 360px;margin-left: auto;margin-right: auto">
+                <div class="title" style="text-align: center;font-size: 20px">用户注册</div>
+                <div  class="itembox user-name" style="width: 100%;">
                     {% csrf_token %}
                     {{ form.username.label }}:
                     {{ form.username }}{{ form.username.errors }}
@@ -19,14 +20,14 @@
                     {{ form.password2 }}{{ form.password2.errors }}
                     {{ form.captcha.label }}:
                     {{ form.captcha }}{{ form.captcha.errors }}
-                    <input id="J_LoginButton" type="submit" value="立即注册" class="btn btn-primary btn-block" />
-                </form>
-                <div  class="pass-reglink">已经有账号，<a href="{% url 'login' %}">点击我去登陆</a>
-                    <a href="{% url 'findPassword' %}">找回密码</a></div>
-            </div>
+                </div>
+                <input id="J_LoginButton" type="submit" value="立即注册" class="btn btn-primary btn-block" />
+            </form>
+            <div  class="pass-reglink">已经有账号，<a href="{% url 'login' %}">点击我去登陆</a>
+                <a href="{% url 'findPassword' %}">找回密码</a></div>
         </div>
     </div>
-    <div style="float: left;margin-bottom: 20px">
+    <div style="float: right;margin-bottom: 20px">
         <img src="{% static 'images/views.png' %}" width="680px" height="400px">
     </div>
     <script>
