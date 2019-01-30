@@ -8,8 +8,7 @@
         </div>
         <div style="width: 90%;float: left;">
             <h2 style="margin-bottom: 5px;">
-                {% if user_info.first_name  %}{{ user_info.first_name }}
-                {% else %}{{ user_info.username }}{% endif %}
+                {% firstof user_info.get_short_name user_info.get_username %}
                 {% include 'user_attention.html' %}
                 <span style="width: 8%; float: right;font-size: 0.4em;text-align: center">
                     <span>粉丝</span><br>

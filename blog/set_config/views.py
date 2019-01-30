@@ -6,7 +6,8 @@ from user.models import MyUser as User
 from user.models import Profile,Attention
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from blog import paginatorPage
+from django.template import RequestContext
 
 # Create your views here.
 @login_required(login_url='/user/login')
@@ -30,7 +31,7 @@ def edit_profileView(request):
         user.save()
         profile.save()
         tips = '修改个人信息成功'
-    return render(request, 'edit_profile.html', locals())
+    return render(request, 'edit_profile.html', locals(),RequestContext(request))
 
 @login_required(login_url='/user/login')
 def edit_gravatarView(request):
@@ -57,7 +58,7 @@ def edit_gravatarView(request):
         user.avatar = '/'+ str +photo_file.lstrip(settings.BASE_DIR)
         user.save()
         tips= '上传头像成功'
-    return render(request,'edit_gravatar.html',locals())
+    return render(request,'edit_gravatar.html',locals(),RequestContext(request))
 
 @login_required(login_url='/user/login')
 def collection_managementView(request):
@@ -70,14 +71,8 @@ def collection_managementView(request):
     page = request.GET.get('page',1)
     root_user = User.objects.get(id=request.user.id)
     collection_list = Collection.objects.filter(user=root_user).all()
-    paginator = Paginator(collection_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
-    try:
-        pageInfo = paginator.page(page)
-    except PageNotAnInteger:
-        pageInfo = paginator.page(1)
-    except EmptyPage:
-        pageInfo = paginator.page(paginator.num_pages)
-    return render(request,'collection_manag.html',locals())
+    paginator, pageInfo = paginatorPage(collection_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+    return render(request,'collection_manag.html',locals(),RequestContext(request))
 
 @login_required(login_url='/user/login')
 def attention_managementView(request):
@@ -92,11 +87,5 @@ def attention_managementView(request):
     attention_list = Attention.objects.filter(user=root_user).all()
     for i in attention_list:
         i.attention_id = User.objects.filter(id=i.attention_id).get()
-    paginator = Paginator(attention_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
-    try:
-        pageInfo = paginator.page(page)
-    except PageNotAnInteger:
-        pageInfo = paginator.page(1)
-    except EmptyPage:
-        pageInfo = paginator.page(paginator.num_pages)
-    return render(request,'attention_manag.html',locals())
+    paginator, pageInfo = paginatorPage(attention_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+    return render(request,'attention_manag.html',locals(),RequestContext(request))

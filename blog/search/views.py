@@ -4,7 +4,8 @@ from django.shortcuts import render
 from haystack.views import SearchView as Search
 #from index.models import Dynamic as PostDynamic
 from user.models import MyUser,Dynamic as UserDynamic
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from blog import paginatorPage
+from django.template import RequestContext
 # 视图以通用视图实现
 #站内搜索
 class MySearchPostView(Search):# 文章搜索
@@ -15,16 +16,8 @@ class MySearchPostView(Search):# 文章搜索
         if not self.request.GET.get('q', ''):
             show_all = True
             post = Post.objects.all().order_by('-time')
-            paginator = Paginator(post, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
-            try:
-                page = paginator.page(int(self.request.GET.get('page', 1)))
-            except PageNotAnInteger:
-                # 如果参数page的数据类型不是整型，则返回第一页数据
-                page = paginator.page(1)
-            except EmptyPage:
-                # 用户访问的页数大于实际页数，则返回最后一页的数据
-                page = paginator.page(paginator.num_pages)
-            return render(self.request, self.template, locals())
+            paginator, pageInfo = paginatorPage(post, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+            return render(self.request, self.template, locals(),RequestContext(self.request))
         else:
             show_all = False
             qs = super(MySearchPostView, self).create_response()
@@ -38,16 +31,8 @@ class MySearchMyUserView(Search):# 用户搜索
         if not self.request.GET.get('q', ''):
             show_all = True
             myuser = MyUser.objects.all().order_by('-id')
-            paginator = Paginator(myuser, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
-            try:
-                page = paginator.page(int(self.request.GET.get('page', 1)))
-            except PageNotAnInteger:
-                # 如果参数page的数据类型不是整型，则返回第一页数据
-                page = paginator.page(1)
-            except EmptyPage:
-                # 用户访问的页数大于实际页数，则返回最后一页的数据
-                page = paginator.page(paginator.num_pages)
-            return render(self.request, self.template, locals())
+            paginator, pageInfo = paginatorPage(myuser, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+            return render(self.request, self.template, locals(),RequestContext(self.request))
         else:
             show_all = False
             qs = super(MySearchMyUserView, self).create_response()

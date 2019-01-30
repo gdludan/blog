@@ -9,10 +9,9 @@
                 <a href="{% url 'user' item.attention_id.username %}">
                     <div class="navbar-collapse collapse" style="width: 100%">
                         <div class="form-actions well well-sm" style="font-size: 1.2em;color: blue">
-                            <img src="{{ item.attention_id.avatar }}" width="60px" height="60px" style="border:2px solid;border-radius:10px;">
-                                用户名：
-                               {% if item.attention_id.first_name %}{{ item.attention_id.first_name }}
-                               {% else %}{{ item.attention_id.username }}{% endif %}
+                            <img src="{{ item.attention_id.avatar }}" width="30px" height="30px"
+                                 style="border:2px solid;border-radius:10px;">
+                                用户名：{% firstof item.attention_id.get_short_name item.attention_id.get_username %}
                         </div>
                     </div>
                 </a>

@@ -2,11 +2,12 @@
 {% block title %}图片压缩{% endblock %}
 {% block content_class %}col-xs-12 col-sm-9{% endblock %}
 {% block content_left %}{% include 'fun_left.html' %}{% endblock %}
+{% block fun %}<li class="nav-item active"><a href="{% url 'chat_xiaoi'  %}">小玩意</a></li>{% endblock %}
 {% block content %}{% load staticfiles %}
     <div style="margin: 20px;float: right;width: 100%;margin-top: 0px;">
         <form action="">
             <div style="width: 100%">
-                <input type="text" name="url" placeholder="输入URL" style="width: 75%;" value="{{ url }}" title="歌名：{{ value }}">
+                <input type="text" name="url" placeholder="输入URL" style="width: 70%;" value="{{ url }}" title="歌名：{{ value }}">
                 <select name="grade" style="height: 26px;background: black;color: white">
                     {% if grade == 1 %}
                         <option title="低压缩" selected="selected" value="1">低压缩</option>
@@ -40,4 +41,6 @@
             {% endif %}
         </center>
     </div>
+{#   <iframe runat = "server"  src = "https://tinypng.com/" style = "height: auto;min-height: 400px;width: 100%;"#}
+{#    border = "0" marginwidth = "0" marginheight = "0" scrolling = "" allowtransparency = "yes" frameborder = "no" ></iframe>#}
 {% endblock %}

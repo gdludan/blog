@@ -1,5 +1,6 @@
 from . import views
 from django.urls import path,include
+from django.conf.urls import url
 # 设置首页的URL地址信息
 urlpatterns = [
     path('chat_free', views.chatfreeView, name='chat_free'),#菲菲聊天机器人

@@ -5,8 +5,8 @@ from django.conf import settings
 from django.shortcuts import render,redirect
 from user.models import MyUser as User,UPfile
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from blog import paginatorPage
+from django.template import RequestContext
 # Create your views here.
 @login_required(login_url='/user/login')
 def NewVisew(request):
@@ -22,7 +22,7 @@ def NewVisew(request):
         post = Post(title=request.POST.get('title',''),content=request.POST.get('content',''),user=user,time=datetime.datetime.now(tz=pytz.timezone('UTC')))
         post.save()
         return redirect('/user/home')
-    return render(request, 'post_file.html', locals())
+    return render(request, 'post_file.html', locals(),RequestContext(request))
 
 @login_required(login_url='/user/login')
 def EidtorVisew(request,post_id):
@@ -44,7 +44,7 @@ def EidtorVisew(request,post_id):
         return redirect('/user/home')
     post__title = post.title
     post__content = post.content
-    return render(request, 'post_file.html', locals())
+    return render(request, 'post_file.html', locals(),RequestContext(request))
 
 @login_required(login_url='/user/login')
 def UploadFileView(request):
@@ -73,11 +73,5 @@ def UploadFileView(request):
         tips= '上传文件成功'
     upfile = UPfile.objects.filter(user=user).order_by('-time').all()
     post_num = len(upfile)
-    paginator = Paginator(upfile, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
-    try:
-        pageInfo = paginator.page(page)
-    except PageNotAnInteger:
-        pageInfo = paginator.page(1)
-    except EmptyPage:
-        pageInfo = paginator.page(paginator.num_pages)
-    return render(request, 'UploadFile.html', locals())
+    paginator, pageInfo = paginatorPage(upfile, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+    return render(request, 'UploadFile.html', locals(),RequestContext(request))

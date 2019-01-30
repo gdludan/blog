@@ -17,6 +17,8 @@ class MyUserAdmin(UserAdmin):
 class ProfileAdmin(admin.ModelAdmin):
     # 设置模型字段，用于Admin后台数据的表头设置
     list_display = ['id', 'interest', 'aims', 'motto','self_reprot']
+    #过滤器
+    list_filter = ['user','self_reprot']
     # 设置可搜索的字段并在Admin后台数据生成搜索框，如有外键应使用双下划线连接两个模型的字段
     search_fields = [ 'interest', 'aims', 'motto']
     # 设置排序方式
@@ -26,6 +28,8 @@ class ProfileAdmin(admin.ModelAdmin):
 class UPfileAdmin(admin.ModelAdmin):
     # 设置模型字段，用于Admin后台数据的表头设置
     list_display = ['id', 'file','time','Prohibited','Prohibited_info']
+    #过滤器
+    list_filter = ['file','time','Prohibited']
     # 设置可搜索的字段并在Admin后台数据生成搜索框，如有外键应使用双下划线连接两个模型的字段
     search_fields = [ 'file','time','Prohibited','Prohibited_info']
     # 设置排序方式
@@ -35,6 +39,8 @@ class UPfileAdmin(admin.ModelAdmin):
 class AttentionAdmin(admin.ModelAdmin):
     # 设置模型字段，用于Admin后台数据的表头设置
     list_display = ['id', 'attention_id','user']
+    #过滤器
+    list_filter = ['attention_id','user']
     # 设置可搜索的字段并在Admin后台数据生成搜索框，如有外键应使用双下划线连接两个模型的字段
     search_fields = [ 'attention_id','user']
     # 设置排序方式
@@ -44,6 +50,8 @@ class AttentionAdmin(admin.ModelAdmin):
 class DynamicAdmin(admin.ModelAdmin):
     # 设置模型字段，用于Admin后台数据的表头设置
     list_display = ['id','dynamic_like', 'dynamic_attention', 'dynamic_search','user']
+    #过滤器
+    list_filter = ['dynamic_like', 'dynamic_attention', 'dynamic_search','user']
     # 设置可搜索的字段并在Admin后台数据生成搜索框，如有外键应使用双下划线连接两个模型的字段
     search_fields = ['dynamic_like', 'dynamic_attention', 'dynamic_search','user']
     # 设置排序方式

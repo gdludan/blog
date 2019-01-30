@@ -2,12 +2,13 @@
 {% block title %}{{ name }}{% endblock %}
 {% block content_class %}col-xs-12 col-sm-9{% endblock %}
 {% block content_left %}{% include 'fun_left.html' %}{% endblock %}
+{% block fun %}<li class="nav-item active"><a href="{% url 'chat_xiaoi'  %}">小玩意</a></li>{% endblock %}
 {% block content %}{% load staticfiles %}
     <div style="margin: 20px;float: right;width: 98%;margin-top: 0px;">
         {% if mp3 %}
             <form action="">
                 <div style="width: 100%">
-                    <input type="text" name="name" placeholder="输入歌名" style="width: 75%;" value="{{ value }}" title="歌名：{{ value }}">
+                    <input type="text" name="name" placeholder="输入歌名" style="width: 70%;" value="{{ value }}" title="歌名：{{ value }}">
                     <select name="website" style="height: 26px;background: black;color: white">
                         {% if website == "tencent" %}
                         <option name="netease" title="网易云" value="netease">网易云</option>

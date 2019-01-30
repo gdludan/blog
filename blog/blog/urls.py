@@ -31,4 +31,6 @@ urlpatterns = [
     path('config/', include('set_config.urls')),# 用户配置
     path('tools/', include('post_tools.urls')),# 网站工具
     path('captcha/', include('captcha.urls')),# 验证码接口
+    path('message/', include('message.urls')),# 消息
+    path('tinymce/', include('tinymce.urls')), # 固定写法，其实是映射到人家写好的应用
 ]

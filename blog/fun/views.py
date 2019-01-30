@@ -6,6 +6,7 @@ from blog_Plugin.like import Unicode_or_chinese
 from django.shortcuts import render,redirect,HttpResponse
 from blog_Plugin.music import get_163MusicUrl,get_tencent
 from blog_Plugin.robot import get_reply_free,get_reply_xiaoi,get_reply_dandan
+from django.template import RequestContext
 
 # Create your views here.
 def chatfreeView(request):
@@ -15,7 +16,7 @@ def chatfreeView(request):
     :return: html页面
     '''
     title = '菲菲'
-    return render(request,'chat.html',locals())
+    return render(request,'chat.html',locals(),RequestContext(request))
 
 def chatxiaoiView(request):
     '''
@@ -24,7 +25,7 @@ def chatxiaoiView(request):
     :return: html页面
     '''
     title='小i'
-    return render(request,'chat.html',locals())
+    return render(request,'chat.html',locals(),RequestContext(request))
 
 def chatdandanView(request):
     '''
@@ -33,7 +34,7 @@ def chatdandanView(request):
     :return: html页面
     '''
     title='蛋蛋'
-    return render(request,'chat.html',locals())
+    return render(request,'chat.html',locals(),RequestContext(request))
 
 def ajax_chat_free(request):
     '''
@@ -105,7 +106,7 @@ def musicView(request):
             elif redirecton ==1:return redirect(url)#跳转歌曲下载地址
         else:
             name = "音乐"
-    return render(request, 'play.html', locals())
+    return render(request, 'play.html', locals(),RequestContext(request))
 
 def videoView(request):
     '''
@@ -115,7 +116,7 @@ def videoView(request):
     '''
     url = request.GET.get('url','')
     name = '视频解析'
-    return render(request,'play.html',locals())
+    return render(request,'play.html',locals(),RequestContext(request))
 
 def ImageCompressionView(request):
     '''
@@ -125,19 +126,18 @@ def ImageCompressionView(request):
     '''
     #获取客户端请求的数据
     url = request.GET.get('url','')
-    grade = int(request.GET.get('grade',2))
     redirecton = int(request.GET.get('redirect',0))
     if url :
         if redirecton == 1:
-            path = get_img(url, grade)#进行图片压缩
+            path = get_img(url, int(request.GET.get('grade',0)))#进行图片压缩
             img = open(path, 'rb')
             response = HttpResponse(img.read(), content_type='image/png')
-            response['Content-Disposition'] = 'attachment; filename="' + path + '"'
+            # response['Content-Disposition'] = 'attachment; filename="' + path + '"'
             img.close()
-            # 删除图片文件
+            # # 删除图片文件
             if platform.system() != 'Windows':os.system('rm -rf ' + settings.BASE_DIR + '/' + path)
-            else:os.remove(settings.BASE_DIR+'/'+path)
+            else:os.remove(path)
             return response
         else:
-            pathUrl = '/fun/images?redirect=1&grade=%s&url=%s'%(grade,url)
-    return render(request, 'imagecompression.html', locals())
+            pathUrl = '/fun/images?redirect=1&grade=%s&url=%s'%(request.GET.get('grade','0'),url)
+    return render(request, 'imagecompression.html', locals(),RequestContext(request))

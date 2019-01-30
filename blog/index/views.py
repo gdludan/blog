@@ -1,12 +1,14 @@
 import pytz,datetime
 from .forms import CommentForm
 from django.conf import settings
-from django.http import JsonResponse
+from django.contrib import messages
+from django.template import RequestContext
 from django.shortcuts import render,redirect
+from django.http import JsonResponse,HttpResponse
 from .models import Post,Comment,Like,Dynamic,Collection
 from django.views.decorators.http import require_http_methods
 from user.models import MyUser as User,Dynamic as UserDynamic,Attention
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from blog import paginatorPage,timeago_or_time
 
 # Create your views here.
 def indexView(request):
@@ -18,14 +20,11 @@ def indexView(request):
     page = request.GET.get('page', 1)
     title = "首页"
     post_list = Post.objects.all().order_by('-id')#博客文章列表
-    paginator = Paginator(post_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)#文章分页
-    try:
-        pageInfo = paginator.page(page)
-    except PageNotAnInteger:
-        pageInfo = paginator.page(1)
-    except EmptyPage:
-        pageInfo = paginator.page(paginator.num_pages)
-    return render(request, 'index.html', locals())
+    for post in post_list:
+        post.time =timeago_or_time(post.time)
+    paginator,pageInfo= paginatorPage(post_list,settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)#文章分页
+    # return render(request, 'index.html', locals())
+    return render(request, 'index.html', locals(),RequestContext(request))
 
 def postView(request,id):
     '''
@@ -71,19 +70,16 @@ def postView(request,id):
     else:
         like, is_login, collection,attention = 0, False, 0,0
     #评论分页
-    comment = Comment.objects.filter(post=post).all().order_by('-time')
+    comment = Comment.objects.filter(post=post).order_by('-time').all()
     number = len(comment)
-    paginator = Paginator(comment, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
-    try:
-        pageInfo = paginator.page(page)
-    except PageNotAnInteger:
-        pageInfo = paginator.page(1)
-    except EmptyPage:
-        pageInfo = paginator.page(paginator.num_pages)
-    return render(request, 'post.html',locals())
+    paginator, pageInfo = paginatorPage(comment, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+    post.time = timeago_or_time(post.time)
+    for comm in comment:
+        comm.time=timeago_or_time(comm.time)
+    return render(request, 'post.html',locals(),RequestContext(request))
 
 def aboutView(request):
-    return render(request,'about.html')
+    return render(request,'about.html',locals(),RequestContext(request))
 
 @require_http_methods(['GET'])
 def ajax_postlike(request,id):
@@ -152,3 +148,4 @@ def ajax_postcollection(request,id):
             res['status'] = 401
             res['message'] = '写入数据库失败'
     return JsonResponse(res)
+

@@ -1,5 +1,4 @@
-{% load staticfiles %}
-<!DOCTYPE html>
+<!DOCTYPE html>{% load staticfiles %}
 <html lang="zh-CN">
     <head>
         <meta charset="UTF-8">
@@ -12,98 +11,116 @@
         <title>{% block title %}欢迎{% endblock %} | 卤蛋博客</title>{% load staticfiles %}
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
         <link type="text/css" rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+{#        <link href="{% static 'css/ionic.min.css' %}" rel="stylesheet" type="text/css">#}
         {% block style %}{% endblock %}
     </head>
-    <body>
-    <nav class="navbar navbar-default navbar-static-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">切换导航</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{% url 'index' %}"><b>卤蛋博客</b></a>
+    <body ng-controller="MyCtrl">
+{#          style="position:absolute;overflow:auto;">#}
+        <nav class="navbar navbar-default ">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">切换导航</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'index' %}"><b>卤蛋博客</b></a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        {% block index %}<li class="nav-item"><a href="{% url 'index'  %}">首页</a></li>{% endblock %}
+                        {% block fun %}<li class="nav-item"><a href="{% url 'chat_xiaoi'  %}">小玩意</a></li>{% endblock %}
+                        <li class="nav-item"><a href="https://github.com/cang-meng/blog">开源</a></li>
+                        {% block about %}<li class="nav-item"><a href="{% url 'about'  %}">关于</a></li>{% endblock %}
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        {% block search %}
+                            <li>
+                                <form class="navbar-form navbar-right"
+                                      action="{% url 'haystack_post' %}" method="get" id="search_blog">
+                                    <input type="text" class="form-control" placeholder="搜索文章"  name="q">
+                                </form>
+                            </li>
+                        {% endblock %}
+                        {% block message %}
+                            <li class="nav-item" style="margin-left: 10px;" title="消息通知">
+                                <a href="{% url 'message'  %}">
+                                    <span class="glyphicon glyphicon-flag" aria-hidden="true"></span>
+                                    <span style="background-color:#d9534f;color: white;border-radius: 10px;" id="num_mess"></span>
+                                </a>
+                            </li>
+                        {% endblock %}
+                        {% if not user.is_authenticated %}
+                            <li class="dropdown" style="height: 50px">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="游客"
+                                   role="button" aria-haspopup="true" aria-expanded="false">
+                                    <img src="{% static 'images/default.jpg' %}"
+                                         width="20px" height="20px" style="border-radius: 5px;"/>
+                                    游客
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{% url 'login'  %}">登录</a></li>
+                                    <li><a href="{% url 'regist' %}">注册</a></li>
+                                    <li><a href="{% url 'findPassword' %}">找回密码</a></li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="dropdown" style="height: 50px">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                                   title="{% firstof user.get_short_name user.get_username %}"
+                                   role="button" aria-haspopup="true" aria-expanded="false" >
+                                    <img src="{{ user.avatar }}" width="20px" height="20px" style="border-radius: 5px;"/>
+                                    {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-header">欢迎，
+                                    {% firstof user.get_short_name user.get_username %}<br/>
+                                        ({% if user.is_superuser %}超级管理员
+                                        {% elif user.is_Auxiliary %}辅助管理员
+                                        {% elif user.is_staff %}网站管理员
+                                        {% else %}普通用户{% endif %})
+                                    </li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{% url 'home'  %}">用户中心</a></li>
+                                    <li><a href="{% url 'edit_gravatar' %}">更换头像</a></li>
+                                    <li><a href="{% url 'edit_profile' %}">修改信息</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    {% if user.is_Auxiliary or user.is_superuser or user.is_staff %}
+                                    <li><a href="/admin" >原生后台</a></li>
+                                    <li><a href="/xadmin" >增强后台</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    {% endif %}
+                                    <li><a href="{% url 'password' %}">更换密码</a></li>
+                                    <li><a href="{% url 'logout' %}">注销</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div><!--/.nav-collapse -->
             </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="nav-item"><a href="{% url 'index'  %}">首页</a></li>
-                    <li class="nav-item"><a href="https://github.com/cang-meng/blog">开源</a></li>
-                    <li class="nav-item"><a href="{% url 'chat_xiaoi'  %}">一些小玩意</a></li>
-                    <li class="nav-item"><a href="{% url 'about'  %}">关于</a></li>
-                    {% block search %}
-                        <li>
-                            <form class="navbar-form navbar-right" action="{% url 'haystack_post' %}" method="get" id="search_blog">
-                                <input type="text" class="form-control" placeholder="搜索文章"  name="q">
-                            </form>
-                        </li>
-                    {% endblock %}
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    {% if not user.is_authenticated %}
-                        <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="游客"
-                           role="button" aria-haspopup="true" aria-expanded="false">
-                            游客
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{% url 'login'  %}">登录</a></li>
-                            <li><a href="{% url 'regist' %}">注册</a></li>
-                            <li><a href="{% url 'findPassword' %}">找回密码</a></li>
-                        </ul>
-                    </li>
-                    {% else %}
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                           title="{% if user.first_name %}{{ user.first_name }}
-                                {% else %}{{ user.username }}{% endif %}"
-                           role="button" aria-haspopup="true" aria-expanded="false">
-                            <img src="{{ user.avatar }}" width="25px" height="25px"/>
-                            {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="dropdown-header">欢迎，
-                                {% if user.first_name %}{{ user.first_name }}
-                                {% else %}{{ user.username }}{% endif %}</li>
-                            <li role="separator" class="divider"></li>
-                            {% if user.is_Auxiliary or user.is_superuser %}
-                            <li><a href="/admin" >原生后台</a></li>
-                            <li><a href="/xadmin" >增强后台</a></li>
-                            <li role="separator" class="divider"></li>
-                            {% endif %}
-                            <li><a href="{% url 'home'  %}">用户中心</a></li>
-                            <li><a href="{% url 'edit_gravatar' %}">更换头像</a></li>
-                            <li><a href="{% url 'edit_profile' %}">修改信息</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="{% url 'password' %}">更换密码</a></li>
-                            <li><a href="{% url 'logout' %}">退出</a></li>
-                        </ul>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div><!--/.nav-collapse -->
-        </div>
-    </nav>
-        {% block tips %}
-        {% if tips %}
-            <div class="alert alert-dismissable alert-success">
+        </nav>
+        {% if messages %}
+            {% for message in  messages %}
+            <div class="alert alert-dismissable alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
                 <button type="button" class="close" data-dismiss="alert">×</button>
-                {{ tips }}
+                {{ message }}
             </div>
+            {% endfor %}
         {% endif %}
-        {% endblock %}
         <div class="container">
             <div class="row row-offcanvas row-offcanvas-right">
                 {% block content_left %}{% endblock %}
                 <div class="{% block content_class %}col-xs-12 col-sm-12{% endblock %}">
                 {% block content %}{% endblock %}
                 </div>
+                {% block contentcontent_right %}{% endblock %}
             </div><!--/row-->
         </div><!--/.container-->
-        <footer class="blog-footer" style="text-align: center;">
+        <footer class="blog-footer" style="text-align: center;margin-top: 20px;">
             {#            http://yshblog.com/#}
             <p>&copy; 2018 - 2019 By:卤蛋</p>
             <p>部分资源来自网络，侵权请联系</p>

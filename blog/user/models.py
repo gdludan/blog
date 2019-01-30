@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import pytz,datetime
+from django.utils import timezone
 # Create your models here.
 
 class MyUser(AbstractUser):
@@ -8,7 +8,7 @@ class MyUser(AbstractUser):
     mobile = models.CharField('手机号码', max_length=11, unique=False,blank = True,default='')
     is_upload = models.NullBooleanField('是否允许上传文件',blank=True,default=0)
     is_Auxiliary = models.NullBooleanField('辅助管理员',blank=True,default=0)
-    ip = models.CharField('上次登录ip地址', max_length=128,blank = True,default='')
+    ip = models.GenericIPAddressField('上次登录ip地址',default='0.0.0.0')
     ipaddress =  models.CharField('ip物理地址', max_length=128,blank = True,default='')
     def __str__(self):
         return self.username
@@ -35,7 +35,7 @@ class UPfile(models.Model):
     id = models.AutoField('序号', primary_key=True)
     name = models.CharField('文件名',max_length=256,unique=False,default='')
     file = models.CharField('文件路径',max_length=512,blank=True,default='')
-    time = models.DateTimeField('时间', max_length=128, auto_now_add=datetime.datetime.now(tz=pytz.timezone('UTC')))
+    time = models.DateTimeField('时间', max_length=128, auto_now_add=timezone.now)
     Prohibited =  models.NullBooleanField('文件是否已删除',blank=False,default=0)
     Prohibited_info =  models.CharField('删除信息',blank=False,default='',max_length=256)
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE,verbose_name='用户')

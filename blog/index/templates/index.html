@@ -1,16 +1,20 @@
 {% extends "title_base.html"  %}
 {% block title %}首页{% endblock %}
+{% block index %}<li class="nav-item active"><a href="{% url 'index'  %}">首页</a></li>{% endblock %}
 {% block content  %}{% load staticfiles %}
     {% for post in pageInfo %}
         {% if not post.Prohibited  %}
         <div class="well " >
-        <a href="{% url 'post'  post.id %}"><span style="font-size: 20px;">{{ post.title }}</span></a><hr>
+            <a href="{% url 'post'  post.id %}" style="cursor:pointer">
+                <span style="font-size: 20px;">{{ post.title }}</span><hr style="margin-top: 10px;margin-bottom: 10px;"/>
             <a href="{% url 'user' post.user.username %}">
-                <img src="{{ post.user.avatar }}" width="30px" height="30px" style="border:2px solid;border-radius:10px;"></a>
-            {{ post.user.username }}在{{ post.time }}发布&ensp;&ensp;&ensp;&ensp;(阅读{{ post.readnumber }})
+                <img src="{{ post.user.avatar }}" width="30px" height="30px" style="border:2px solid;border-radius:10px;"
+                     title="{% firstof post.user.get_short_name post.user.get_username %}">
+            </a>&ensp;&ensp;在 {{ post.time.str }} <span style="font-size: 12px;">
+                [{{ post.time.data }}]</span> 发布&ensp;(阅读{{ post.readnumber }})
+            </a>
         </div>
         {% endif %}
-{#        <div>{{ post.content | safe }}</div>#}
     {% endfor %}
     <link type="text/css" rel="stylesheet" href="{% static "css/common.css" %}">
     <div class="page-box">
@@ -31,5 +35,5 @@
         </div>
     </div>
 {% endblock  %}
-{#{% block script %}#}
-{#{% endblock %}#}
+{% block script %}
+{% endblock %}

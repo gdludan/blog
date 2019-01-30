@@ -25,6 +25,7 @@ SECRET_KEY = 'kt70%hfkxh+n@w(2c5$o*355^j_)hlij=^4fp*o_)%p9=4xeyp'
 # Application definition
 
 INSTALLED_APPS = [
+    'bootstrap_admin',
     'django.contrib.admin',#系统后台组件
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,16 +38,27 @@ INSTALLED_APPS = [
     'search',#站内搜索
     'set_config',#用户配置
     'post_tools',#用户工具
+    'message',#站内消息
     'captcha',#验证码
     'haystack',# 添加haystack组件
     'xadmin',#添加xadmin系统后台组件
     'crispy_forms',#xadmin组件依赖
     'reversion',#xadmin组件依赖
-    #https组件
-    'werkzeug_debugger_runserver',
-    'django_extensions',
-
+    # #https组件
+    # 'werkzeug_debugger_runserver',
+    # 'django_extensions',
+    'tinymce',    # 添加此行
 ]
+
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced', #设置主题
+    'width': 600,
+    'height': 400,
+}
+
+LOGIN_URL='/user/login'
+
+BOOTSTRAP_ADMIN_SIDEBAR_MENU = True
 
 # 配置haystack
 HAYSTACK_CONNECTIONS = {
@@ -111,7 +123,8 @@ TEMPLATES = [
                  os.path.join(BASE_DIR, 'user/templates'),
                  os.path.join(BASE_DIR, 'search/templates'),
                  os.path.join(BASE_DIR, 'post_tools/templates'),
-                 os.path.join(BASE_DIR, 'set_config/templates'),]
+                 os.path.join(BASE_DIR, 'set_config/templates'),
+                 os.path.join(BASE_DIR, 'message/templates'),]
         ,
         'APP_DIRS': True,
         'OPTIONS': {

@@ -12,8 +12,7 @@
             </div>
             <div style="width: 80%;float: right ;">
                 <h3 style="margin-bottom: 10px;">
-                    {% if user.first_name %}欢迎，{{ user.first_name }}
-                    {% else %}欢迎，{{ user.username }}{% endif %}&ensp;&ensp;&ensp;&ensp;
+                    欢迎，{% firstof user.get_short_name user.get_username %}&ensp;&ensp;&ensp;&ensp;
                     <span style="font-size: 0.6em;color: blue;">
                         登录ip：{{ user.ip }}（{{ user.ipaddress }}）</span>
                     <span style="width: 8%; float: right;font-size: 0.4em;text-align: center">

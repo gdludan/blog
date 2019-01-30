@@ -11,4 +11,5 @@ urlpatterns = [
     path('findPassword', views.findPassword, name='findPassword'),#找回密码
     path('attention/<int:id>', views.ajax_userattention, name='post_collection'),#用户关注
     path('ajax_val', views.ajax_val, name='ajax_val'),# 验证码验证ajax接口
+    path('success', views.success, name='success'),
 ]

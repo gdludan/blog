@@ -10,7 +10,7 @@ function randomRgbaColor() { //随机生成RGBA颜色
  var g = Math.floor(Math.random() * 256); //随机生成256以内g值
  var b = Math.floor(Math.random() * 256); //随机生成256以内b值
  var alpha = Math.random(); //随机生成1以内a值
- return `rgb(${r},${g},${b},${alpha})`; //返回rgba(r,g,b,a)格式颜色
+ return `rgba(${r},${g},${b},${alpha})`; //返回rgba(r,g,b,a)格式颜色
 }
 function randomRgbColor() { //随机生成RGB颜色
  var r = Math.floor(Math.random() * 256); //随机生成256以内r值
@@ -26,16 +26,16 @@ jQuery(document).ready(function($) {
         a_idx = (a_idx + 1) % a.length;
         var x = e.pageX,
         y = e.pageY;
-        var color =randomHexColor();
+        var color1 =randomHexColor();
         var color2 = randomRgbaColor();
-        var rcolor3 = randomRgbColor();
+        var color3 = randomRgbColor();
         $i.css({
             "z-index": 2147483647,
             "top": y - 20,
             "left": x,
             "position": "absolute",
             "font-weight": "bold",
-            "color": rcolor3
+            "color": color2
         });
         $("body").append($i);
         $i.animate({
@@ -52,7 +52,7 @@ function onLoginError() {
     alert("你还没登录，不能对文章进行此操作。");
 }
 function goole_search(){
-    window.open("https://www.google.com.hk/search?q="+searchbar.value, "_search");
+    window.open("https://www.google.com.hk/search?q="+document.getElementById("searchbar").value, "_search");
 }
 function search_user(){
     window.open('/search/user?q='+document.getElementById("searchbar").value, "_self");
@@ -60,3 +60,36 @@ function search_user(){
 function search_post(){
     window.open('/search/post?q='+document.getElementById("searchbar").value, "_self");
 }
+function setnum(num,set=true) {
+    if (num>=100){return '99+'}
+    else if(num<=0 && set == true){return ""}
+    else if(num<=0 && set == false){return "0"}
+    else {return num.toFixed(0)}
+}
+var intnum = 0;
+function num(){
+    $.ajax({
+        url:"/message/num",
+        type:"GET",
+        async : true,
+        success:function(data){
+            //console.log("response success: ", data);
+            if(data['set']==false){
+                clearInterval(numtime);
+            }else {
+                $('#num_mess').text(setnum(data['num']));
+                $('#num_mess').parent().attr('title',setnum(data['num'],false)+'条新信息')
+            }
+        },
+        error:function(XMLHttpRequest,textStatus){
+            if (++intnum>=6){
+                clearInterval(numtime);
+            }
+            //console.log(XMLHttpRequest.status,'\n',XMLHttpRequest.readyState,'\n',textStatus);
+        }
+    });
+}
+window.onload=function (){
+    num();
+    numtime = setInterval("num()",2500);
+};

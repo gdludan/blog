@@ -1,5 +1,6 @@
 {% extends "title_base.html" %}
 {% block title %}首页{% endblock %}
+{% block about %}<li class="nav-item active"><a href="{% url 'about'  %}">关于</a></li>{% endblock %}
 {% block content  %}{% load staticfiles %}
     <div class="jumbotron" style="text-align: center;">
         <h1>卤蛋博客</h1><hr/>

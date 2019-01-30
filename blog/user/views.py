@@ -9,7 +9,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout,authenticate
 from user.models import Profile,Attention,Dynamic,MyUser as User
 from django.contrib.auth.hashers import make_password,check_password
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from blog import paginatorPage
+from django.contrib import messages
+from django.template import RequestContext
+from django.http import HttpResponse
+
+def success(request):
+    return HttpResponse('登录成功')
 
 @login_required(login_url='/user/login')
 def passwdView(request):
@@ -25,14 +31,14 @@ def passwdView(request):
         user = User.objects.filter(username=username)
         if User.objects.filter(username=username):
             user = authenticate(username=username, password=old_password)
-            if not user:tips = '原始密码错误'
+            if not user:messages.ERROR(request,'原始密码错误')
             else:
                 # 密码加密处理并保存到数据库
                 user.password = make_password(new_password, None, 'pbkdf2_sha256')
                 user.save()
                 login(request, user)
-                tips = '更改密码成功'
-    return render(request,'passwd.html',locals())
+                messages.SUCCESS(request,'更改密码成功')
+    return render(request,'passwd.html',locals(),RequestContext(request))
 
 def findPassword(request):
     '''
@@ -62,7 +68,7 @@ def findPassword(request):
                 request.session['VerificationCode'] = VerificationCode
                 msg = '你的用户名为：'+user[0].username+'\r\n验证码为：' + VerificationCode
                 user[0].email_user('找回密码', msg)#发送邮件
-                tips = '验证码已发送'
+                messages.success(request,'验证码已发送')
             # 匹配输入的验证码是否正确
             elif VerificationCode == request.session.get('VerificationCode'):
                 # 密码加密处理并保存到数据库
@@ -70,16 +76,16 @@ def findPassword(request):
                 user[0].password = dj_ps
                 user[0].save()
                 del request.session['VerificationCode']
-                tips = '密码已重置'
+                messages.success(request,'密码已重置')
                 user = User.objects.filter(id = user[0].id).first()
                 login(request,user)
                 return redirect('/user/login')
             # 输入验证码错误
             else:
-                tips = '验证码错误，请重新获取'
+                messages.error(request,'验证码错误，请重新获取')
                 new_password = False
                 del request.session['VerificationCode']
-    return render(request, 'findpassswd.html', locals())
+    return render(request, 'findpassswd.html', locals(),RequestContext(request))
 
 def loginView(request):
     '''
@@ -90,27 +96,26 @@ def loginView(request):
     if request.user.is_authenticated :return redirect('/')#已登录用户跳转到首页
     form =CaptchaLoginForm()
     if request.method == 'POST':
-        form,ip = CaptchaLoginForm(request.POST),''
+        form,ip = CaptchaLoginForm(request.POST),request.META['REMOTE_ADDR']
         # 验证表单数据
         if form.is_valid():
             username = form.cleaned_data['username']
             if User.objects.filter(Q(mobile=username) | Q(username=username)|Q(email=username)):
                 user = User.objects.filter(Q(mobile=username) | Q(username=username)|Q(email=username)).first()
                 if check_password(form.cleaned_data['password'], user.password):#检查用户密码
-                    ip=request.META['REMOTE_ADDR']
                     user.ip=ip
-                    user.ipaddress=get_360_ipaddres(user.ip)#获取ip的物理地址
+                    # user.ipaddress=get_360_ipaddres(ip)#获取ip的物理地址
                     user.save()
                     login(request, user)
-                    tips = '登录成功'
+                    messages.success(request,'登录成功')
                     return redirect(request.GET.get('next', '/'))
                 else:
-                    tips = '账号或者密码错误，请重新输入'
+                    messages.error(request,'账号或者密码错误，请重新输入')
             else:
-                tips = '用户不存在，请注册'
+                messages.error(request,'用户不存在，请注册')
         else:
-            tips = '验证码错误'
-    return render(request, 'login.html', locals())
+            messages.error(request,'验证码错误')
+    return render(request, 'login.html', locals(),RequestContext(request))
 
 def registView(request):
     '''
@@ -126,11 +131,11 @@ def registView(request):
             user.save()#添加新用户
             profile = Profile(user=user, self_reprot=' 这个人很懒，什么也没有写')#添加新用户的信息
             profile.save()
-            tips = '注册成功'
+            messages.success(request,'注册成功')
             return redirect('/user/login')
         else:
-            tips='注册失败'
-    return render(request, 'regist.html', locals())
+            messages.error(request,'注册失败')
+    return render(request, 'regist.html', locals(),RequestContext(request))
 
 def userView(request,username):
     '''
@@ -154,14 +159,8 @@ def userView(request,username):
     else:is_login ,attention= False,0
     num_fan = len(attention_list)
     post_num = len(post_list)
-    paginator = Paginator(post_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
-    try:
-        pageInfo = paginator.page(page)
-    except PageNotAnInteger:
-        pageInfo = paginator.page(1)
-    except EmptyPage:
-        pageInfo = paginator.page(paginator.num_pages)
-    return render(request, 'user.html', locals())
+    paginator, pageInfo = paginatorPage(post_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+    return render(request, 'user.html', locals(),RequestContext(request))
 
 @login_required(login_url='/user/login')
 def homeView(request):
@@ -177,18 +176,12 @@ def homeView(request):
         profile=Profile(user=user,self_reprot='这个人很懒，什么也没有写！')
         profile.save()
     post_list = Post.objects.filter(user=user).order_by('-time').all()
-    paginator = Paginator(post_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
     attention_list = Attention.objects.filter(user=user).all()
     num_attentiom=len(attention_list)
     fan_list = Attention.objects.filter(attention_id=user.id).all()
     num_fan=len(fan_list)
-    try:
-        pageInfo = paginator.page(page)
-    except PageNotAnInteger:
-        pageInfo = paginator.page(1)
-    except EmptyPage:
-        pageInfo = paginator.page(paginator.num_pages)
-    return render(request, 'home.html', locals())
+    paginator, pageInfo = paginatorPage(post_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+    return render(request, 'home.html', locals(),RequestContext(request))
 
 def logoutView(request):
     '''
@@ -197,6 +190,7 @@ def logoutView(request):
     :return: html页面
     '''
     logout(request)
+    messages.success(request, '注销成功')
     return redirect('/')
 
 # ajax接口，实现动态验证验证码
