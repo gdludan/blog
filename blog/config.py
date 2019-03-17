@@ -40,3 +40,5 @@ DANDANLOCAL = True
 DANDANAPIKEY = ""
 #单单机器人APISECRET
 DANDANAPISECRET = ""
+#是否以utc时区存储时间到数据库
+USE_TZ = False

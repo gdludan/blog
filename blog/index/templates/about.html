@@ -1,16 +1,27 @@
 {% extends "title_base.html" %}
-{% block title %}首页{% endblock %}
+{% block title %}关于{% endblock %}
 {% block about %}<li class="nav-item active"><a href="{% url 'about'  %}">关于</a></li>{% endblock %}
 {% block content  %}{% load staticfiles %}
-    <div class="jumbotron" style="text-align: center;">
+    <div class="jumbotron" style="text-align: center;font-family: 楷体;">
         <h1>卤蛋博客</h1><hr/>
         <p>2018.11.27,卤蛋博客的初代版本出现</p><hr/>
         <p>2018.12.08，官网DEMO上线</p><hr/>
-        <p>2019.01.03，卤蛋博客1.0版本发布</p><hr/>
-        <p>2019.01.23，卤蛋博客1.1版本发布</p><hr/>
-        <p>2019.01.30,卤蛋博客1.2版本<br/><span style="font-size:16px;">修复已知Bug<br/>页面小修改</span></p><hr/>
+        <p>2019.01.03，卤蛋博客1.0.0版本发布</p><hr/>
+        <p>2019.01.23，卤蛋博客1.1.0版本发布</p><hr/>
+        <p>2019.01.30,卤蛋博客1.2.0版本<br/>
+            <span style="font-size:16px;">修复无法显示验证码等已知Bug<br/>
+                页面小修改</span></p><hr/>
+        <p>2019.03.17,卤蛋博客1.2.1版本<br/>
+            <span style="font-size:16px;">
+                添加消息通知功能<br/>
+                修复时间错乱等已知Bug<br/>
+                UI位置调整<br/>
+            </span>
+        </p><hr/>
+        <!--
         <h2>光于我</h2><hr/>
         <p>目前还是一个学生</p>
+        -->
       </div>
 {% endblock  %}
 {% block script %}

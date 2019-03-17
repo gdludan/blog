@@ -1,5 +1,5 @@
 import xadmin,xadmin.views as views
-from .models import Post,Comment,Dynamic,Like,Collection
+from .models import Post,Comment,Dynamic,Like,Collection,SonComment
 
 #数据库表单模型
 class PostAdmin(object):
@@ -27,6 +27,17 @@ class CommentAdmin(object):
     # 设置可搜索的字段并在Admin后台数据生成搜索框，如有外键应使用双下划线连接两个模型的字段
     search_fields = [ 'content', 'time' ,'Prohibited','Prohibited_info']
     #list_filter = ['label_id','label_name']  # 筛选
+    # 设置排序方式
+    ordering = ['-id']
+    refresh_times = [5, 2]  # 自动刷新后台管理页面
+
+class SonCommentAdmin(object):
+    # 设置模型字段，用于Admin后台数据的表头设置
+    list_display = ['id', 'content', 'time','Prohibited','Prohibited_info']
+    #过滤器
+    list_filter = ['time','comment','Prohibited']
+    # 设置可搜索的字段并在Admin后台数据生成搜索框，如有外键应使用双下划线连接两个模型的字段
+    search_fields = [ 'content', 'time','Prohibited','Prohibited_info']
     # 设置排序方式
     ordering = ['-id']
     refresh_times = [5, 2]  # 自动刷新后台管理页面
@@ -71,6 +82,7 @@ class CollectionAdmin(object):
 
 xadmin.site.register(Post, PostAdmin)
 xadmin.site.register(Comment, CommentAdmin)
+xadmin.site.register(SonComment, SonCommentAdmin)
 xadmin.site.register(Dynamic, DynamicAdmin)
 xadmin.site.register(Like, LikeAdmin)
 xadmin.site.register(Collection, CollectionAdmin)

@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from blog_Plugin.images import get_img
 from blog_Plugin.like import Unicode_or_chinese
 from django.shortcuts import render,redirect,HttpResponse
-from blog_Plugin.music import get_163MusicUrl,get_tencent
+from blog_Plugin.music import get_136Music,get_tencentMusic
 from blog_Plugin.robot import get_reply_free,get_reply_xiaoi,get_reply_dandan
 from django.template import RequestContext
 
@@ -83,27 +83,23 @@ def musicView(request):
     :param request: 客户端请求头
     :return: html页面或json数据
     '''
-    mp3 = True#和video共享一个html文件
+    mp3 = True #和video共享一个html文件
     #获取客户端请求的数据
     name=request.GET.get('name', '')#歌曲名字
     redirecton = int(request.GET.get('redirect', '0'))#放回数据类型
     website = request.GET.get('website', 'tencent').lower()#获取文件的
     if website == "netease".lower():
         if name:
-            music_dict = get_163MusicUrl(name)#获取歌曲信息信息
-            value=music_dict['name']
-            url = music_dict['url']
+            music_dict = get_136Music(name)#获取歌曲信息信息
             if redirecton==2:return JsonResponse(music_dict)#返回json数据
-            elif redirecton ==1:return redirect(url)#跳转歌曲下载地址
+            elif redirecton ==1:return redirect(music_dict['url'])#跳转歌曲下载地址
         else:
             name = "音乐"
     elif website =="tencent".lower():
         if name:
-            music_dict = get_tencent(name)#获取歌曲信息信息
-            value = music_dict['name']
-            url = music_dict['url']
+            music_dict = get_tencentMusic(name)#获取歌曲信息信息
             if redirecton==2: return JsonResponse(music_dict)#返回json数据
-            elif redirecton ==1:return redirect(url)#跳转歌曲下载地址
+            elif redirecton ==1:return redirect(music_dict['url'])#跳转歌曲下载地址
         else:
             name = "音乐"
     return render(request, 'play.html', locals(),RequestContext(request))

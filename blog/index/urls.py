@@ -1,5 +1,5 @@
 from . import views
-from django.urls import path,include
+from django.urls import path,include,re_path
 # 设置首页的URL地址信息
 urlpatterns = [
     path('', views.indexView, name='index'),#首页
@@ -9,5 +9,6 @@ urlpatterns = [
         path('collection/<int:id>', views.ajax_postcollection, name='post_collection'),# 收藏博客文章
     ])),#二级路由系统
     path('about', views.aboutView, name='about'),  # 首页
+    path('date/<int:year>/<int:month>/<int:day>',views.Getdate,name='date')
 ]
 

@@ -18,41 +18,14 @@ function randomRgbColor() { //随机生成RGB颜色
  var b = Math.floor(Math.random() * 256); //随机生成256以内b值
  return `rgb(${r},${g},${b})`; //返回rgb(r,g,b)格式颜色
 }
-var a_idx = 0;
-jQuery(document).ready(function($) {
-    $("html").click(function(e) {
-        var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善");
-        var $i = $("<span/>").text(a[a_idx]);
-        a_idx = (a_idx + 1) % a.length;
-        var x = e.pageX,
-        y = e.pageY;
-        var color1 =randomHexColor();
-        var color2 = randomRgbaColor();
-        var color3 = randomRgbColor();
-        $i.css({
-            "z-index": 2147483647,
-            "top": y - 20,
-            "left": x,
-            "position": "absolute",
-            "font-weight": "bold",
-            "color": color2
-        });
-        $("body").append($i);
-        $i.animate({
-            "top": y - 180,
-            "opacity": 0
-        },
-        1500,
-        function() {
-            $i.remove();
-        });
-    });
-});
 function onLoginError() {
     alert("你还没登录，不能对文章进行此操作。");
 }
 function goole_search(){
     window.open("https://www.google.com.hk/search?q="+document.getElementById("searchbar").value, "_search");
+}
+function bing_search(){
+    window.open("https://cn.bing.com/search?q="+document.getElementById("searchbar").value, "_search");
 }
 function search_user(){
     window.open('/search/user?q='+document.getElementById("searchbar").value, "_self");
@@ -60,36 +33,71 @@ function search_user(){
 function search_post(){
     window.open('/search/post?q='+document.getElementById("searchbar").value, "_self");
 }
-function setnum(num,set=true) {
-    if (num>=100){return '99+'}
-    else if(num<=0 && set == true){return ""}
-    else if(num<=0 && set == false){return "0"}
-    else {return num.toFixed(0)}
+function keyseach(event) {
+    if (event.keyCode == 13) {
+    search_post();
+    }
 }
-var intnum = 0;
-function num(){
-    $.ajax({
-        url:"/message/num",
-        type:"GET",
-        async : true,
-        success:function(data){
-            //console.log("response success: ", data);
-            if(data['set']==false){
-                clearInterval(numtime);
-            }else {
-                $('#num_mess').text(setnum(data['num']));
-                $('#num_mess').parent().attr('title',setnum(data['num'],false)+'条新信息')
-            }
-        },
-        error:function(XMLHttpRequest,textStatus){
-            if (++intnum>=6){
-                clearInterval(numtime);
-            }
-            //console.log(XMLHttpRequest.status,'\n',XMLHttpRequest.readyState,'\n',textStatus);
+var title=document.title;
+window.onblur =  function(){
+    document.title='(〃´-ω･) 呵呵，页面崩溃了';
+    setTimeout(function () {
+        if(document.title!='(〃´-ω･) 呵呵，页面崩溃了'){
+            document.title='(〃´-ω･) 呵呵，页面崩溃了';
         }
-    });
-}
-window.onload=function (){
-    num();
-    numtime = setInterval("num()",2500);
+    },500);
 };
+window.onfocus= function(){
+    document.title='φ(>ω<*) 额，恢复了';
+    setTimeout(function(){
+        if(document.title!=title){
+            document.title=title;
+        }
+    }, 500);
+};
+function ajax(options) {
+    options = options || {};
+    options.type = (options.type || "GET").toUpperCase();
+    options.dataType = options.dataType || "json";
+    var params = formatParams(options.data);
+
+    //创建 - 非IE6 - 第一步
+    if (window.XMLHttpRequest) {
+        var xhr = new XMLHttpRequest();
+    } else { //IE6及其以下版本浏览器
+        var xhr = new ActiveXObject('Microsoft.XMLHTTP');
+    }
+
+    //接收 - 第三步
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            var status = xhr.status;
+            if (status >= 200 && status < 300) {
+                options.success && options.success(xhr.responseText, xhr.responseXML);
+            } else {
+                options.fail && options.fail(status);
+            }
+        }
+    };
+
+    //连接 和 发送 - 第二步
+    if (options.type == "GET") {
+        xhr.open("GET", options.url + "?" + params, true);
+        xhr.send(null);
+    } else if (options.type == "POST") {
+        xhr.open("POST", options.url, true);
+        //设置表单提交时的内容类型
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.send(params);
+        }
+}
+
+//格式化参数
+function formatParams(data) {
+    var arr = [];
+    for (var name in data) {
+        arr.push(encodeURIComponent(name) + "=" + encodeURIComponent(data[name]));
+    }
+    arr.push(("v=" + Math.random()).replace(".",""));
+    return arr.join("&");
+}

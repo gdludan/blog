@@ -1,5 +1,7 @@
-{% extends "title_base.html"  %}
+{% extends "title_base.html"  %}{% load notifications_tags %}
 {% block title %}首页{% endblock %}
+{% block content_class %}col-xs-12 col-sm-9{% endblock %}
+{% block search %}{% endblock %}
 {% block index %}<li class="nav-item active"><a href="{% url 'index'  %}">首页</a></li>{% endblock %}
 {% block content  %}{% load staticfiles %}
     {% for post in pageInfo %}
@@ -16,7 +18,6 @@
         </div>
         {% endif %}
     {% endfor %}
-    <link type="text/css" rel="stylesheet" href="{% static "css/common.css" %}">
     <div class="page-box">
         <div class="pagebar" id="pageBar" style="padding: 0 0 10px;">
             {% if pageInfo.has_previous %}
@@ -35,5 +36,68 @@
         </div>
     </div>
 {% endblock  %}
+{% block content_right %}
+    <div class="col-xs-12 col-sm-3" style="font-family: kaiti;text-align: center;">
+        <div class="sidebar-module sidebar-module-inset">
+                <h4>关于我</h4>
+                <p>一个计算机爱好者</p>
+                <p>一个苦逼程序猿</p>
+        </div>
+        <div class="sidebar-module sidebar-module-inset">
+            <h4>搜索</h4>
+                <input type="text" class="form-control"  name="q" id="searchbar" onkeydown="keyseach(event)">
+                <button class="btn btn-primary" type="submit" style="margin-top: 8px;width: 100%;" onclick="search_post()">搜索文章</button>
+                <button class="btn btn-primary" type="submit" style="margin-top: 8px;width: 100%;" onclick="bing_search()">必应搜索</button>
+                <button class="btn btn-primary" type="submit" style="margin-top: 8px;width: 100%;" onclick="goole_search()">谷歌搜索</button>
+        </div>
+        <div class="sidebar-module sidebar-module-inset">
+            <h4>档案</h4>
+            <ol class="list-unstyled">
+                {% for post in post_list2 %}
+                    <li><a href="date/{{ post.date.year }}/{{ post.date.month }}/{{ post.date.day }}"
+                           title="{{ post.date }}">
+                        {{ post.date }}</a></li>
+                {% endfor %}
+            </ol>
+        </div>
+        <div class="sidebar-module sidebar-module-inset">
+            <h4>阅读排行榜</h4>
+            <ol class="list-unstyled">
+                {% for post  in post_read %}
+                    <li style="margin: 5px" >
+                        <a href="{% url 'post'  post.id %}" style="cursor:pointer;">
+                            {{ post.title }}({{ post.readnumber }})
+                        </a>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+        <div class="sidebar-module sidebar-module-inset">
+            <h4>最新评论</h4>
+            <ol style="list-style:none;border:1px solid #ff0000;">
+                {% for comment  in comment_list %}
+                    <li style="margin: 5px;border-bottom: 1px solid black;border-top: 1px solid black;" >
+                        <p style="cursor:pointer;">
+                            {% if comment.user.get_short_name %}{{ comment.user.get_short_name }}
+                            {% else %}{{ comment.user.get_username }}{% endif %}:
+                            {{ comment.content }}
+                        </p>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+        <div class="sidebar-module sidebar-module-inset">
+            <h4>友情链接</h4>
+            <ol style="list-style:none;">
+                <li style="margin: 5px;border: 1px solid #0000ff;">
+                    <a href="https://github.com/cang-meng" style="color: #ff00ff"> GitHub </a>
+                </li>
+                <li style="margin: 5px;border: 1px solid #0000ff;">
+                    <a href="http://www.cnblogs.com/canmeng" style="color: #ff00ff"> 博客园</a>
+                </li>
+            </ol>
+        </div>
+    </div>
+{% endblock %}
 {% block script %}
 {% endblock %}

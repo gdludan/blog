@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'search',#站内搜索
     'set_config',#用户配置
     'post_tools',#用户工具
-    'message',#站内消息
     'captcha',#验证码
     'haystack',# 添加haystack组件
     'xadmin',#添加xadmin系统后台组件
@@ -47,12 +46,20 @@ INSTALLED_APPS = [
     # #https组件
     # 'werkzeug_debugger_runserver',
     # 'django_extensions',
+    #'corsheaders',
     'tinymce',    # 添加此行
+    'notifications',#通知
+    'index.templatetags',  # 作为app注册自定义过滤器
 ]
+
+DJANGO_NOTIFICATIONS_CONFIG = {
+    'SOFT_DELETE': True,
+    'USE_JSONFIELD': True
+}
 
 TINYMCE_DEFAULT_CONFIG = {
     'theme': 'advanced', #设置主题
-    'width': 600,
+    'width': '100%',
     'height': 400,
 }
 
@@ -82,10 +89,17 @@ CAPTCHA_OUTPUT_FORMAT = ' %(image)s&ensp;%(text_field)s%(hidden_field)s'
 # 设置图片噪点
 CAPTCHA_NOISE_FUNCTIONS = ( 'captcha.helpers.noise_null',# 设置样式
                            # 'captcha.helpers.noise_arcs',# 设置干扰线
-                           'captcha.helpers.noise_arcs_random',  # 设置自定义的干扰线
+                           # 'captcha.helpers.noise_arcs_random',  # 设置自定义的干扰线
                            #'captcha.helpers.noise_dots',# 设置干扰点
                         )
 
+#此间隔中的随机旋转将应用于质询文本中的每个字母。
+CAPTCHA_LETTER_ROTATION = (-45,45)
+
+#验证码字体
+#CAPTCHA_FONT_PATH
+# 渲染文本的字体大小
+CAPTCHA_FONT_SIZE = 24
 # 图片大小
 CAPTCHA_IMAGE_SIZE = (120, 30)
 # 设置图片背景颜色
@@ -105,6 +119,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # 使用中文
+    #'corsheaders.middleware.CorsMiddleware',#G:\django\blog\venv\Lib\site-packages
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -124,7 +139,7 @@ TEMPLATES = [
                  os.path.join(BASE_DIR, 'search/templates'),
                  os.path.join(BASE_DIR, 'post_tools/templates'),
                  os.path.join(BASE_DIR, 'set_config/templates'),
-                 os.path.join(BASE_DIR, 'message/templates'),]
+                 os.path.join(BASE_DIR, 'notifications/templates'),]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -143,8 +158,7 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 # 数据库配置
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-MYSQL = blog.get_config(config.MYSQL,False)
-if MYSQL == True:
+if blog.get_config(config.MYSQL,False) == True:
     DATABASES ={'default': {'ENGINE': 'django.db.backends.mysql',
                             'NAME': blog.get_config(config.MYSQLDBNAME,'blog_db'),
                             'USER': blog.get_config(config.MYSQLDBUSER,'root'),
@@ -154,7 +168,8 @@ if MYSQL == True:
                             'OPTIONS': {"init_command": "SET default_storage_engine='INNODB'"}}}
     DATABASES['default']['OPTIONS']['init_command'] = "SET sql_mode='STRICT_TRANS_TABLES'"#排除错误
 else:
-    DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3','NAME': os.path.join(BASE_DIR, 'db.sqlite3'),}}
+    DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3',
+                             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),}}
 
 
 # Password validation
@@ -173,16 +188,16 @@ AUTH_PASSWORD_VALIDATORS = [
 
 #时区配置
 #LANGUAGE_CODE = 'en-us'
-LANGUAGE_CODE = blog.get_config(config.LANGUAGE_CODE,'zh-hans')
+LANGUAGE_CODE = 'zh-hans'
 
 #TIME_ZONE = 'UTC'
-TIME_ZONE = blog.get_config(config.TIME_ZONE,'Asia/Shanghai')
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = blog.get_config(config.DEBUG,False)
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -198,7 +213,7 @@ AUTH_USER_MODEL = 'user.MyUser'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 # STATIC_ROOT用于项目部署上线的静态资源文件
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 # STATICFILES_DIRS用于收集admin的静态资源文件
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]

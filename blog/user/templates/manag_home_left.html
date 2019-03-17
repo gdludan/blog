@@ -1,14 +1,16 @@
-<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
-    <div class="list-group">
-{#        <span class="nav-header;" style="color: red;">功能菜单</span><br/><br/>#}
-        <a href="{% url 'home' %}" class="list-group-item">用户中心</a>
-        <a href="{% url 'new' %}" class="list-group-item">新建文章</a>
-        <a href="{% url 'collection_management' %}" class="list-group-item">收藏的文章</a>
-        <a href="{% url 'attention_management' %}" class="list-group-item">关注的博主</a>
-        <a href="{% url 'edit_profile' %}" class="list-group-item">修改信息</a>
-        <a href="{% url 'edit_gravatar' %}" class="list-group-item">更换头像</a>
-        <a href="{% url 'password' %}" class="list-group-item">更换密码</a>
-        {% if user.is_upload %}
-        <a href="{% url 'Upload_file' %}" class="list-group-item">上传文件</a>{% endif %}
+<div class="col-xs-12 col-sm-3" style="text-align: center;" >
+    <div class="col-xs-12 col-sm-12" id="sidebar">
+        <div class="list-group">
+            <!--<span class="nav-header;" style="color: red;">功能菜单</span><br/><br/>-->
+            <a href="{% url 'home' %}" class="list-group-item">用户中心</a>
+            <a href="{% url 'new' %}" class="list-group-item">新建文章</a>
+            <a href="{% url 'collection_management' %}" class="list-group-item">收藏的文章</a>
+            <a href="{% url 'attention_management' %}" class="list-group-item">关注的博主</a>
+            <a href="{% url 'edit_profile' %}" class="list-group-item">修改信息</a>
+            <a href="{% url 'edit_gravatar' %}" class="list-group-item">更换头像</a>
+            <!--<a href="{% url 'password' %}" class="list-group-item">更换密码</a>-->
+            {% if user.is_upload %}
+            <a href="{% url 'Upload_file' %}" class="list-group-item">上传文件</a>{% endif %}
+        </div>
     </div>
 </div>

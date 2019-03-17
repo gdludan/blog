@@ -16,7 +16,7 @@ class MySearchPostView(Search):# 文章搜索
         if not self.request.GET.get('q', ''):
             show_all = True
             post = Post.objects.all().order_by('-time')
-            paginator, pageInfo = paginatorPage(post, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+            paginator, page = paginatorPage(post, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
             return render(self.request, self.template, locals(),RequestContext(self.request))
         else:
             show_all = False
@@ -31,7 +31,7 @@ class MySearchMyUserView(Search):# 用户搜索
         if not self.request.GET.get('q', ''):
             show_all = True
             myuser = MyUser.objects.all().order_by('-id')
-            paginator, pageInfo = paginatorPage(myuser, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+            paginator, page = paginatorPage(myuser, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
             return render(self.request, self.template, locals(),RequestContext(self.request))
         else:
             show_all = False

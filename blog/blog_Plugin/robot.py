@@ -1,4 +1,4 @@
-import requests,re
+import requests,re,json,random
 from urllib.parse import quote
 
 def get_reply_xiaoi(data):
@@ -14,8 +14,8 @@ def get_reply_xiaoi(data):
     r = requests.get(url, cookies=cookie)
     pattern = re.compile(u'\"fontColor\":0,\"content\":\"(.*?)\"')
     result = pattern.findall(r.text)
-    arr=['真心听不懂你在说什么，要么你换种问法试试如何？','看不懂，大侠，能不能换个说法？？？','虽然小i读不懂你的话，但小i却能用心感受你对我的爱。']
-    import random
+    arr=['真心听不懂你在说什么，要么你换种问法试试如何？','看不懂，大侠，能不能换个说法？？？',
+         '虽然小i读不懂你的话，但小i却能用心感受你对我的爱。']
     if len(result)>1:
         return result[1]
     else:
@@ -28,9 +28,8 @@ def get_reply_free(data):
     :return: 机器人的回答内容
     '''
     url = "http://api.qingyunke.com/api.php?key=free&appid=0&msg=" + data
-    r = requests.get(url)
-    result=r.text
-    return result.lstrip('{"result":0,"content":"').rsplit('"}')[0]
+    result = json.loads(requests.get(url).text)
+    return result['content']
 
 from django.conf import settings
 

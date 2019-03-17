@@ -1,3 +1,5 @@
+{{ object.id}}
 {{ object.username }}
+{{ object.first_name }}
 {{ object.email }}
 {{ object.mobile }}

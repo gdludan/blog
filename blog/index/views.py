@@ -9,6 +9,16 @@ from .models import Post,Comment,Like,Dynamic,Collection
 from django.views.decorators.http import require_http_methods
 from user.models import MyUser as User,Dynamic as UserDynamic,Attention
 from blog import paginatorPage,timeago_or_time
+from notifications.signals import notify
+
+def get_root():
+    return User.objects.filter(is_superuser=1).order_by('id').first()
+
+def get_name(user):
+    return str(user.get_full_name() if (user.get_full_name()) else user.username)
+
+def get_user(request):
+    return User.objects.filter(username=request.user.username).first()
 
 # Create your views here.
 def indexView(request):
@@ -18,11 +28,21 @@ def indexView(request):
     :return: html页面
     '''
     page = request.GET.get('page', 1)
-    title = "首页"
+    temp,post_list2=None,[]
     post_list = Post.objects.all().order_by('-id')#博客文章列表
+    post_read = Post.objects.all().order_by('-readnumber')[:5]#博客文章列表
+    comment_list = Comment.objects.all().order_by('-time')[:5]#博客评论列表
+    for post in post_read:
+        if len(post.title)>12:
+            post.title = post.title[:12] + '...'
     for post in post_list:
         post.time =timeago_or_time(post.time)
-    paginator,pageInfo= paginatorPage(post_list,settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)#文章分页
+        if post.date !=temp:
+            post_list2.append(post)
+            temp=post.date
+        if len(post_list2) >= 5:
+            break
+    paginator,pageInfo= paginatorPage(post_list,15)#文章分页
     # return render(request, 'index.html', locals())
     return render(request, 'index.html', locals(),RequestContext(request))
 
@@ -34,6 +54,7 @@ def postView(request,id):
     :return: html页面
     '''
     post = Post.objects.get(id = id)
+    form,page,user = CommentForm(),request.GET.get('page', 1),None
     # 提交评论
     if request.method == 'POST':
         user = User.objects.get(id=request.user.id)
@@ -42,9 +63,10 @@ def postView(request,id):
             comment = Comment(content=content,post=post,user=user,
                               time=datetime.datetime.now(tz=pytz.timezone('UTC')))
             comment.save()
+            if get_root()!=user:
+                notify.send(get_root(), recipient=user,
+                            verb= get_name(user) + ' 评论了你的文章<br/>', level='info')
         return redirect(request.get_raw_uri())
-    form,page,user = CommentForm(),request.GET.get('page', 1),None
-    title,user_info = post.title,post.user
     # 动态列表信息
     dynamic= Dynamic.objects.filter(post=id).first()
     userdynamic =UserDynamic.objects.filter(user=post.user).first()
@@ -57,21 +79,20 @@ def postView(request,id):
     if not dynamic:#如果博客动态列表不存在就创建
         dynamic = Dynamic(post=post,dynamic_like=0,dynamic_collection=0,dynamic_search=0)
         dynamic.save()
-    num_like, num_collection,num_attention = dynamic.dynamic_like,dynamic.dynamic_collection,userdynamic.dynamic_attention
+    num_attention,user_info = userdynamic.dynamic_attention,post.user
     if request.user.id:
-        is_login = True;post.readnumber = str(int(post.readnumber)+1);post.save()
-        user = User.objects.get(id = request.user.id)
+        user = get_user(request)
         for i in like_list:
             if i.user.id == user.id and i.is_like== 1: like = 1
         for j in collection_list:
             if j.user.id == user.id and j.is_collection==1 : collection = 1
         for k in attention_list:
             if k.user.id == user.id and k.is_attention ==1 : attention = 1
+        post.readnumber = str(int(post.readnumber)+0 if post.user == user else 1);post.save()
     else:
-        like, is_login, collection,attention = 0, False, 0,0
+        like,collection,attention = 0,0,0
     #评论分页
     comment = Comment.objects.filter(post=post).order_by('-time').all()
-    number = len(comment)
     paginator, pageInfo = paginatorPage(comment, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
     post.time = timeago_or_time(post.time)
     for comm in comment:
@@ -80,6 +101,12 @@ def postView(request,id):
 
 def aboutView(request):
     return render(request,'about.html',locals(),RequestContext(request))
+
+def Getdate(request,year,month,day):
+    if month > 12 or day>31:return HttpResponse('日期错误')
+    elif month==2 and day>29:return HttpResponse('日期错误')
+    elif month in [4,6,9,11] and day>30:return HttpResponse('日期错误')
+    return HttpResponse('{}年{}月{}日'.format(year,month,day))
 
 @require_http_methods(['GET'])
 def ajax_postlike(request,id):

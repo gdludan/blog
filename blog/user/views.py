@@ -96,14 +96,14 @@ def loginView(request):
     if request.user.is_authenticated :return redirect('/')#已登录用户跳转到首页
     form =CaptchaLoginForm()
     if request.method == 'POST':
-        form,ip = CaptchaLoginForm(request.POST),request.META['REMOTE_ADDR']
+        form = CaptchaLoginForm(request.POST)
         # 验证表单数据
         if form.is_valid():
             username = form.cleaned_data['username']
             if User.objects.filter(Q(mobile=username) | Q(username=username)|Q(email=username)):
                 user = User.objects.filter(Q(mobile=username) | Q(username=username)|Q(email=username)).first()
                 if check_password(form.cleaned_data['password'], user.password):#检查用户密码
-                    user.ip=ip
+                    user.ip=request.META['REMOTE_ADDR']
                     # user.ipaddress=get_360_ipaddres(ip)#获取ip的物理地址
                     user.save()
                     login(request, user)
@@ -146,20 +146,22 @@ def userView(request,username):
     '''
     page = request.GET.get('page',1)
     user_info = User.objects.filter(username=username).first()
-    profile = Profile.objects.get(user=user_info)
-    post_list = Post.objects.filter(user=user_info).order_by('-time').all()
-    dynamic = Dynamic.objects.filter(user=user_info).first()
-    if not dynamic:dynamic = Dynamic(user=user_info);dynamic.save()
-    num_attention = dynamic.dynamic_attention
-    attention_list = Attention.objects.filter(attention_id=user_info.id).all()
-    if request.user.id:
-        is_login = True
-        for i in attention_list :
-            if i.user == request.user and i.is_attention == 1: attention = 1
-    else:is_login ,attention= False,0
-    num_fan = len(attention_list)
-    post_num = len(post_list)
-    paginator, pageInfo = paginatorPage(post_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+    if not user_info:info = username+'  用户不存在'
+    else:
+        profile = Profile.objects.get(user=user_info)
+        post_list = Post.objects.filter(user=user_info).order_by('-time').all()
+        dynamic = Dynamic.objects.filter(user=user_info).first()
+        if not dynamic:dynamic = Dynamic(user=user_info);dynamic.save()
+        num_attention = dynamic.dynamic_attention
+        attention_list = Attention.objects.filter(attention_id=user_info.id).all()
+        if request.user.id:
+            is_login = True
+            for i in attention_list :
+                if i.user == request.user and i.is_attention == 1: attention = 1
+        else:is_login ,attention= False,0
+        num_fan = len(attention_list)
+        post_num = len(post_list)
+        paginator, pageInfo = paginatorPage(post_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
     return render(request, 'user.html', locals(),RequestContext(request))
 
 @login_required(login_url='/user/login')

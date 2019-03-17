@@ -18,10 +18,9 @@
             <a href="{% url 'user' item.username %}" class="js_song" target="play" >
             <div style="height: 80px; margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
                 <img src="{{ item.avatar }}" width="60px" height="60px" style="float: left;border:2px solid;border-radius:10%;border-color: #1e6abc;">
-                <div style="float: left;font-size: 1.5em">
-                <div>用户名:{{item.username}}</div><hr>
-                <div>邮件：{{item.email}}</div>
-{#                <div>手机号码：{{item.mobile}}</div>#}
+                <div style="float: left;font-size: 1.2em;">
+                <div style="margin: 5px">uid：{{item.id}}</div>
+                <div style="margin: 5px">用户名:{% firstof item.get_short_name item.get_username %}</div>
                 </div>
             </div>
             </a>
@@ -34,10 +33,13 @@
                  <a href="{% url 'user' item.object.username %}" class="js_song" target="play" >
                     <div style="height: 80px;margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
                         <img src="{{ item.object.avatar }}" width="60px" height="60px" style="float: left;border:2px solid;border-radius:25px;">
-                        <div style="float: left;font-size: 1.5em">
-                        <div>用户名:{% highlight item.object.username with query %}</div><hr>
-                        <div>邮件：{% highlight item.object.email with query %}</div>
-{#                        <div>手机号码：{% highlight item.object.mobile with query %}</div>#}
+                        <div style="float: left;font-size: 1.2em">
+                        <div style="margin: 5px">uid：{% highlight item.object.id with query %}</div>
+                        {% if item.object.get_short_name %}
+                            <div style="margin: 5px">用户名：{% highlight item.object.get_short_name with query %}</div>
+                        {% else %}
+                            <div style="margin: 5px">用户名：{% highlight item.object.get_username with query %}</div>
+                        {% endif %}
                         </div>
                     </div>
                 </a>
@@ -48,7 +50,6 @@
         {% endif %}
     {% endif %}
     </div>
-    <link type="text/css" rel="stylesheet" href="{% static "css/common.css" %}">
     {# 分页导航 #}
     <div class="page-box">
     <div class="pagebar" id="pageBar">

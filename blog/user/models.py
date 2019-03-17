@@ -7,9 +7,9 @@ class MyUser(AbstractUser):
     avatar = models.CharField('头像', max_length=255, unique=False,default='/static/images/default.jpg',blank = True)
     mobile = models.CharField('手机号码', max_length=11, unique=False,blank = True,default='')
     is_upload = models.NullBooleanField('是否允许上传文件',blank=True,default=0)
-    is_Auxiliary = models.NullBooleanField('辅助管理员',blank=True,default=0)
     ip = models.GenericIPAddressField('上次登录ip地址',default='0.0.0.0')
     ipaddress =  models.CharField('ip物理地址', max_length=128,blank = True,default='')
+    registered = models.DateTimeField ('时间', max_length=128,auto_now_add=timezone.now)
     def __str__(self):
         return self.username
     class Meta:
@@ -37,7 +37,7 @@ class UPfile(models.Model):
     file = models.CharField('文件路径',max_length=512,blank=True,default='')
     time = models.DateTimeField('时间', max_length=128, auto_now_add=timezone.now)
     Prohibited =  models.NullBooleanField('文件是否已删除',blank=False,default=0)
-    Prohibited_info =  models.CharField('删除信息',blank=False,default='',max_length=256)
+    Prohibited_info =  models.CharField('删除信息',blank=False,default='违规',max_length=256)
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE,verbose_name='用户')
     def __str__(self):
         return self.user.username

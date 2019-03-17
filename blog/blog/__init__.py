@@ -1,5 +1,6 @@
-import random,time
+import random,time,timeago,datetime
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 def Sixteen():
     colorArr,color = ['1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'],''
     for i in range(6):
@@ -31,14 +32,22 @@ def paginatorPage(data,page=10):
         # 用户访问的页数大于实际页数，则返回最后一页的数据
         pageInfo = paginator.page(paginator.num_pages)
     return paginator,pageInfo
-import timeago,datetime
-def timeago_or_time(date,str=False):
-    now = datetime.datetime.now()
+
+def timeago_or_time(date,str=False,hours=8):
+    now = datetime.datetime.now()-datetime.timedelta(hours=hours)
     date = datetime.datetime.strptime(date.strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
     if str:return timeago.format(date=date,now=now,locale="zh_CN")
     else:return {'str':timeago.format(date=date,now=now,locale="zh_CN"),'data':date}
 
-def timeago_not_time(date,str=False):
-    now = datetime.datetime.now()
+def timeago_not_time(date,str=False,hours=8):
+    now = datetime.datetime.now()-datetime.timedelta(hours=hours)
     if str: return timeago.format(date=date,now=now,locale="zh_CN")
     else:return {'str':timeago.format(date=date,now=now,locale="zh_CN"),'data':date}
+
+#随机字符串
+def random_str(randomlength=8):
+    str = ''
+    chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
+    for i in range(randomlength):
+        str += chars[random.randint(0, len(chars) - 1)]
+    return str

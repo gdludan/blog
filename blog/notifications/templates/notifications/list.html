@@ -1,0 +1,38 @@
+{% extends "title_base.html"  %}{% load notifications_tags %}
+{% block title %}{% if request.get_full_path != '/notifications/'%}未读信息{% else %}全部信息{% endif %}{% endblock %}
+{% block search %}{% endblock %}
+{% block message %}
+    <li class="nav-item active" style="margin-left: 10px;" title="消息通知">
+        <a href="{% url 'notifications:all'  %}">
+            <span class="glyphicon glyphicon-flag" aria-hidden="true"></span>
+            {% notifications_unread as unread_count %}
+            <span style="background-color:#d9534f;color: white;border-radius: 10px;" id="num_mess">
+                {% if unread_count %}{{unread_count}}{% endif %}</span>
+        </a>
+    </li>
+{% endblock %}
+{% block content  %}{% load staticfiles %}
+    <ul class="notifications">
+        <button type="button" class="default btn btn-success hide-xs">
+            {% if request.get_full_path != '/notifications/'%}
+            <a href="{% url 'notifications:all' %}"  style="color: white;text-decoration: none;">查看所有信息</a>{% else %}
+            <a href="{% url 'notifications:unread' %}"  style="color: white;text-decoration: none;">查看未读信息</a>{% endif %}
+        </button>
+        <button type="button" class="default btn btn-primary hide-xs">
+            <a href="{% url 'notifications:mark_all_as_read' %}"  style="color: white;text-decoration: none;">全部标记已读</a>
+        </button>
+        <button type="button" class="btn btn-danger default hide-xs">
+            {% if request.get_full_path != '/notifications/'%}
+            <a href="{% url 'notifications:deleteunread' %}"  style="color: white;text-decoration: none;">删除已读信息</a>{% else %}
+            <a href="{% url 'notifications:deleteall' %}"  style="color: white;text-decoration: none;">删除全部信息</a>{% endif %}
+        </button>
+        {% if notifications %}
+            {% for notice in notifications %}
+                {% include 'notifications/notice.html' %}
+            {% endfor %}
+        {% else %}
+            <h2>信息列表为空</h2>
+        {% endif %}
+
+    </ul>
+{% endblock %}

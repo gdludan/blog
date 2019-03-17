@@ -20,10 +20,11 @@ import xadmin
 xadmin.autodiscover()
 from xadmin.plugins import xversion
 xversion.register_models()
+import notifications.urls
 
 urlpatterns = [
-    path('admin/', admin.site.urls,name='admin'),# django原生后台
-    path('xadmin/', xadmin.site.urls,name='xadmin'),# xadmin后台
+    path('admin/',admin.site.urls),# django原生后台
+    path('xadmin/', xadmin.site.urls),# xadmin后台
     path('', include('index.urls')),# 网站首页
     path('fun/', include('fun.urls')),# 游戏和一些小玩意
     path('user/', include('user.urls')),# 用户中心及其他用户操作
@@ -31,6 +32,9 @@ urlpatterns = [
     path('config/', include('set_config.urls')),# 用户配置
     path('tools/', include('post_tools.urls')),# 网站工具
     path('captcha/', include('captcha.urls')),# 验证码接口
-    path('message/', include('message.urls')),# 消息
     path('tinymce/', include('tinymce.urls')), # 固定写法，其实是映射到人家写好的应用
+    path('notifications/',include(notifications.urls,namespace = 'notifications')),
 ]
+from django.conf.urls import static
+from django.conf import settings
+urlpatterns += static.static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

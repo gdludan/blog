@@ -1,5 +1,5 @@
-{% extends "title_base.html"  %}
-{% block title %}{{ title }}{% endblock %}{% load staticfiles %}
+{% extends "title_base.html"  %}{% load index %} {# 加载自定义过滤器 #}
+{% block title %}post.title{% endblock %}{% load staticfiles %}
 {% block content  %}
     {% if not post.Prohibited  %}
         {% if post %}
@@ -7,25 +7,25 @@
                 <div class="title" style="text-align: center;font-size: 30px">{{ post.title }}</div><br>
                 <div style="line-height: 1.42857143;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">{{ post.content | safe }}</div><br>
                 <div style="padding-left: 5px;">
-                    <a  href="javascript:;" onclick="{% if is_login %}onLike(){% else %}onLoginError(){% endif %};"
-                        title="{% if like %}已{% endif %}点赞{{ num_like }}" style="text-decoration:none;">
+                    <a  href="javascript:;" onclick="{% if request.user.id %}onLike(){% else %}onLoginError(){% endif %};"
+                        title="{% if like %}已{% endif %}点赞{{ dynamic.dynamic_like }}" style="text-decoration:none;">
                         <input style="display: none" value="{{ post.id }}" id="post_like" title="{{ like }}">
                         {% if like %}
                         <img src="{% static 'images/like_blue.png' %}" width="15px" height="15px" id="img_like">
                         {% else %}
                         <img src="{% static 'images/like_none.png' %}" width="15px" height="15px" id="img_like">
                         {% endif %}
-                        <span id="num_like" style="color: red;">{{ num_like }}</span>
+                        <span id="num_like" style="color: red;">{{ dynamic.dynamic_like }}</span>
                     </a>
-                    <a  href="javascript:;" onclick="{% if is_login %}onCcollection(){% else %}onLoginError(){% endif %};"
-                        title="{% if collection %}已{% endif %}收藏{{ num_collection }}" style="text-decoration:none;">
+                    <a  href="javascript:;" onclick="{% if request.user.id %}onCcollection(){% else %}onLoginError(){% endif %};"
+                        title="{% if collection %}已{% endif %}收藏{{ dynamic.dynamic_collection }}" style="text-decoration:none;">
                         <input style="display: none" value="{{ post.id }}" id="post_collection" title="{{collection}}">
                         {% if collection %}
                         <img src="{% static 'images/collection_blue.png' %}" width="15px" height="15px" id="img_collection">
                         {% else %}
                         <img src="{% static 'images/collection_none.png' %}" width="15px" height="15px" id="img_collection">
                         {% endif %}
-                        <span id="num_collection" style="color: red;">{{ num_collection }}</span>
+                        <span id="num_collection" style="color: red;">{{ dynamic.dynamic_collection }}</span>
                     </a>
                     &ensp;&ensp;&ensp;&ensp;(阅读{{ post.readnumber }})
                 </div><br>
@@ -40,7 +40,8 @@
         <link type="text/css" rel="stylesheet" href="{% static "css/prism.css" %}">
         <script src="{%  static 'js/prism.js' %}"></script>
         <div class="well well-sm">
-            <h3>评论列表:<span style="font-size: 18px;">({{number}}条)</span></h3><hr>
+            <h3 style="margin-top: 10px;">评论列表:<span style="font-size: 18px;">({% len comment %}条)</span></h3>
+{#            <hr style="border-top-color:black ">#}
             <div style="margin:10px 0px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
             {% if request.user.is_authenticated %}
             <form action="" method="post" id="usrform">
@@ -62,13 +63,12 @@
                                  title="{% firstof comment.user.get_short_name comment.user.get_username %}">
                         </a>
                     </div>
-                    <div>{{ comment.content | safe }}</div><hr>
-                    <div>{{ comment.time.str }} <span style="font-size: 12px;">[{{ comment.time.data }}]</span></div>
+                    <div style="margin-top: 1%">{{ comment.content | safe }}</div><br/>
+                    <div>{ comment.time }}</div>
                 </div>
                 {% else %}<div style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;height: 40px;"><div style="float: left;">此评论因为{% if comment.Prohibited %}{{ comment.Prohibited_info }}{% endif %}违规已删除</div></div>{% endif %}
             {% endfor %}
         </div>
-        <link type="text/css" rel="stylesheet" href="{% static "css/common.css" %}">
         <div class="page-box">
             <div class="pagebar" id="pageBar" style="padding: 0 0 10px;">
                 {% if pageInfo.has_previous %}

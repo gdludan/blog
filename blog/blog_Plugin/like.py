@@ -12,6 +12,7 @@ def web_open(url,name):
         f.write(r.content)
     f = open(name, 'rb')
     return f
+
 def Unicode_or_chinese(data):
     '''
     Unicode转UTF-8

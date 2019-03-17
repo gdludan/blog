@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post,Comment,Dynamic,Like,Collection
+from .models import Post,Comment,Dynamic,Like,Collection,SonComment
 from django.conf import settings
 # 修改title和header
 admin.site.site_title = '卤蛋博客后台管理系统'
@@ -40,6 +40,18 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ['id', 'content', 'time','Prohibited','Prohibited_info']
     #过滤器
     list_filter = ['time','post','Prohibited']
+    # 设置可搜索的字段并在Admin后台数据生成搜索框，如有外键应使用双下划线连接两个模型的字段
+    search_fields = [ 'content', 'time','Prohibited','Prohibited_info']
+    # 设置排序方式
+    ordering = ['-id']
+    refresh_times = [5, 2]  # 自动刷新后台管理页面
+
+@admin.register(SonComment)
+class SonCommentAdmin(admin.ModelAdmin):
+    # 设置模型字段，用于Admin后台数据的表头设置
+    list_display = ['id', 'content', 'time','Prohibited','Prohibited_info']
+    #过滤器
+    list_filter = ['time','comment','Prohibited']
     # 设置可搜索的字段并在Admin后台数据生成搜索框，如有外键应使用双下划线连接两个模型的字段
     search_fields = [ 'content', 'time','Prohibited','Prohibited_info']
     # 设置排序方式
