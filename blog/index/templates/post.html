@@ -1,5 +1,5 @@
 {% extends "title_base.html"  %}{% load index %} {# 加载自定义过滤器 #}
-{% block title %}post.title{% endblock %}{% load staticfiles %}
+{% block title %}{{post.title}}{% endblock %}{% load staticfiles %}
 {% block content  %}
     {% if not post.Prohibited  %}
         {% if post %}
