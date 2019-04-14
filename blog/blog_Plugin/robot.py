@@ -39,14 +39,13 @@ def get_reply_dandan(data):
     :param data: 和机器人交谈的内容
     :return: 机器人的回答内容
     '''
-    local = settings.DANDANLOCAL
     '''
     http://www.itpk.cn/     注册 api
     DANDANLOCAL = False  #拿到了api后设置成False
     DANDANAPIKEY = ""   #你的api key
     DANDANAPISECRET = ""  #你的 api secret
     '''
-    if not local:
+    if not settings.DANDANLOCAL:
         url="http://i.itpk.cn/api.php?question=%s&api_key=%s&api_secret=%s"\
             %(data,settings.DANDANAPIKEY,settings.DANDANAPISECRET)
     else:

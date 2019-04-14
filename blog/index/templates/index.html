@@ -1,19 +1,20 @@
-{% extends "title_base.html"  %}{% load notifications_tags %}
-{% block title %}首页{% endblock %}
+{% extends "title_base.html"  %}{% load notifications_tags %}{% load index %}
+{% block title %}主页{% endblock %}
 {% block content_class %}col-xs-12 col-sm-9{% endblock %}
-{% block search %}{% endblock %}
-{% block index %}<li class="nav-item active"><a href="{% url 'index'  %}">首页</a></li>{% endblock %}
+{% block index %}<li class="nav-item active"><a href="{% url 'index'  %}">主页</a></li>{% endblock %}
 {% block content  %}{% load staticfiles %}
     {% for post in pageInfo %}
         {% if not post.Prohibited  %}
         <div class="well " >
             <a href="{% url 'post'  post.id %}" style="cursor:pointer">
-                <span style="font-size: 20px;">{{ post.title }}</span><hr style="margin-top: 10px;margin-bottom: 10px;"/>
-            <a href="{% url 'user' post.user.username %}">
-                <img src="{{ post.user.avatar }}" width="30px" height="30px" style="border:2px solid;border-radius:10px;"
-                     title="{% firstof post.user.get_short_name post.user.get_username %}">
-            </a>&ensp;&ensp;在 {{ post.time.str }} <span style="font-size: 12px;">
-                [{{ post.time.data }}]</span> 发布&ensp;(阅读{{ post.readnumber }})
+                <span style="font-size: 20px;">【{{ post.type }}】{{ post.title }}</span><hr style="margin-top: 10px;margin-bottom: 10px;"/>
+                <a href="{% url 'user' post.user.username %}">
+                    <img src="{% indexstatic post.user.avatar %}" width="30px" height="30px" style="border:2px solid;border-radius:10px;"
+                         title="{% firstof post.user.get_short_name post.user.get_username %}">
+                </a>
+                &ensp;在 <span style="color: rgba(255,100,0,0.84)">{{ post.time}}</span>&ensp;发布&ensp;
+                <span class="glyphicon glyphicon-eye-open" aria-hidden="true" style="color: rgba(60,73,255,0.85)">{{ post.readnumber }}</span>&ensp;
+                <span class="glyphicon glyphicon-comment" aria-hidden="true" style="color: rgba(255,24,66,0.87)">{{ post.comment_set.all.count }}</span>
             </a>
         </div>
         {% endif %}
@@ -21,42 +22,125 @@
     <div class="page-box">
         <div class="pagebar" id="pageBar" style="padding: 0 0 10px;">
             {% if pageInfo.has_previous %}
-            <a href="{% url 'index' %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"><i></i>上一页</a>
+            <a href="{% url 'index' %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"
+               style="background-color: #8C8C8C"><i></i>上一页</a>
             {% endif %}
             {% for page in pageInfo.paginator.page_range %}
                 {% if pageInfo.number == page %}
                     <span class="sel">{{ page }}</span>
                 {% else %}
-                    <a href="{% url 'index' %}?page={{ page }}" target="_self">{{ page }}</a>
+                    <a href="{% url 'index' %}?page={{ page }}" target="_self" style="background-color: #8C8C8C">{{ page }}</a>
                 {% endif %}
             {% endfor %}
             {% if pageInfo.has_next %}
-            <a href="{% url 'index' %}?page={{ pageInfo.next_page_number }}" class="next" target="_self">下一页<i></i></a>
+            <a href="{% url 'index' %}?page={{ pageInfo.next_page_number }}" class="next" target="_self"
+               style="background-color: #8C8C8C">下一页<i></i></a>
             {% endif %}
         </div>
     </div>
 {% endblock  %}
 {% block content_right %}
-    <div class="col-xs-12 col-sm-3" style="font-family: kaiti;text-align: center;">
+    <div class="col-xs-12 col-sm-3 none" style="font-family: kaiti;text-align: center;padding: 0 30px;">
         <div class="sidebar-module sidebar-module-inset">
-                <h4>关于我</h4>
-                <p>一个计算机爱好者</p>
-                <p>一个苦逼程序猿</p>
+            <h4><a href="{% url 'about'  %}">关于我</a></h4>
+            <p>一个计算机爱好者</p>
+            <p>一个孤独的修行者</p>
+            <p>看心情会写下文章</p>
+        </div>
+        {% include 'search.html' %}
+        <div class="sidebar-module sidebar-module-inset">
+            <script src="https://img.highcharts.com.cn/highcharts/highcharts.js"></script>
+            <script src="https://img.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+            <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+            <div id="container" style="height: 250px"></div>
+            <script>{% load index %}
+                $.getJSON('{% getDC request %}{% url 'Visitorjson' %}?days=7', function (data) {
+                    chart = Highcharts.chart('container', {
+                        chart: {
+                            zoomType: 'x'
+                        },
+                        title: {
+                            text: '<a href="{% url 'Visitor' %}">网站访问量</a>'
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            dateTimeLabelFormats: {
+                                millisecond: '%H:%M:%S.%L',
+                                second: '%H:%M:%S',
+                                minute: '%H:%M',
+                                hour: '%H:%M',
+                                day: '%m-%d',
+                                week: '%m-%d',
+                                month: '%Y-%m',
+                                year: '%Y'
+                            },
+                            title:{
+                                text:''
+                            }
+                        },
+                        tooltip: {
+                            dateTimeLabelFormats: {
+                                millisecond: '%H:%M:%S.%L',
+                                second: '%H:%M:%S',
+                                minute: '%H:%M',
+                                hour: '%H:%M',
+                                day: '%Y-%m-%d',
+                                week: '%m-%d',
+                                month: '%Y-%m',
+                                year: '%Y'
+                            }
+                        },
+                        yAxis: {
+                            title: {
+                                text: ''
+                            }
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            area: {
+                                fillColor: {
+                                    linearGradient: {
+                                        x1: 0,
+                                        y1: 0,
+                                        x2: 0,
+                                        y2: 1
+                                    },
+                                    stops: [
+                                        [0, Highcharts.getOptions().colors[0]],
+                                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                                    ]
+                                },
+                                marker: {
+                                    radius: 2
+                                },
+                                lineWidth: 1,
+                                states: {
+                                    hover: {
+                                        lineWidth: 1
+                                    }
+                                },
+                                threshold: null
+                            }
+                        },
+                        series: [{
+                            type: 'area',
+                            name: '访问量',
+                            data: data
+                        }]
+                    });
+                });
+            </script>
         </div>
         <div class="sidebar-module sidebar-module-inset">
-            <h4>搜索</h4>
-                <input type="text" class="form-control"  name="q" id="searchbar" onkeydown="keyseach(event)">
-                <button class="btn btn-primary" type="submit" style="margin-top: 8px;width: 100%;" onclick="search_post()">搜索文章</button>
-                <button class="btn btn-primary" type="submit" style="margin-top: 8px;width: 100%;" onclick="bing_search()">必应搜索</button>
-                <button class="btn btn-primary" type="submit" style="margin-top: 8px;width: 100%;" onclick="goole_search()">谷歌搜索</button>
-        </div>
-        <div class="sidebar-module sidebar-module-inset">
-            <h4>档案</h4>
-            <ol class="list-unstyled">
-                {% for post in post_list2 %}
-                    <li><a href="date/{{ post.date.year }}/{{ post.date.month }}/{{ post.date.day }}"
-                           title="{{ post.date }}">
-                        {{ post.date }}</a></li>
+            <h4><a href="{% url 'archive'  %}">档案</a></h4>
+            <ol class="list-unstyled" style="font-size: 1.2em;">
+                {% for archive in archive_list %}
+                    <li>{% load index %}
+                      <p><span class="tutime font-size-18"><a href='{% url 'archive' %}?year={{ archive | slice:":4" }}&month={{ archive | slice:"5:7" }}'>
+                          {% replace archive %}</a></span></p>
+                    </li>
                 {% endfor %}
             </ol>
         </div>

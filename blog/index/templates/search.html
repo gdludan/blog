@@ -1,0 +1,7 @@
+<div class="sidebar-module sidebar-module-inset">
+    <h4><a href="{% url 'haystack_post'  %}">搜索</a></h4>
+        <input type="text" class="form-control"  name="q" id="searchbar" onkeydown="keyseach(event)">
+        <button class="btn btn-primary" type="submit" style="margin-top: 8px;width: 100%;" onclick="search_post()">搜索文章</button>
+        <button class="btn btn-primary" type="submit" style="margin-top: 8px;width: 100%;" onclick="bing_search()">必应搜索</button>
+        <button class="btn btn-primary" type="submit" style="margin-top: 8px;width: 100%;" onclick="goole_search()">谷歌搜索</button>
+</div>

@@ -1,0 +1,91 @@
+{% extends "title_base.html"  %}
+{% block title %}留言板{% endblock %}
+{% block guestbook %}<li class="nav-item active"><a href="{% url 'guestbook'  %}">留言墙</a></li>{% endblock %}
+{% block content %}{% load staticfiles %}
+    <div style="background-color: white;padding: 10px;border-radius: 10px">
+        <table class="table table-striped table-bordered table-hover table-condensed">
+            <thead>
+                <tr class="danger">
+                    <th>留言时间</th>
+                    <th>留言者</th>
+                    <th>标题</th>
+                    <th>内容</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if pageInfo %}
+                    {% for message in pageInfo %}
+                        <tr class="{% cycle 'active' 'success' 'warning' 'info' %}">
+                            <td>{{ message.publish | date:'Y-m-d H:i:s' }}</td>
+                            <td>{{ message.username }}</td>
+                            <td>{{ message.title }}</td>
+                            <td>{{ message.content }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4">无数据</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <div class="page-box">
+            <div class="pagebar" id="pageBar" style="padding: 0 0 10px;">
+                {% if pageInfo.has_previous %}
+                <a href="{% url 'guestbook' %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"
+                   style="background-color: #8C8C8C"><i></i>上一页</a>
+                {% endif %}
+                {% for page in pageInfo.paginator.page_range %}
+                    {% if pageInfo.number == page %}
+                        <span class="sel">{{ page }}</span>
+                    {% else %}
+                        <a href="{% url 'guestbook' %}?page={{ page }}" target="_self" style="background-color: #8C8C8C">{{ page }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if pageInfo.has_next %}
+                <a href="{% url 'guestbook' %}?page={{ pageInfo.next_page_number }}" class="next" target="_self"
+                   style="background-color: #8C8C8C">下一页<i></i></a>
+                {% endif %}
+            </div>
+        </div>
+        <h3>留言</h3>
+        <form action="{% url 'guestbook' %}" method="POST" novalidate="novalidate">
+            {% csrf_token %}
+            <label>昵  称:</label><br/>
+            <input type="text" name="username" class="form-control input-lg"
+                   placeholder="昵称" style="width: 100%" /> <br/>
+            <label>标  题:</label><br/>
+            <input type="text" name="title" class="form-control input-lg "
+                   placeholder="标题"  style="width: 100%" /><br/>
+            <label>内  容:</label><br/>
+            <textarea name="content" placeholder="内容"  style="width: 100%;height: 80px"
+             id="content" > </textarea><br/>
+            <input class="btn btn-success" type="submit" value="留言" style="width: 100%"/>
+        </form>
+    </div>
+{% endblock %}
+{% block script %}
+<script src="{%  static 'tinymce/js/tinymce/tinymce.min.js' %}"></script>
+<script>
+    tinymce.init({
+        //选择class为content的标签作为编辑器
+        //mode : "textareas",
+        selector: '#content',
+        //方向从左到右
+        directionality:'ltr',
+        //语言选择中文
+        language: "zh_CN",
+        //高度为400
+        height:140,
+        //工具栏上面的补丁按钮
+        plugins: ['save  emoticons  paste textcolor',],
+        //工具栏的补丁按钮
+         toolbar: ' styleselect | bold italic | \
+         alignleft aligncenter alignright alignjustify | \
+         bullist numlist outdent indent |\
+         forecolor backcolor emoticons |codesample  fullscreen',
+        //按tab不换行
+        nonbreaking_force_tab: true,
+    });
+</script>
+{% endblock %}

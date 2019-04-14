@@ -24,7 +24,7 @@
                 </div>
 {#                <div class="songlist__album">内容：{{ item.content }}</div>#}
                 <div class="songlist__album">时间：{{ item.time }}</div>
-                <div class="songlist__artist">作者：{{item.user.username}}</div>
+                <div class="songlist__artist">作者：{% firstof item.user.get_short_name item.user.get_username %}</div>
             </div>
             </a>
         {% endfor %}

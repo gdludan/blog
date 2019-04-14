@@ -13,11 +13,19 @@ a {
   padding: 40px 0;
   color: #999;
   text-align: center;
-  background-color: #f9f9f9;
-  border-top: 1px solid #e5e5e5;
+  /*background-color: #f9f9f9;*/
+  background-color: rgba(127, 127, 127, 0.74);
+  border-top: 1px solid #e5e5e5;/*
+  filter:alpha(Opacity=80);
+  -moz-opacity:0.70;
+  opacity: 0.70;*/
+}
+.blog-footer{
+	color: black ;
+	font-size: 1.1em ;
 }
 .blog-footer p:last-child {
-  margin-bottom: 0;
+	margin-bottom: 0;
 }
 /* Sidebar modules for boxing content */
 .sidebar-module {
@@ -149,11 +157,21 @@ a {
 a:hover {
 	color: #aaa
 }
+body {background-repeat:no-repeat; background-attachment:fixed}
 a{color: black;}
 @font-face{
 	font-family: kaiti;
 	src:url('/static/fonts/simkai.ttf');
 }
 *{cursor: url("/static/cur/normal.cur"),auto;margin: 0;padding: 0;}
-a {cursor: url("/static/cur/Alternative.cur"),auto;}
+a {cursor: url("/static/cur/Alternative.cur"),auto;text-decoration: none}
 input{cursor: url("/static/cur/texto.cur"),auto;}
+.round_icon{
+  width: 34px;
+  height: 34px;
+  display: flex;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}

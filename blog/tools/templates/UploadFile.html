@@ -1,0 +1,54 @@
+{% extends "title_base.html"  %}
+{% block title %}上传文件{% endblock %}
+{% block content_class %}col-xs-12 col-sm-9{% endblock %}
+{% block content_left %}{% include 'manag_home_left.html' %}{% endblock %}
+{% block content %}{% load staticfiles %}
+    <div style="float: right;width: 100%;background-color: white;padding: 10px;border-radius: 5px">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h3>上传文件</h3>
+             <input class="file" id="file" name="file" placeholder="上传头像"  type="file">
+            <div><input type="submit" value="开始上传"></div>
+        </form>
+        <div class="form-actions well well-sm">
+        <h2>已上传的文件:{{ post_num }}个</h2>
+        {% if post_num %}
+            {% for upfile in pageInfo %}
+                {% if not upfile.Prohibited %}
+                    <a href="{{ upfile.file }}">
+                        <div style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
+                            <div>{{ upfile.name }}</div><hr>
+                            <div>{{ upfile.time }}</div>
+                        </div>
+                    </a>
+                {% else %}
+                    <div style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
+                         <h3>本文件因为{{ upfile.Prohibited_info}}违规已删除</h3>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
+                <h3>你还没有上传过文件到服务器</h3>
+            </div>
+        {% endif %}
+        </div>
+        <div class="page-box">
+            <div class="pagebar" id="pageBar" style="padding: 0 0 10px;">
+                {% if pageInfo.has_previous %}
+                <a href="{% url 'UploadFile'  %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"><i></i>上一页</a>
+                {% endif %}
+                {% for page in pageInfo.paginator.page_range %}
+                    {% if pageInfo.number == page %}
+                        <span class="sel">{{ page }}</span>
+                    {% else %}
+                        <a href="{% url 'UploadFile'  %}?page={{ page }}" target="_self">{{ page }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if pageInfo.has_next %}
+                <a href="{% url 'UploadFile' %}?page={{ pageInfo.next_page_number }}" class="next" target="_self">下一页<i></i></a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

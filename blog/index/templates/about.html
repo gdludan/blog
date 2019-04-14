@@ -1,17 +1,17 @@
 {% extends "title_base.html" %}
 {% block title %}关于{% endblock %}
 {% block about %}<li class="nav-item active"><a href="{% url 'about'  %}">关于</a></li>{% endblock %}
-{% block content  %}{% load staticfiles %}
+{% block content  %}{% load staticfiles %}{% load index %}
     <div class="jumbotron" style="text-align: center;font-family: 楷体;">
-        <h1>卤蛋博客</h1><hr/>
-        <p>2018.11.27,卤蛋博客的初代版本出现</p><hr/>
-        <p>2018.12.08，官网DEMO上线</p><hr/>
-<<<<<<< HEAD
-        <p>2019.01.03，卤蛋博客1.0.0版本发布</p><hr/>
-        <p>2019.01.23，卤蛋博客1.1.0版本发布</p><hr/>
-        <p>2019.01.30,卤蛋博客1.2.0版本<br/>
-            <span style="font-size:16px;">修复无法显示验证码等已知Bug<br/>
-                页面小修改</span></p><hr/>
+        <h1><strong>卤蛋之路</strong></h1><hr/>
+        <p>2019.04.14,卤蛋博客1.3.0版本<br/>
+            <span style="font-size:16px;">
+                添加归档文章处理<br/>
+                添加网站访问量<br/>
+                更换页面样式<br/>
+                修复已知BUG<br/>
+            </span>
+        </p><hr/>
         <p>2019.03.17,卤蛋博客1.2.1版本<br/>
             <span style="font-size:16px;">
                 添加消息通知功能<br/>
@@ -19,16 +19,19 @@
                 UI位置调整<br/>
             </span>
         </p><hr/>
-        <!--
-        <h2>光于我</h2><hr/>
-=======
-        <p>2019.01.03，卤蛋博客1.0版本发布</p><hr/>
-        <p>2019.01.23，卤蛋博客1.1版本发布</p><hr/>
-        <p>2019.01.30,卤蛋博客1.2版本<br/><span style="font-size:16px;">修复已知Bug<br/>页面小修改</span></p><hr/>
-        <h2>关于我</h2><hr/>
->>>>>>> 4405976d643c730db1c50a8268b61c3a29658be8
-        <p>目前还是一个学生</p>
-        -->
+        <p>2019.01.30,卤蛋博客1.2.0版本<br/>
+            <span style="font-size:16px;">修复无法显示验证码等已知Bug<br/>
+                页面小修改</span>
+        </p><hr/>
+        <p>2019.01.23，卤蛋博客1.1.0版本发布</p><hr/>
+        <p>2019.01.03，卤蛋博客1.0.0版本发布</p><hr/>
+        <p>2018.12.08，官网DEMO上线</p><hr/>
+        <p>2018.11.27,卤蛋博客的初代版本出现</p><hr/>
+        <p>
+            <h2><strong>有能力的捐赠点服务器钱呗o(￣▽￣)ｄ </strong></h2>
+            <iframe src="{% getDC request %}{% url 'Contribution' %}" style="width: 400px;height: 584px" frameborder="no" scrolling="no"></iframe>
+            <img src="{% getDC request %}{% static 'images/alipay.jpg' %}" width="400" height="584" style="float: right">
+        </p>
       </div>
 {% endblock  %}
 {% block script %}

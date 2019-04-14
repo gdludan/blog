@@ -108,8 +108,9 @@ def loginView(request):
                     user.save()
                     login(request, user)
                     messages.success(request,'登录成功')
-                    return redirect(request.GET.get('next', '/'))
+                    return redirect(request.GET.get('next', '/index.html'))
                 else:
+                    del user
                     messages.error(request,'账号或者密码错误，请重新输入')
             else:
                 messages.error(request,'用户不存在，请注册')
@@ -182,7 +183,7 @@ def homeView(request):
     num_attentiom=len(attention_list)
     fan_list = Attention.objects.filter(attention_id=user.id).all()
     num_fan=len(fan_list)
-    paginator, pageInfo = paginatorPage(post_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+    paginator, pageInfo = paginatorPage(post_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE,page)
     return render(request, 'home.html', locals(),RequestContext(request))
 
 def logoutView(request):
@@ -193,7 +194,7 @@ def logoutView(request):
     '''
     logout(request)
     messages.success(request, '注销成功')
-    return redirect('/')
+    return redirect('/index.html')
 
 # ajax接口，实现动态验证验证码
 from django.http import JsonResponse

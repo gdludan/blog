@@ -25,7 +25,7 @@
             {% if request.get_full_path != '/notifications/'%}
             <a href="{% url 'notifications:deleteunread' %}"  style="color: white;text-decoration: none;">删除已读信息</a>{% else %}
             <a href="{% url 'notifications:deleteall' %}"  style="color: white;text-decoration: none;">删除全部信息</a>{% endif %}
-        </button>
+        </button><br/><br/>
         {% if notifications %}
             {% for notice in notifications %}
                 {% include 'notifications/notice.html' %}

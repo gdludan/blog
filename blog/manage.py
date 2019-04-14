@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import os
 import sys
+import locale
+locale.setlocale(locale.LC_CTYPE, 'chinese')
 
 if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'blog.settings')

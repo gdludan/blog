@@ -1,0 +1,71 @@
+<!DOCTYPE html>{% load staticfiles %}
+<html lang="zh-CN">
+    <head class="header-description">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="renderer" content="webkit">
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <link type="image/x-icon" rel="shortcut icon" href="{% static "favicon.ico" %}">
+        <meta http-equiv="Refresh" Content="20; Url=/index.html"><!--跳转代码-->
+        <title>卤蛋之路主页</title>
+        <style type="text/css">
+           #site-header {
+               font-size: 40px !important;
+               font-weight: 700;
+               z-index: 1;
+               text-align: center;
+               position: relative;
+               top: 180px;
+               font-family: kilsonburg,"Avenir Next",Helvetica,Arial,"Lantinghei SC","Microsoft YaHei",sans-serif;
+               font-size: 34px;
+               text-shadow: 0 1px 1px #47456d;
+               margin-bottom: 130px;
+               animation: show-site-title 1s ease-out;
+               -o-animation: show-site-title 1s ease-out;
+               -moz-animation: show-site-title 1s ease-out;
+               -webkit-animation: show-site-title 1s ease-out;
+           }
+           #site-header h1 {
+               display: none;
+           }
+           #site-header a {
+               color: #fff;
+               font-weight: 400;
+           }{% load index %}
+            body{background-image: url("{% requests_body %}");}
+            a{text-decoration:none;}
+            {#font{color: white}#}
+       </style>
+        <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>
+        <script src="/static/js/typed.js"></script>{% load index %}
+        <script>
+            $(document).ready(function ($) {
+                   $(".typed a").typed({
+                       strings: ["欢迎来到卤蛋的博客", "等待一会自动跳转到首页","卤蛋之路欢迎你",],
+                       typeSpeed: 150,
+                       backSpeed: 150,
+                       backDelay: 500
+                   });
+                   $(".element span").typed({
+                       strings: ["{% history_random %}"],
+                       typeSpeed: 100,
+                       backSpeed: 100,
+                       backDelay: 500
+                   });
+               });
+        </script>
+   </head>
+    <body>
+        <div id="site-header">
+           <p class="element"><span style="color: white">&ensp;</span></p>
+           <p class="typed"><a href="/index.html" title="www.ludanblog.xyz">&ensp;</a></p>
+            <a href="/index.html" title="www.ludanblog.xyz" style="font-size: 0.5em">点击此处进入首页。</a>
+        </div>
+    </body>
+</html>
+<script>
+    $.get({url:"{% url 'access' %}",async:true})
+</script>
+{% include 'baidutouji.html' %}

@@ -1,15 +1,15 @@
 {% extends "title_base.html"  %}
-{% block title %}{{ name }}{% endblock %}
+{% block title %}{% firstof name name '音乐' %}{% endblock %}
 {% block content_class %}col-xs-12 col-sm-9{% endblock %}
 {% block content_left %}{% include 'fun_left.html' %}{% endblock %}
 {% block fun %}<li class="nav-item active"><a href="{% url 'chat_xiaoi'  %}">小玩意</a></li>{% endblock %}
 {% block content %}{% load staticfiles %}
-    <div style="margin: 20px;float: right;width: 100%;margin-top: 0px;">
+    <div style="margin: 20px;float: right;width: 100%;margin-top: 0px;background-color: white;padding: 10px;border-radius: 5px">
         {% if mp3 %}
             <form action="">
                 <div style="width: 100%">
                     <input type="text" name="name" placeholder="输入歌名" style="width: 70%;"
-                           value="{% firstof music_dict.name name %}  {{ music_dict.singer }}" title="歌名：{% firstof music_dict.name name %}">
+                           value="{% firstof music_dict.name name %}{{ music_dict.singer }}" title="歌名：{% firstof music_dict.name name %}">
                     <select name="website" style="height: 26px;background: black;color: white">
                         {% if website == "tencent" %}
                         <option name="netease" title="网易云" value="netease">网易云</option>

@@ -1,4 +1,4 @@
-﻿#配置完此文件请重启django
+#配置完此文件请重启django
 # 设置验证码字符个数
 CAPTCHA_LENGTH = 4
 # 项目上线时设置 DEBUG = False
@@ -42,3 +42,19 @@ DANDANAPIKEY = ""
 DANDANAPISECRET = ""
 #是否以utc时区存储时间到数据库
 USE_TZ = False
+# 是否开启阿里云OSS服务
+oss = False
+# 阿里云AccessKeyId，建议设置为子用户的Access
+AccessKeyId = ''
+# 阿里云AccessKeySecret，建议设置为子用户的Access
+AccessKeySecret = ''
+# 阿里云OSS url，默认为https://oss-cn-shenzhen.aliyuncs.com 可以选择为其他的url
+endpoint = 'https://oss-cn-shenzhen.aliyuncs.com'
+# 阿里云OSS BucketName
+BucketName = ''
+# 是否替换成自己的域名
+is_cname = True
+# 自己的域名
+cname = ''
+# 连接超时时间
+connect_timeout = 30

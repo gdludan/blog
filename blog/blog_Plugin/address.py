@@ -33,7 +33,7 @@ def get_360_ipaddres(ip="0.0.0.0"):
         request = requests.session()
         html = request.get(url, headers=header[random.randint(0, len(header) - 1)]).text
         value = re.findall(text, html)
-    return value[0].replace('&nbsp;',' ')
+    return value[0].replace('&nbsp;',' ').strip(' ')
 
 def XX_remove(value=''):
     '''

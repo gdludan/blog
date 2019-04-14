@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+
+
 def web_open(url,name):
     '''
     保存网络文件到硬盘
@@ -12,6 +14,7 @@ def web_open(url,name):
         f.write(r.content)
     f = open(name, 'rb')
     return f
+
 
 def Unicode_or_chinese(data):
     '''

@@ -1,10 +1,12 @@
 <div class="alert alert-block alert-{{ notice.level }}">
-{#  <a class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">#}
+  <a class="close pull-right" title="删除此消息"
+     href="{% url 'notifications:delete' notice.slug %}">
 {#    <i class="icon-close"></i>glyphicon glyphicon-remove#}
-{#    <i class="glyphicon glyphicon-remove"></i>#}
-{#  </a>#}
+    <i class="glyphicon glyphicon-trash"></i>&ensp;
+  </a>
 
-  <a class="close pull-right" href="{% url 'notifications:delete' notice.slug %}">
+  <a class="close pull-right" title="设置为已读"
+     href="{% url 'notifications:mark_as_read' notice.slug %}">
 {#    <i class="icon-close"></i>glyphicon glyphicon-remove#}
     <i class="glyphicon glyphicon-remove"></i>
   </a>
@@ -13,19 +15,19 @@
     <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
 {#  {% firstof notice.actor.get_short_name notice.actor.get_username %}:#}
 {#    {{ notice.actor }}#}
-    {{ notice.verb }}
+    {{ notice.verb | safe }}
     {% if notice.target %}
       of {{ notice.target }}
     {% endif %}
   </h4>
   
-  <p>{{ notice.timesince }} ago</p>
+  <p>{{ notice.timesince }}</p>
   
-  <p>{{ notice.description | linebreaksbr }}</p>
-  
-  <div class="notice-actions">
-    {% for action in notice.data.actions %}
-      <a class="btn" href="{{ action.href }}">{{ action.title }}</a>
-    {% endfor %}
-  </div>
+{#  <p>{{ notice.description | linebreaksbr }}</p>#}
+{#  #}
+{#  <div class="notice-actions">#}
+{#    {% for action in notice.data.actions %}#}
+{#      <a class="btn" href="{{ action.href }}">{{ action.title }}</a>#}
+{#    {% endfor %}#}
+{#  </div>#}
 </div>

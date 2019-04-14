@@ -1,3 +1,7 @@
+from django.conf import settings
+from django.conf.urls import static
+import notifications.urls
+from xadmin.plugins import xversion
 """blog URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -14,27 +18,28 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 
 import xadmin
 xadmin.autodiscover()
-from xadmin.plugins import xversion
 xversion.register_models()
-import notifications.urls
-
 urlpatterns = [
-    path('admin/',admin.site.urls),# django原生后台
-    path('xadmin/', xadmin.site.urls),# xadmin后台
-    path('', include('index.urls')),# 网站首页
-    path('fun/', include('fun.urls')),# 游戏和一些小玩意
-    path('user/', include('user.urls')),# 用户中心及其他用户操作
-    path('search/', include('search.urls')),# 站内搜索
-    path('config/', include('set_config.urls')),# 用户配置
-    path('tools/', include('post_tools.urls')),# 网站工具
-    path('captcha/', include('captcha.urls')),# 验证码接口
-    path('tinymce/', include('tinymce.urls')), # 固定写法，其实是映射到人家写好的应用
-    path('notifications/',include(notifications.urls,namespace = 'notifications')),
+    path('admin/', admin.site.urls),  # django原生后台
+    path('xadmin/', xadmin.site.urls),  # xadmin后台
+    path('', include('index.urls')),  # 网站首页
+    path('api/', include('api.urls')),  # api接口
+    path('fun/', include('fun.urls')),  # 一些小玩意
+    path('user/', include('user.urls')),  # 用户中心及其他用户操作
+    path('search/', include('search.urls')),  # 站内搜索
+    path('config/', include('set_config.urls')),  # 用户配置
+    path('tools/', include('tools.urls')),  # 网站工具
+    path('captcha/', include('captcha.urls')),  # 验证码接口
+    path('tinymce/', include('tinymce.urls')),  # 固定写法，其实是映射到人家写好的应用
+    path(
+        'notifications/',
+        include(
+            notifications.urls,
+            namespace='notifications')),
 ]
-from django.conf.urls import static
-from django.conf import settings
-urlpatterns += static.static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static.static(settings.STATIC_URL,
+                             document_root=settings.STATIC_ROOT)

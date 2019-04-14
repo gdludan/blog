@@ -71,7 +71,7 @@ def collection_managementView(request):
     page = request.GET.get('page',1)
     root_user = User.objects.get(id=request.user.id)
     collection_list = Collection.objects.filter(user=root_user).all()
-    paginator, pageInfo = paginatorPage(collection_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+    paginator, pageInfo = paginatorPage(collection_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE,page)
     return render(request,'collection_manag.html',locals(),RequestContext(request))
 
 @login_required(login_url='/user/login')
@@ -87,5 +87,5 @@ def attention_managementView(request):
     attention_list = Attention.objects.filter(user=root_user).all()
     for i in attention_list:
         i.attention_id = User.objects.filter(id=i.attention_id).get()
-    paginator, pageInfo = paginatorPage(attention_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+    paginator, pageInfo = paginatorPage(attention_list, settings.HAYSTACK_SEARCH_RESULTS_PER_PAGE,page)
     return render(request,'attention_manag.html',locals(),RequestContext(request))

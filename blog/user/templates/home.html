@@ -61,17 +61,19 @@
             <div class="page-box">
                 <div class="pagebar" id="pageBar" style="padding: 0 0 10px;">
                     {% if pageInfo.has_previous %}
-                    <a href="{% url 'home' %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"><i></i>上一页</a>
+                    <a href="{% url 'home' %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"
+                       style="background-color: #8C8C8C"><i></i>上一页</a>
                     {% endif %}
                     {% for page in pageInfo.paginator.page_range %}
                         {% if pageInfo.number == page %}
                             <span class="sel">{{ page }}</span>
                         {% else %}
-                            <a href="{% url 'home' %}?page={{ page }}" target="_self">{{ page }}</a>
+                            <a href="{% url 'home' %}?page={{ page }}" target="_self" style="background-color: #8C8C8C">{{ page }}</a>
                         {% endif %}
                     {% endfor %}
                     {% if pageInfo.has_next %}
-                    <a href="{% url 'home' %}?page={{ pageInfo.next_page_number }}" class="next" target="_self">下一页<i></i></a>
+                    <a href="{% url 'home' %}?page={{ pageInfo.next_page_number }}" class="next" target="_self"
+                        style="background-color: #8C8C8C">下一页<i></i></a>
                     {% endif %}
                 </div>
             </div>

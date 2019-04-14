@@ -38,23 +38,6 @@ function keyseach(event) {
     search_post();
     }
 }
-var title=document.title;
-window.onblur =  function(){
-    document.title='(〃´-ω･) 呵呵，页面崩溃了';
-    setTimeout(function () {
-        if(document.title!='(〃´-ω･) 呵呵，页面崩溃了'){
-            document.title='(〃´-ω･) 呵呵，页面崩溃了';
-        }
-    },500);
-};
-window.onfocus= function(){
-    document.title='φ(>ω<*) 额，恢复了';
-    setTimeout(function(){
-        if(document.title!=title){
-            document.title=title;
-        }
-    }, 500);
-};
 function ajax(options) {
     options = options || {};
     options.type = (options.type || "GET").toUpperCase();
@@ -100,4 +83,20 @@ function formatParams(data) {
     }
     arr.push(("v=" + Math.random()).replace(".",""));
     return arr.join("&");
+}
+console.log("%c 意中源码天仙路\t%c从此乃是逍遥人",'color:red;font-size:20px','color:blue;font-size:20px');
+console.log("    卤蛋之路提醒你\n代码千万行，避坑第一条。\n爬虫不规范，亲人两行泪。");
+
+function hello() {
+    var hour=new Date().getHours();
+    if(hour < 6){hello='凌晨好，'}
+    else if(hour < 9){hello='早上好，'}
+    else if(hour < 12){hello='上午好，'}
+    else if(hour < 14){hello='中午好，'}
+    else if(hour < 17){hello='下午好，'}
+    else if(hour < 19){hello='傍晚好，'}
+    else if(hour < 22){hello='晚上好，'}
+    else {hello='夜深了，'}
+    var webUrl = webUrl;
+    document.write(' '+hello);
 }

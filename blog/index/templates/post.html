@@ -1,39 +1,43 @@
 {% extends "title_base.html"  %}{% load index %} {# 加载自定义过滤器 #}
-{% block title %}{{post.title}}{% endblock %}{% load staticfiles %}
+{% block title %}{{ post.title }}{% endblock %}{% load staticfiles %}
 {% block content  %}
     {% if not post.Prohibited  %}
         {% if post %}
             <div class="well well-sm" >
-                <div class="title" style="text-align: center;font-size: 30px">{{ post.title }}</div><br>
+                <div class="title" style="text-align: center;font-size: 30px">【{{ post.type }}】{{ post.title }}</div><br>
                 <div style="line-height: 1.42857143;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">{{ post.content | safe }}</div><br>
                 <div style="padding-left: 5px;">
                     <a  href="javascript:;" onclick="{% if request.user.id %}onLike(){% else %}onLoginError(){% endif %};"
-                        title="{% if like %}已{% endif %}点赞{{ dynamic.dynamic_like }}" style="text-decoration:none;">
-                        <input style="display: none" value="{{ post.id }}" id="post_like" title="{{ like }}">
+                        title="{% if like %}已{% endif %}点赞" style="text-decoration:none;">
                         {% if like %}
-                        <img src="{% static 'images/like_blue.png' %}" width="15px" height="15px" id="img_like">
+                            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true" id="like" style="color: blue">
+                                <span id="num_like">{{ dynamic.dynamic_like }}</span>
+                            </span>
                         {% else %}
-                        <img src="{% static 'images/like_none.png' %}" width="15px" height="15px" id="img_like">
+                            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true" id="like" style="color: black">
+                                <span id="num_like">{{ dynamic.dynamic_like }}</span>
+                            </span>
                         {% endif %}
-                        <span id="num_like" style="color: red;">{{ dynamic.dynamic_like }}</span>
-                    </a>
+                    </a>&ensp;
                     <a  href="javascript:;" onclick="{% if request.user.id %}onCcollection(){% else %}onLoginError(){% endif %};"
-                        title="{% if collection %}已{% endif %}收藏{{ dynamic.dynamic_collection }}" style="text-decoration:none;">
-                        <input style="display: none" value="{{ post.id }}" id="post_collection" title="{{collection}}">
+                        title="{% if collection %}已{% endif %}收藏" style="text-decoration:none;">
                         {% if collection %}
-                        <img src="{% static 'images/collection_blue.png' %}" width="15px" height="15px" id="img_collection">
+                            <span class="glyphicon glyphicon-star-empty" aria-hidden="true" id="collection" style="color: blue">
+                            <span id="num_collection">{{ dynamic.dynamic_collection }}</span>
+                            </span>
                         {% else %}
-                        <img src="{% static 'images/collection_none.png' %}" width="15px" height="15px" id="img_collection">
+                            <span class="glyphicon glyphicon-star-empty" aria-hidden="true" id="collection" style="color: black">
+                                <span id="num_collection">{{ dynamic.dynamic_collection }}</span>
+                            </span>
                         {% endif %}
-                        <span id="num_collection" style="color: red;">{{ dynamic.dynamic_collection }}</span>
                     </a>
-                    &ensp;&ensp;&ensp;&ensp;(阅读{{ post.readnumber }})
+                    &ensp;<span class="glyphicon glyphicon-eye-open" aria-hidden="true">&ensp;{{ post.readnumber }}</span>
                 </div><br>
                 <div>
                     <a href="{% url 'user' post.user.username %}">
                         <img src="{{ post.user.avatar }}" width="30px" height="30px" style="border:2px solid;border-radius:10px;">
                     </a>{% include 'user_attention.html' %}
-                    在 {{ post.time.str }} <span style="font-size: 12px;">[{{ post.time.data }}]</span> 发布
+                    在  <span style="font-size: 12px;">{{ post.time }}</span> 发布
                 </div>
             </div>
         {% endif %}
@@ -56,7 +60,7 @@
             </div>
             {% for comment in pageInfo %}
                 {% if not comment.Prohibited %}
-                <div style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
+                <div class="comment" style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
                     <div style="float: left">
                         <a href="{% url 'user' comment.user.username  %}" style="margin-right: 10px;">
                             <img src="{{ comment.user.avatar }}" width="40px" height="40px" style="border:2px solid;border-radius:10px;"
@@ -65,6 +69,9 @@
                     </div>
                     <div style="margin-top: 1%">{{ comment.content | safe }}</div><br/>
                     <div>{{ comment.time }}</div>
+                    <div class="comment">
+
+                    </div>
                 </div>
                 {% else %}<div style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;height: 40px;"><div style="float: left;">此评论因为{% if comment.Prohibited %}{{ comment.Prohibited_info }}{% endif %}违规已删除</div></div>{% endif %}
             {% endfor %}
@@ -72,18 +79,20 @@
         <div class="page-box">
             <div class="pagebar" id="pageBar" style="padding: 0 0 10px;">
                 {% if pageInfo.has_previous %}
-                <a href="{% url 'post' id %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"><i></i>上一页</a>
+                <a href="{% url 'post' id %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"
+                   style="background-color: #8C8C8C"><i></i>上一页</a>
                 {% endif %}
                 {% for page in pageInfo.paginator.page_range %}
                     {% if pageInfo.number == page %}
                         <span class="sel">{{ page }}</span>
                     {% else %}
-                        <a href="{% url 'post' id %}?page={{ page }}" target="_self">{{ page }}</a>
+                        <a href="{% url 'post' id %}?page={{ page }}" target="_self" style="background-color: #8C8C8C">{{ page }}</a>
                     {% endif %}
                 {% endfor %}
 
                 {% if pageInfo.has_next %}
-                <a href="{% url 'post' id %}?page={{ pageInfo.next_page_number }}" class="next" target="_self">下一页<i></i></a>
+                <a href="{% url 'post' id %}?page={{ pageInfo.next_page_number }}" class="next" target="_self"
+                    style="background-color: #8C8C8C">下一页<i></i></a>
                 {% endif %}
             </div>
         </div>
@@ -92,28 +101,56 @@
     {% endif %}
 {% endblock  %}
 {% block script %}
+<script src="{%  static 'js/prism.js' %}"></script>
+<script src="{%  static 'tinymce/js/tinymce/tinymce.min.js' %}"></script>
+<script>
+    tinymce.init({
+        //选择class为content的标签作为编辑器
+        selector: '#content',
+        //方向从左到右
+        directionality:'ltr',
+        //语言选择中文
+        language: "zh_CN",
+        //高度为400
+        height:200,
+        //工具栏上面的补丁按钮
+        plugins: [
+                'advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker',
+                'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
+                'save table contextmenu directionality emoticons template paste textcolor',
+                'codesample',
+        ],
+        //工具栏的补丁按钮
+         toolbar: 'insertfile undo redo | styleselect | bold italic | \
+         alignleft aligncenter alignright alignjustify | \
+         bullist numlist outdent indent | link image | \
+         print preview media fullpage | \
+         forecolor backcolor emoticons |codesample fontsizeselect fullscreen',
+        //字体大小
+        fontsize_formats: '10pt 12pt 14pt 18pt 24pt 36pt',
+        //按tab不换行
+        nonbreaking_force_tab: true,
+    });
+</script>
 <script>
     function onLike() {
-        var id = document.getElementById("post_like");
-        var img_like = document.getElementById("img_like");
+        var like = document.getElementById("like");
         var num_like =document.getElementById("num_like");
-        if(parseInt(id.title) ==1 ){
-            id.title = 0;
-            img_like.src ="{% static 'images/like_none.png' %}";
-            if(parseInt(num_like.innerHTML)>0){
-                num_like.innerHTML = parseInt(num_like.innerHTML)-1;
-            }
-        } else{
-            id.title = 1;
-            img_like.src ="{% static 'images/like_blue.png' %}";
-            num_like.innerHTML = parseInt(num_like.innerHTML)+1;
-        };
         $.ajax({
-            url:"/post/like/"+id.value,
+            url:"/post/like/{{ post.id }}",
             type:"GET",
             async : false,
             success:function(data){
                 console.log("response success: ", data["status"],data["message"]);
+                if(data["message"] == "点赞成功"){
+                    like.style.color='blue';
+                    num_like.innerHTML = parseInt(num_like.innerHTML)+1;
+                }else{
+                    like.style.color='black';
+                    if(parseInt(num_like.innerHTML)>0){
+                        num_like.innerHTML = parseInt(num_like.innerHTML)-1;
+                    }
+                }
             },
             error:function(XMLHttpRequest, textStatus) {
                    alert(XMLHttpRequest.status);//状态码
@@ -123,26 +160,23 @@
         });
     }
     function onCcollection() {
-        var id = document.getElementById("post_collection");
-        var img_like = document.getElementById("img_collection");
+        var collection = document.getElementById("collection");
         var num_like =document.getElementById("num_collection");
-        if(parseInt(id.title) ==1 ){
-            id.title = 0;
-            img_like.src ="{% static 'images/collection_none.png' %}";
-            if(parseInt(num_like.innerHTML)>0){
-                num_like.innerHTML = parseInt(num_like.innerHTML)-1;
-            }
-        } else{
-            id.title = 1;
-            img_like.src ="{% static 'images/collection_blue.png' %}";
-            num_like.innerHTML = parseInt(num_like.innerHTML)+1;
-        };
         $.ajax({
-            url:"/post/collection/"+id.value,
+            url:"/post/collection/{{ post.id }}",
             type:"GET",
             async : false,
             success:function(data){
                 console.log("response success: ", data["status"],data["message"]);
+                if(data["message"] == "收藏成功"){
+                    collection.style.color='blue';
+                    num_like.innerHTML = (parseInt(num_like.innerHTML)+1).toString();
+                }else{
+                    collection.style.color='black';
+                    if(parseInt(num_like.innerHTML)>0){
+                        num_like.innerHTML = (parseInt(num_like.innerHTML)-1).toString();
+                    }
+                }
             },
             error:function(XMLHttpRequest, textStatus) {
                    alert(XMLHttpRequest.status);//状态码
@@ -153,3 +187,4 @@
     }
 </script>
 {% endblock %}
+{% block style %}<link type="text/css" rel="stylesheet" href="{% static "css/prism.css" %}">{% endblock %}
