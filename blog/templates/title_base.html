@@ -107,7 +107,11 @@
                     <ul class="nav navbar-nav">
                         {% block index %}<li class="nav-item"><a href="{% url 'index'  %}">主页</a></li>{% endblock %}
                         {% block fun %}<li class="nav-item"><a href="{% url 'chat_xiaoi'  %}">小玩意</a></li>{% endblock %}
+<<<<<<< HEAD
                         {% block guestbook %}<li class="nav-item"><a href="{% url 'guestbook'  %}">留言墙</a></li>{% endblock %}
+=======
+                        <li class="nav-item"><a href="https://github.com/gitforludan/blog">开源</a></li>
+>>>>>>> bd0610dc688ffcbbcc849ac1ef455f5266e5b48b
                         {% block about %}<li class="nav-item"><a href="{% url 'about'  %}">关于</a></li>{% endblock %}
                         <li class="nav-item"><a href="https://github.com/gitforludan/blog">开源</a></li>
                     </ul>
@@ -244,7 +248,11 @@
            }, 2000);
        }
     });
+<<<<<<< HEAD
    };
     $.get({url:"{% url 'access' %}",async:true})
 </script>
 {% include 'baidutouji.html' %}
+=======
+</script>
+>>>>>>> bd0610dc688ffcbbcc849ac1ef455f5266e5b48b
