@@ -2,8 +2,15 @@
 {% block title %}关于{% endblock %}
 {% block about %}<li class="nav-item active"><a href="{% url 'about'  %}">关于</a></li>{% endblock %}
 {% block content  %}{% load staticfiles %}{% load index %}
-    <div class="jumbotron" style="text-align: center;font-family: 楷体;">
-        <h1><strong>卤蛋之路</strong></h1><hr/>
+    <div class="jumbotron" style="text-align: center;"><hr/>
+	    <p>2019.05.08,卤蛋博客1.3.1版本<br/>
+            <span style="font-size:16px;">
+                完善归档文章处理,网站访问量,消息通知<br/>
+                添加用户注册时验证邮箱<br/>
+                添加部件开关<br/>
+                修复已知BUG<br/>
+            </span>
+        </p><hr/>
         <p>2019.04.14,卤蛋博客1.3.0版本<br/>
             <span style="font-size:16px;">
                 添加归档文章处理<br/>
@@ -34,5 +41,4 @@
         </p>
       </div>
 {% endblock  %}
-{% block script %}
-{% endblock %}
+{% block script %}{% endblock %}

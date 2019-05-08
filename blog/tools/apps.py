@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 
 
-class PostToolsConfig(AppConfig):
-    name = 'post_tools'
+class ToolsConfig(AppConfig):
+    name = 'tools'
+    verbose_name = '工具'

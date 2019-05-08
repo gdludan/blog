@@ -101,6 +101,7 @@ def mark_as_unread(request, slug=None):
 
     return redirect('notifications:unread')
 
+
 @login_required
 def delete(request, slug=None):
     notification_id = slug2id(slug)
@@ -124,6 +125,7 @@ def delete(request, slug=None):
 
     return redirect('notifications:all')
 
+
 @login_required
 def deleteall(request):
 
@@ -146,6 +148,7 @@ def deleteall(request):
 
     return redirect('notifications:all')
 
+
 @login_required
 def deleteunread(request):
 
@@ -164,6 +167,7 @@ def deleteunread(request):
         return redirect(_next)
 
     return redirect('notifications:all')
+
 
 def live_unread_notification_count(request):
     try:

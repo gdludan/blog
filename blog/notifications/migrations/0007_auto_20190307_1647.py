@@ -12,11 +12,29 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='notification',
-            options={'ordering': ('-timestamp',), 'verbose_name': '消息通知列表', 'verbose_name_plural': '消息通知列表'},
+            options={
+                'ordering': (
+                    '-timestamp',
+                ),
+                'verbose_name': '消息通知列表',
+                'verbose_name_plural': '消息通知列表'},
         ),
         migrations.AlterField(
             model_name='notification',
             name='level',
-            field=models.CharField(choices=[('success', 'success'), ('info', 'info'), ('warning', 'warning'), ('error', 'error'), ('danger', 'danger')], default='info', max_length=20),
+            field=models.CharField(
+                choices=[
+                    ('success',
+                     'success'),
+                    ('info',
+                     'info'),
+                    ('warning',
+                     'warning'),
+                    ('error',
+                     'error'),
+                    ('danger',
+                     'danger')],
+                default='info',
+                max_length=20),
         ),
     ]

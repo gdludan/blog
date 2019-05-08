@@ -9,9 +9,8 @@
                 <a href="{% url 'post' item.post.id %}">
                     <div class="navbar-collapse collapse" style="width: 100%">
                         <div class="form-actions well well-sm" style="font-size: 1.2em;color: blue">
-                            标题：{{ item.post.title }}<br/>
-                            作者：{% if item.post.user.first_name %}{{ item.post.user.first_name }}
-                            {% else %}{{ item.post.user.username }}{% endif %}<br/>
+                            标题：【{{ item.post.type }}】{{ item.post.title }}<br/>
+                            作者：{% firstof user.get_short_name user.get_username %}<br/>
                         </div>
                     </div>
                 </a>

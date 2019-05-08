@@ -159,10 +159,6 @@ a:hover {
 }
 body {background-repeat:no-repeat; background-attachment:fixed}
 a{color: black;}
-@font-face{
-	font-family: kaiti;
-	src:url('/static/fonts/simkai.ttf');
-}
 *{cursor: url("/static/cur/normal.cur"),auto;margin: 0;padding: 0;}
 a {cursor: url("/static/cur/Alternative.cur"),auto;text-decoration: none}
 input{cursor: url("/static/cur/texto.cur"),auto;}

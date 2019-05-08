@@ -3,22 +3,26 @@
 {% block content  %}
     <div class="topnews" style="background: white;padding: 10px;border-radius: 10px;margin: 10px;">
         <h2>文章归档</h2><hr style="height:2px;border:none;border-top:2px solid #555555;"/>
-        {% if not article_list %}<h3 style="font-family: 楷体">当前月份文章为空</h3>{% endif %}
         {% for article in article_list %}
             <div class="blogs">
                 <ul>
-                    <h3><a href="{% url 'post' article.id %}">{{ article.title }}</a></h3>
+                    <h3><a href="{% url 'post' article.id %}">
+                        【{{ article.type }}】{{ article.title }}
+                    </a></h3>
                     <p class="autor">
                     <span class="lm f_l">
                         {% for tag in article.tag.all %}
                             {{ tag.name }}&nbsp;
                         {% endfor %}
                     </span>
-                    <span style="color: rgba(255,100,0,0.84)">{{ article.time | date:'Y-m-d' }}</span>&ensp;
+                    <a href='{% url 'archive' %}?year={{ article.time.year }}&month={% if article.time.month < 10 %}0{{ article.time.month }}{% else %}{{ article.time.month }}{% endif %}'>
+                        <span style="color: rgba(255,100,0,0.84)">{{ article.time | date:'Y-m-d' }}</span>&ensp;</a>
                     <span class="glyphicon glyphicon-eye-open" aria-hidden="true" style="color: rgba(60,73,255,0.85)">{{ article.readnumber }}</span>&ensp;
                     <span class="glyphicon glyphicon-comment" aria-hidden="true" style="color: rgba(255,24,66,0.87)">{{ article.comment_set.all.count }}</span>
                 </ul>
             </div><hr/>
+        {% empty %}
+            <h3 style="font-family: 楷体">当前月份文章为空</h3>
         {% endfor %}
     </div>
 {% endblock %}

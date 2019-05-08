@@ -1,8 +1,18 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 
 
-def web_open(url,name):
+def file_name(file_dir, extension='.jpg'):
+    L = []
+    for dirpath, dirnames, filenames in os.walk(file_dir):
+        for file in filenames:
+            if os.path.splitext(file)[1] == extension:
+                L.append(os.path.join(dirpath, file))
+    return L
+
+
+def web_open(url, name):
     '''
     保存网络文件到硬盘
     :param url: 文件的url地址
@@ -22,20 +32,20 @@ def Unicode_or_chinese(data):
     :param data: Unicode编码的字符串
     :return: 正常utf-8的字符串
     '''
-    url="http://tool.chinaz.com/tools/unicode.aspx"
+    url = "http://tool.chinaz.com/tools/unicode.aspx"
     data = {
-        "content":data,
-        "untoch":"Unicode 转 中文",
-        "result":"",
+        "content": data,
+        "untoch": "Unicode 转 中文",
+        "result": "",
     }
-    cookies={
-        "CNZZDATA5082706":"cnzz_eid%3D679896359-1545143002-null%26ntime%3D1547008318",
-        "UM_distinctid":"167c1b32f6121c-03421404f09928-4d045769-100200-167c1b32f6220f",
-        "qHistory":"aHR0cDovL3Rvb2wuY2hpbmF6LmNvbS90b29scy9jc3Nmb3JtYXQuYXNweCtDc3PmoLzlvI/ljJZ8aHR0cDovL2lwLnRvb2wuY2hpbmF6LmNvbStJUC/mnI3liqHlmajlnLDlnYDmn6Xor6J8aHR0cDovL3Rvb2wuY2hpbmF6LmNvbS90b29scy91bmljb2RlLmFzcHgrVW5pY29kZee8lueggei9rOaNog==",
+    cookies = {
+        "CNZZDATA5082706": "cnzz_eid%3D679896359-1545143002-null%26ntime%3D1547008318",
+        "UM_distinctid": "167c1b32f6121c-03421404f09928-4d045769-100200-167c1b32f6220f",
+        "qHistory": "aHR0cDovL3Rvb2wuY2hpbmF6LmNvbS90b29scy9jc3Nmb3JtYXQuYXNweCtDc3PmoLzlvI/ljJZ8aHR0cDovL2lwLnRvb2wuY2hpbmF6LmNvbStJUC/mnI3liqHlmajlnLDlnYDmn6Xor6J8aHR0cDovL3Rvb2wuY2hpbmF6LmNvbS90b29scy91bmljb2RlLmFzcHgrVW5pY29kZee8lueggei9rOaNog==",
 
     }
 
-    html = requests.post(url,data=data,cookies=cookies).text
+    html = requests.post(url, data=data, cookies=cookies).text
     soup = BeautifulSoup(html, 'lxml')
-    divs = soup.find(class_ ="pr JsTxtW-r ml20 fl").textarea.get_text()
+    divs = soup.find(class_="pr JsTxtW-r ml20 fl").textarea.get_text()
     return divs

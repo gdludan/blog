@@ -5,6 +5,7 @@ from django.apps import AppConfig
 
 class Config(AppConfig):
     name = "notifications"
+    verbose_name = '通知管理'
 
     def ready(self):
         super(Config, self).ready()

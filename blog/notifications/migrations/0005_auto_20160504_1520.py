@@ -15,6 +15,17 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='notification',
             name='level',
-            field=models.CharField(choices=[('success', 'success'), ('info', 'info'), ('warning', 'warning'), ('error', 'error')], default='info', max_length=20),
+            field=models.CharField(
+                choices=[
+                    ('success',
+                     'success'),
+                    ('info',
+                     'info'),
+                    ('warning',
+                     'warning'),
+                    ('error',
+                     'error')],
+                default='info',
+                max_length=20),
         ),
     ]

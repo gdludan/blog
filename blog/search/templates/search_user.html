@@ -1,5 +1,5 @@
 {% extends "title_base.html"  %}
-{% block title %}搜索  {% if query %}{{ query }}{% else %}全部 {% endif %} 用户
+{% block title %}搜索{{ query }}用户
 {% endblock %}{% load staticfiles %}{% block search %}{% endblock %}
 {% block content  %}
     <div class="form-actions well well-sm" style="height: 70px">
@@ -13,8 +13,7 @@
     </div>
     </div>
     <div class="form-actions well well-sm">
-    {% if show_all %}
-        {% for item in page.object_list %}
+        {% for item in page %}
             <a href="{% url 'user' item.username %}" class="js_song" target="play" >
             <div style="height: 80px; margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
                 <img src="{{ item.avatar }}" width="60px" height="60px" style="float: left;border:2px solid;border-radius:10%;border-color: #1e6abc;">
@@ -24,31 +23,10 @@
                 </div>
             </div>
             </a>
+        {% empty %}
+            <h3>你没有搜索任何内容。</h3>
+            <p>你可以尝试输入点什么东西，例如：Django</p>
         {% endfor %}
-    {% else %}
-        {# 导入自带高亮功能 #}
-        {% load highlight %}
-        {% if  page.object_list %}
-            {% for item in page.object_list %}
-                 <a href="{% url 'user' item.object.username %}" class="js_song" target="play" >
-                    <div style="height: 80px;margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
-                        <img src="{{ item.object.avatar }}" width="60px" height="60px" style="float: left;border:2px solid;border-radius:25px;">
-                        <div style="float: left;font-size: 1.2em">
-                        <div style="margin: 5px">uid：{% highlight item.object.id with query %}</div>
-                        {% if item.object.get_short_name %}
-                            <div style="margin: 5px">用户名：{% highlight item.object.get_short_name with query %}</div>
-                        {% else %}
-                            <div style="margin: 5px">用户名：{% highlight item.object.get_username with query %}</div>
-                        {% endif %}
-                        </div>
-                    </div>
-                </a>
-            {% endfor %}
-        {% else %}
-            <div style="margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
-            <div style="margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">找不到关于 {{ query }} 的用户</div></div>
-        {% endif %}
-    {% endif %}
     </div>
     {# 分页导航 #}
     <div class="page-box">

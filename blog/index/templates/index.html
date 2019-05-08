@@ -8,8 +8,8 @@
         <div class="well " >
             <a href="{% url 'post'  post.id %}" style="cursor:pointer">
                 <span style="font-size: 20px;">【{{ post.type }}】{{ post.title }}</span><hr style="margin-top: 10px;margin-bottom: 10px;"/>
-                <a href="{% url 'user' post.user.username %}">
-                    <img src="{% indexstatic post.user.avatar %}" width="30px" height="30px" style="border:2px solid;border-radius:10px;"
+                <a href="{% url 'user' %}?uid={{ post.user.id }}">
+                    <img src="{% get_avatar post.user %}" width="30px" height="30px" style="border:2px solid;border-radius:10px;"
                          title="{% firstof post.user.get_short_name post.user.get_username %}">
                 </a>
                 &ensp;在 <span style="color: rgba(255,100,0,0.84)">{{ post.time}}</span>&ensp;发布&ensp;
@@ -22,18 +22,18 @@
     <div class="page-box">
         <div class="pagebar" id="pageBar" style="padding: 0 0 10px;">
             {% if pageInfo.has_previous %}
-            <a href="{% url 'index' %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"
+            <a href="{% getDC request %}{% url 'index' %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"
                style="background-color: #8C8C8C"><i></i>上一页</a>
             {% endif %}
             {% for page in pageInfo.paginator.page_range %}
                 {% if pageInfo.number == page %}
                     <span class="sel">{{ page }}</span>
                 {% else %}
-                    <a href="{% url 'index' %}?page={{ page }}" target="_self" style="background-color: #8C8C8C">{{ page }}</a>
+                    <a href="{% getDC request %}{% url 'index' %}?page={{ page }}" target="_self" style="background-color: #8C8C8C">{{ page }}</a>
                 {% endif %}
             {% endfor %}
             {% if pageInfo.has_next %}
-            <a href="{% url 'index' %}?page={{ pageInfo.next_page_number }}" class="next" target="_self"
+            <a href="{% getDC request %}{% url 'index' %}?page={{ pageInfo.next_page_number }}" class="next" target="_self"
                style="background-color: #8C8C8C">下一页<i></i></a>
             {% endif %}
         </div>
@@ -49,89 +49,7 @@
         </div>
         {% include 'search.html' %}
         <div class="sidebar-module sidebar-module-inset">
-            <script src="https://img.highcharts.com.cn/highcharts/highcharts.js"></script>
-            <script src="https://img.highcharts.com.cn/highcharts/modules/exporting.js"></script>
-            <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
             <div id="container" style="height: 250px"></div>
-            <script>{% load index %}
-                $.getJSON('{% getDC request %}{% url 'Visitorjson' %}?days=7', function (data) {
-                    chart = Highcharts.chart('container', {
-                        chart: {
-                            zoomType: 'x'
-                        },
-                        title: {
-                            text: '<a href="{% url 'Visitor' %}">网站访问量</a>'
-                        },
-                        xAxis: {
-                            type: 'datetime',
-                            dateTimeLabelFormats: {
-                                millisecond: '%H:%M:%S.%L',
-                                second: '%H:%M:%S',
-                                minute: '%H:%M',
-                                hour: '%H:%M',
-                                day: '%m-%d',
-                                week: '%m-%d',
-                                month: '%Y-%m',
-                                year: '%Y'
-                            },
-                            title:{
-                                text:''
-                            }
-                        },
-                        tooltip: {
-                            dateTimeLabelFormats: {
-                                millisecond: '%H:%M:%S.%L',
-                                second: '%H:%M:%S',
-                                minute: '%H:%M',
-                                hour: '%H:%M',
-                                day: '%Y-%m-%d',
-                                week: '%m-%d',
-                                month: '%Y-%m',
-                                year: '%Y'
-                            }
-                        },
-                        yAxis: {
-                            title: {
-                                text: ''
-                            }
-                        },
-                        legend: {
-                            enabled: false
-                        },
-                        plotOptions: {
-                            area: {
-                                fillColor: {
-                                    linearGradient: {
-                                        x1: 0,
-                                        y1: 0,
-                                        x2: 0,
-                                        y2: 1
-                                    },
-                                    stops: [
-                                        [0, Highcharts.getOptions().colors[0]],
-                                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                                    ]
-                                },
-                                marker: {
-                                    radius: 2
-                                },
-                                lineWidth: 1,
-                                states: {
-                                    hover: {
-                                        lineWidth: 1
-                                    }
-                                },
-                                threshold: null
-                            }
-                        },
-                        series: [{
-                            type: 'area',
-                            name: '访问量',
-                            data: data
-                        }]
-                    });
-                });
-            </script>
         </div>
         <div class="sidebar-module sidebar-module-inset">
             <h4><a href="{% url 'archive'  %}">档案</a></h4>
@@ -150,26 +68,20 @@
                 {% for post  in post_read %}
                     <li style="margin: 5px" >
                         <a href="{% url 'post'  post.id %}" style="cursor:pointer;">
-                            {{ post.title }}({{ post.readnumber }})
+                            【{{ post.type }}】{{ post.title }}({{ post.readnumber }})
                         </a>
                     </li>
                 {% endfor %}
             </ol>
-        </div>
+        </div><!--
         <div class="sidebar-module sidebar-module-inset">
-            <h4>最新评论</h4>
-            <ol style="list-style:none;border:1px solid #ff0000;">
-                {% for comment  in comment_list %}
-                    <li style="margin: 5px;border-bottom: 1px solid black;border-top: 1px solid black;" >
-                        <p style="cursor:pointer;">
-                            {% if comment.user.get_short_name %}{{ comment.user.get_short_name }}
-                            {% else %}{{ comment.user.get_username }}{% endif %}:
-                            {{ comment.content }}
-                        </p>
-                    </li>
+            <h5 style="margin: 2px 0px 2px 0px;">标签</h5>
+            <ul style="list-style:none;border-top:thick solid black;border-width: 2px;">
+                {% for tags in tags_list %}
+                    <a>{{ tags.name }}</a>&ensp;
                 {% endfor %}
-            </ol>
-        </div>
+            </ul>
+        </div>-->
         <div class="sidebar-module sidebar-module-inset">
             <h4>友情链接</h4>
             <ol style="list-style:none;">
@@ -183,5 +95,95 @@
         </div>
     </div>
 {% endblock %}
+{% block style %}
+{% endblock %}
 {% block script %}
+    <script src="https://img.highcharts.com.cn/highcharts/highcharts.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <script>
+        $.getJSON('{% getDC request %}{% url 'Visitorjson' %}?days=7', function (data) {
+            chart = Highcharts.chart('container', {
+                chart: {
+                    zoomType: 'x'
+                },
+                title: {
+                    text: '<a href="{% url 'Visitor' %}">网站访问量</a>'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    dateTimeLabelFormats: {
+                        millisecond: '%H:%M:%S.%L',
+                        second: '%H:%M:%S',
+                        minute: '%H:%M',
+                        hour: '%H:%M',
+                        day: '%m-%d',
+                        week: '%m-%d',
+                        month: '%Y-%m',
+                        year: '%Y'
+                    },
+                    title:{
+                        text:''
+                    }
+                },
+                tooltip: {
+                    dateTimeLabelFormats: {
+                        millisecond: '%H:%M:%S.%L',
+                        second: '%H:%M:%S',
+                        minute: '%H:%M',
+                        hour: '%H:%M',
+                        day: '%Y-%m-%d',
+                        week: '%m-%d',
+                        month: '%Y-%m',
+                        year: '%Y'
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    area: {
+                        fillColor: {
+                            linearGradient: {
+                                x1: 0,
+                                y1: 0,
+                                x2: 0,
+                                y2: 1
+                            },
+                            stops: [
+                                [0, Highcharts.getOptions().colors[0]],
+                                [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                            ]
+                        },
+                        marker: {
+                            radius: 2
+                        },
+                        lineWidth: 1,
+                        states: {
+                            hover: {
+                                lineWidth: 1
+                            }
+                        },
+                        threshold: null
+                    }
+                },
+                series: [{
+                    type: 'area',
+                    name: '访问量',
+                    data: data
+                }]
+            });
+        });
+    </script>
+    <script type="text/javascript" async>
+        var data = getCookie('start');
+        if(null == data || data != "1"){
+            window.location.href = "{% getDC request %}/default.html";
+        }
+    </script>
 {% endblock %}

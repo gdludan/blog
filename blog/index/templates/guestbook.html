@@ -19,7 +19,7 @@
                             <td>{{ message.publish | date:'Y-m-d H:i:s' }}</td>
                             <td>{{ message.username }}</td>
                             <td>{{ message.title }}</td>
-                            <td>{{ message.content }}</td>
+                            <td>{{ message.content | safe }}</td>
                         </tr>
                     {% endfor %}
                 {% else %}

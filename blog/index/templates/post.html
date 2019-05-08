@@ -1,11 +1,12 @@
 {% extends "title_base.html"  %}{% load index %} {# 加载自定义过滤器 #}
 {% block title %}{{ post.title }}{% endblock %}{% load staticfiles %}
+
 {% block content  %}
     {% if not post.Prohibited  %}
         {% if post %}
             <div class="well well-sm" >
                 <div class="title" style="text-align: center;font-size: 30px">【{{ post.type }}】{{ post.title }}</div><br>
-                <div style="line-height: 1.42857143;color: #333;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc;border-radius: 4px;">{{ post.content | safe }}</div><br>
+                <div>{{ post.content | safe }}</div><br>
                 <div style="padding-left: 5px;">
                     <a  href="javascript:;" onclick="{% if request.user.id %}onLike(){% else %}onLoginError(){% endif %};"
                         title="{% if like %}已{% endif %}点赞" style="text-decoration:none;">
@@ -31,21 +32,18 @@
                             </span>
                         {% endif %}
                     </a>
-                    &ensp;<span class="glyphicon glyphicon-eye-open" aria-hidden="true">&ensp;{{ post.readnumber }}</span>
+                    &ensp;<span class="glyphicon glyphicon-eye-open" aria-hidden="true" style="color: #ff7000">&ensp;{{ post.readnumber }}</span>
                 </div><br>
                 <div>
-                    <a href="{% url 'user' post.user.username %}">
+                    <a href="{% url 'user' %}?uid={{ post.user.id }}">
                         <img src="{{ post.user.avatar }}" width="30px" height="30px" style="border:2px solid;border-radius:10px;">
                     </a>{% include 'user_attention.html' %}
                     在  <span style="font-size: 12px;">{{ post.time }}</span> 发布
                 </div>
             </div>
         {% endif %}
-        <link type="text/css" rel="stylesheet" href="{% static "css/prism.css" %}">
-        <script src="{%  static 'js/prism.js' %}"></script>
         <div class="well well-sm">
             <h3 style="margin-top: 10px;">评论列表:<span style="font-size: 18px;">({% len comment %}条)</span></h3>
-{#            <hr style="border-top-color:black ">#}
             <div style="margin:10px 0px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
             {% if request.user.is_authenticated %}
             <form action="" method="post" id="usrform">
@@ -60,19 +58,56 @@
             </div>
             {% for comment in pageInfo %}
                 {% if not comment.Prohibited %}
-                <div class="comment" style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
-                    <div style="float: left">
-                        <a href="{% url 'user' comment.user.username  %}" style="margin-right: 10px;">
-                            <img src="{{ comment.user.avatar }}" width="40px" height="40px" style="border:2px solid;border-radius:10px;"
-                                 title="{% firstof comment.user.get_short_name comment.user.get_username %}">
-                        </a>
+                    <div class="comment" style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
+                        <div style="float: left">
+                            <a href="{% url 'user' %}?uid={{ comment.user.id }}" style="margin-right: 10px;">
+                                <img src="{{ comment.user.avatar }}" width="40px" height="40px" style="border:2px solid;border-radius:10px;"
+                                     title="{% firstof comment.user.get_short_name comment.user.get_username %}">
+                            </a>
+                        </div>
+                        <div style="margin-top: 1%">{{ comment.content | safe }}</div>
+                        <div>{{ comment.time }}&ensp;&ensp;<span onclick="swap(open_btn{{ comment.id }})" style="color: blue">回复</span></div>
+                        <div style="display: none;" id="open_btn{{ comment.id }}"><br/>
+                            {% if request.user.is_authenticated %}
+                                <form action="{% url "comment_reply" comment.id %}" method="post" id="usrform">
+                                    {% csrf_token %}
+                                    <textarea id="content" name="content" style="width:100%;height: 80px;font-size: 16px" ></textarea><br>
+                                    <input type="submit" value="回复" style="width: 100%;height:30px;">
+                                </form>
+                            {% else %}
+                                <div>你还没登陆，<a href="{% url 'login' %}" style="color: blue;">点我去登陆</a></div>
+                            {% endif %}
+                        </div><br>
+                        <script>var open_btn{{ comment.id }} = document.getElementById('open_btn{{ comment.id }}');</script>
+                        {% if comment.reply %}
+                            <div class="comment" style="margin-left: 2%;border: 1px solid #000000; border-radius: 4px;padding: 5px;">
+                                {% for reply in comment.reply %}
+                                    <div class="comment" style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
+                                        <div style="float: left">
+                                            <a href="{% url 'user' %}?uid={{ reply.user.id }}" style="margin-right: 10px;">
+                                                <img src="{{ reply.user.avatar }}" width="40px" height="40px" style="border:2px solid;border-radius:10px;"
+                                                     title="{% firstof reply.user.get_short_name reply.user.get_username %}">
+                                            </a>
+                                        </div>
+                                        <div>{{ reply.content | safe }}</div>
+                                        <div>{{ reply.time }}&ensp;&ensp;<span onclick="swap(open_reply_btn{{ reply.id }})" style="color: blue">回复</span></div>
+                                        <div style="display: none;" id="open_reply_btn{{ reply.id }}"><br/>
+                                            {% if request.user.is_authenticated %}
+                                                <form action="{% url "comment_reply" comment.id %}?to_user={{ reply.user.id }}&reply_id={{ reply.id }}" method="post" id="usrform">
+                                                    {% csrf_token %}
+                                                    <textarea id="content" name="content" style="width:100%;height: 80px;font-size: 16px" ></textarea><br>
+                                                    <input type="submit" value="回复" style="width: 100%;height:30px;">
+                                                </form>
+                                            {% else %}
+                                                <div>你还没登陆，<a href="{% url 'login' %}" style="color: blue;">点我去登陆</a></div>
+                                            {% endif %}
+                                        </div><br>
+                                        <script>var open_reply_btn{{ reply.id }} = document.getElementById('open_reply_btn{{ reply.id }}');</script>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
-                    <div style="margin-top: 1%">{{ comment.content | safe }}</div><br/>
-                    <div>{{ comment.time }}</div>
-                    <div class="comment">
-
-                    </div>
-                </div>
                 {% else %}<div style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;height: 40px;"><div style="float: left;">此评论因为{% if comment.Prohibited %}{{ comment.Prohibited_info }}{% endif %}违规已删除</div></div>{% endif %}
             {% endfor %}
         </div>
@@ -101,18 +136,26 @@
     {% endif %}
 {% endblock  %}
 {% block script %}
-<script src="{%  static 'js/prism.js' %}"></script>
+<script async="async">
+    function swap(div) {
+        if(div.style.display == 'block'){
+            div.style.display = 'none';
+        }else {
+            div.style.display = 'block';
+        }
+    }
+</script>
 <script src="{%  static 'tinymce/js/tinymce/tinymce.min.js' %}"></script>
 <script>
     tinymce.init({
-        //选择class为content的标签作为编辑器
-        selector: '#content',
+        //选择所有textareas标签
+        mode : "textareas",
         //方向从左到右
         directionality:'ltr',
         //语言选择中文
         language: "zh_CN",
         //高度为400
-        height:200,
+        height:400,
         //工具栏上面的补丁按钮
         plugins: [
                 'advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker',
@@ -121,18 +164,22 @@
                 'codesample',
         ],
         //工具栏的补丁按钮
-         toolbar: 'insertfile undo redo | styleselect | bold italic | \
+         toolbar: 'insertfile undo redo | \
+         styleselect | \
+         bold italic | \
          alignleft aligncenter alignright alignjustify | \
-         bullist numlist outdent indent | link image | \
+         bullist numlist outdent indent | \
+         link image | \
          print preview media fullpage | \
-         forecolor backcolor emoticons |codesample fontsizeselect fullscreen',
+         forecolor backcolor emoticons |\
+         codesample fontsizeselect fullscreen',
         //字体大小
         fontsize_formats: '10pt 12pt 14pt 18pt 24pt 36pt',
         //按tab不换行
         nonbreaking_force_tab: true,
     });
 </script>
-<script>
+<script async="async">
     function onLike() {
         var like = document.getElementById("like");
         var num_like =document.getElementById("num_like");
@@ -186,5 +233,8 @@
         });
     }
 </script>
+<script src="{%  static 'js/prism.js' %}"></script>
 {% endblock %}
-{% block style %}<link type="text/css" rel="stylesheet" href="{% static "css/prism.css" %}">{% endblock %}
+{% block style %}
+<link type="text/css" rel="stylesheet" href="{% static "css/prism.css" %}">
+{% endblock %}

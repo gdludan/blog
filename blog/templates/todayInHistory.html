@@ -1,4 +1,4 @@
-<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>{% load index %}
 <script src="/static/js/typed.js"></script>
 <style>
     #site-header {
@@ -13,10 +13,9 @@
    }
     #site-header span{color: #fff;}
 </style>
-<script>{% load index %}
+<script>
     $(document).ready(function ($) {
-        $(".typed span").typed({strings: ["历史上的今天:{% today_in_History %}",
-                "{% quote_random %}"], typeSpeed: 100,
+        $(".typed span").typed({strings: ["历史上的今天:{% today_in_History %}","{% quote_random %}"], typeSpeed: 100,
             backSpeed: 100, backDelay: 500,startDelay: 1000});
     });
 </script>

@@ -1,7 +1,7 @@
-{% extends "title_base.html"  %}
+{% extends "title_base.html" %}
 {% block title %}图片压缩{% endblock %}
 {% block content_class %}col-xs-12 col-sm-9{% endblock %}
-{% block content_left %}{% include 'fun_left.html' %}{% endblock %}
+{% block content_left %}<strong>{% include 'fun_left.html' %}</strong>{% endblock %}
 {% block fun %}<li class="nav-item active"><a href="{% url 'chat_xiaoi'  %}">小玩意</a></li>{% endblock %}
 {% block content %}{% load staticfiles %}
     <div style="margin: 20px;float: right;width: 100%;margin-top: 0px;background-color: white;padding: 10px;border-radius: 5px">
@@ -10,6 +10,7 @@
                 <input type="text" name="url" placeholder="输入URL" style="width: 85%;"
                        value="{{ url }}" title="歌名：{{ value }}">
                 <input type="submit" value="压缩" style="width: 10%;background: black;color: white;">
+                <h2 style="text-align: center">当前功能没完成，属于半成品。</h2>
             </div>
         </form><br/>
         <center>{% if pathUrl %}

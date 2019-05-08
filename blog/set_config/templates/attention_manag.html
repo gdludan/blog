@@ -6,7 +6,7 @@
     {% if pageInfo %}
         {% for item in pageInfo %}
             {% if item.is_attention %}
-                <a href="{% url 'user' item.attention_id.username %}">
+                <a href="{% url 'user' %}?uid={{ item.attention_id.id }}">
                     <div class="navbar-collapse collapse" style="width: 100%">
                         <div class="form-actions well well-sm" style="font-size: 1.2em;color: blue">
                             <img src="{{ item.attention_id.avatar }}" width="30px" height="30px"

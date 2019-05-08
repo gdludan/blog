@@ -1,5 +1,6 @@
 import random
 import time
+import re
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
@@ -28,13 +29,13 @@ def randNmae():
     return str(round(time.time() * 1000)) + str(random.randint(1000, 9999))
 
 
-def get_config(value, str=None):
+def get_config(value, data=None):
     if value is None or value == '' or value == [] or value == {} or value == ():
-        return str
+        return data
     return value
 
 
-def paginatorPage(data, page=10,num=1):
+def paginatorPage(data, page=10, num=1):
     paginator = Paginator(data, page)  # 分页
     try:
         pageInfo = paginator.page(num)
@@ -45,8 +46,6 @@ def paginatorPage(data, page=10,num=1):
         # 用户访问的页数大于实际页数，则返回最后一页的数据
         pageInfo = paginator.page(paginator.num_pages)
     return paginator, pageInfo
-
-# 随机字符串
 
 
 def random_str(randomlength=8):

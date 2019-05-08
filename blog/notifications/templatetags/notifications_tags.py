@@ -22,7 +22,8 @@ def notifications_unread(context):
 
 
 if StrictVersion(get_version()) >= StrictVersion('2.0'):
-    notifications_unread = register.simple_tag(takes_context=True)(notifications_unread)  # pylint: disable=invalid-name
+    notifications_unread = register.simple_tag(takes_context=True)(
+        notifications_unread)  # pylint: disable=invalid-name
 else:
     notifications_unread = register.assignment_tag(takes_context=True)(notifications_unread)  # noqa
 
@@ -85,6 +86,7 @@ def live_notify_badge(context, badge_class='live_notify_badge'):
         badge_class=badge_class, unread=user.notifications.unread().count()
     )
     return format_html(html)
+
 
 @register.simple_tag
 def live_notify_list(list_class='live_notify_list'):

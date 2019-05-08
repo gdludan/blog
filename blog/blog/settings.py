@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'index',  # 首页
     'api',  # api接口
-    'fun',  # 一些小玩意
     'user',  # 登陆和用户后台
     'search',  # 站内搜索
     'set_config',  # 用户配置
@@ -45,10 +44,6 @@ INSTALLED_APPS = [
     'xadmin',  # 添加xadmin系统后台组件
     'crispy_forms',  # xadmin组件依赖
     'reversion',  # xadmin组件依赖
-    # #https组件
-    # 'werkzeug_debugger_runserver',
-    # 'django_extensions',
-    # 'corsheaders',
     'tinymce',    # 添加此行
     'notifications',  # 通知
     'index.templatetags',  # 作为app注册自定义过滤器
@@ -122,7 +117,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # 使用中文
-    # 'corsheaders.middleware.CorsMiddleware',#G:\django\blog\venv\Lib\site-packages
+    # 'index.middleware.cros.CORS',  # 允许跨域
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -136,7 +131,6 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
-                 os.path.join(BASE_DIR, 'fun/templates'),
                  os.path.join(BASE_DIR, 'index/templates'),
                  os.path.join(BASE_DIR, 'user/templates'),
                  os.path.join(BASE_DIR, 'search/templates'),
@@ -192,17 +186,17 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
 # 时区配置
-#LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = blog.get_config(config.LANGUAGE_CODE, 'zh-hans')
 
-#TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
 TIME_ZONE = blog.get_config(config.TIME_ZONE, 'Asia/Shanghai')
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = blog.get_config(config.DEBUG, False)
+USE_TZ = blog.get_config(config.USE_TZ, False)
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -247,15 +241,26 @@ DANDANAPISECRET = blog.get_config(config.DANDANAPISECRET, "")
 oss = blog.get_config(config.oss, False)
 AccessKeyId = blog.get_config(config.AccessKeyId, '')
 AccessKeySecret = blog.get_config(config.AccessKeySecret, '')
-endpoint = blog.get_config(config.endpoint, 'https://oss-cn-shenzhen.aliyuncs.com')
+endpoint = blog.get_config(config.endpoint,
+                           'https://oss-cn-shenzhen.aliyuncs.com')
 BucketName = blog.get_config(config.BucketName, '')
 is_cname = blog.get_config(config.is_cname, False)
 cname = blog.get_config(config.cname, '')
 connect_timeout = blog.get_config(config.connect_timeout, 30)
-if oss :
+if oss:
     import oss2
     auth = oss2.Auth(AccessKeyId, AccessKeySecret)
     if is_cname:
-        bucket = oss2.Bucket(auth , cname , BucketName,connect_timeout=connect_timeout,is_cname=True)
+        bucket = oss2.Bucket(
+            auth,
+            cname,
+            BucketName,
+            connect_timeout=connect_timeout,
+            is_cname=True)
     else:
-        bucket = oss2.Bucket(auth , endpoint , BucketName,connect_timeout=connect_timeout,is_cname=False)
+        bucket = oss2.Bucket(
+            auth,
+            endpoint,
+            BucketName,
+            connect_timeout=connect_timeout,
+            is_cname=False)

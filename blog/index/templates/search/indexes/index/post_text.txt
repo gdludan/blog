@@ -1,3 +1,2 @@
-{{ object.id }}
 {{ object.title }}
 {{ object.content }}

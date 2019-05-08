@@ -1,4 +1,4 @@
-<!DOCTYPE html>{% load staticfiles %}{% load notifications_tags %}
+<!DOCTYPE html>{% load staticfiles %}{% load notifications_tags %}{% load index %}
 <!--
 
             -. .
@@ -66,8 +66,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="format-detection" content="telphone=no, email=no"/>
+        <meta name="Generator" contect="django">
         <meta name="renderer" content="webkit"><!--启用360浏览器的极速模式(webkit)-->
-        <meta name="description" content="一个基于django的博客空间,文章内容主要以原创为主."><!--页面描述-->
+        <meta name="description" content="一个基于django的博客空间,文章内容主要以原创为主,偶尔转载下文章."><!--页面描述-->
         <meta name ="keywords" content="卤蛋之路,卤蛋博客,原创,原创文章"><!--页面关键词-->
         <meta name="author" content="卤蛋"><!--网页作者-->
         <meta name="robots" content="index,post"/><!--网页作者-->
@@ -80,12 +81,22 @@
         <meta name="browsermode" content="application"><!--UC应用模式-->
         <meta name="x5-fullscreen" content="true"><!--QQ强制全屏-->
         <meta name="x5-page-mode" content="app"><!--QQ应用模式-->
-        <script src="{% static 'js/base-loading.js' %}"></script>
+        <meta property="og:site_name" content="卤蛋博客">
+        <meta property="og:description" content="一个基于django的博客空间,文章内容主要以原创为主,偶尔转载下文章.">
+        <meta property="og:image" content="{% getDC request %}{% static "favicon.png" %}">
+        <meta property="og:title" content="{% if post.title %}{% elif title %}{{ title }}{% else %}卤蛋博客{% endif %}">
+        <meta property="og:url" content="{% getPath request %}">
+        {% get_setting 'base-loading'  as  baseloading %}
+        {% if  baseloading %}<script src="{% static 'js/base-loading.js' %}"></script>{% endif %}
         <link type="image/x-icon" rel="shortcut icon" href="{% static "favicon.ico" %}">
         <title>{% block title %}欢迎{% endblock %} | 卤蛋之路 | 卤蛋博客</title>
-        <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{% static 'css/base.css' %}">{% load index %}
-        <style>body{background-image: url("{% requests_body %}");}@media screen and (max-width: 768px) {.none{display: none;}}</style>
+        <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}"/>
+{#        <link rel="preload" href="" as="style" onload="this.rel='stylesheet'">#}
+{#        <link rel="preload" href="" as="style" onload="this.rel='stylesheet'">#}
+        <style>body{background-color: #c0ffec; background-image:url("{% requests_body %}");
+        height: 100%;width: 100%;display: block;border-collapse: collapse;margin: 0;padding: 0;}
+        @media screen and (max-width: 768px) {.none{display: none;}}</style>
         <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js"></script>
         <script type="text/javascript">var chart = null;</script>
         <script src="{% static "js/base.js" %}"></script>
@@ -107,13 +118,10 @@
                     <ul class="nav navbar-nav">
                         {% block index %}<li class="nav-item"><a href="{% url 'index'  %}">主页</a></li>{% endblock %}
                         {% block fun %}<li class="nav-item"><a href="{% url 'chat_xiaoi'  %}">小玩意</a></li>{% endblock %}
-<<<<<<< HEAD
                         {% block guestbook %}<li class="nav-item"><a href="{% url 'guestbook'  %}">留言墙</a></li>{% endblock %}
-=======
-                        <li class="nav-item"><a href="https://github.com/gitforludan/blog">开源</a></li>
->>>>>>> bd0610dc688ffcbbcc849ac1ef455f5266e5b48b
                         {% block about %}<li class="nav-item"><a href="{% url 'about'  %}">关于</a></li>{% endblock %}
                         <li class="nav-item"><a href="https://github.com/gitforludan/blog">开源</a></li>
+                        <li class="nav-item"><a href="https://music.ludanblog.xyz/">音乐</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% block message %}{% notifications_unread as unread_count %}
@@ -129,7 +137,7 @@
                             <li class="dropdown" style="height: 50px;z-index: 999">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="游客"
                                    role="button" aria-haspopup="true" aria-expanded="false">
-                                    <img src="{% static 'images/default.jpg' %}" width="20px" height="20px" style="border-radius: 5px;"/>
+                                    <img src="{% get_avatar user %}" width="20px" height="20px" style="border-radius: 5px;border: black;"/>
                                     <script type="text/javascript">hello()</script>
                                     游客<span class="caret"></span>
                                 </a>
@@ -144,9 +152,8 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                                    title="{% firstof user.get_short_name user.get_username %}"
                                    role="button" aria-haspopup="true" aria-expanded="false" >
-                                    <img src="{{ user.avatar }}" width="20px" height="20px" style="border-radius: 5px;border: black;"/>
-                                    <script type="text/javascript">hello()</script>
-                                    {% firstof user.get_short_name user.get_username %}
+                                    <img src="{% get_avatar user %}" width="20px" height="20px" style="border-radius: 5px;border: black;"/>
+                                    <script type="text/javascript">hello()</script>{% firstof user.get_short_name user.get_username %}
                                     <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
@@ -206,53 +213,50 @@
             </p>
             <p>
                 <a href="http://www.beianbeian.com/beianxinxi/1845088fab9210bf52943065e0a13ee5.html" style="text-decoration: none">
-                    <img src="//static.hdslb.com/images/base/beiantubiao.png" style="vertical-align: top;">粤ICP备19032841号
+                    <img src="https://img.alicdn.com/tfs/TB1..50QpXXXXX7XpXXXXXXXXXX-40-40.png" style="vertical-align: top;">粤ICP备19032841号
                 </a>
                 Copyright 2019 ludanblog.xyz. All Rights Reserved
             </p>
             <p>
                 本站原创文章采用
-                <a rel="license"  target="_blank"
-                   href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" style="color: blue">
+                <a rel="license"  target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" style="color: blue">
                     知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议
                 </a>进行许可。
             </p>
         </footer><!--页脚信息结束-->
     </body>
 </html>
-{% include 'live2d.html' %}
-<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
-{% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' %}
+<script src="https://cdn.bootcdn.net/npm/jquery@1.12.4/dist/jquery.min.js" defer></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" defer></script>
 {% block script %}{% endblock %}
 <script>
     var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/x-icon';
     link.rel = 'shortcut icon';
     window.onload = function () {
-    var OriginTitile = document.title;
-    var titleTime;
-    document.addEventListener('visibilitychange', function () {
-       if (document.hidden) {
-           document.title = '(●—●)喔哟，崩溃啦！';
-           link.href = "{% getDC request %}{% static 'error.ico' %}";
-           document.getElementsByTagName('head')[0].appendChild(link);
-           clearTimeout(titleTime);
-       }
-       else {
-           document.title = '(/≧▽≦/)咦！又好了！' + OriginTitile;
-           link.href = "{% static 'favicon.ico' %}";
-           document.getElementsByTagName('head')[0].appendChild(link);
-           titleTime = setTimeout(function () {
-               document.title = OriginTitile;
-           }, 2000);
-       }
-    });
-<<<<<<< HEAD
-   };
-    $.get({url:"{% url 'access' %}",async:true})
+        var OriginTitile = document.title;
+        var titleTime;
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                document.title = '(●—●)喔哟，崩溃啦！';
+                link.href = "{% getDC request %}{% static 'error.ico' %}";
+                document.getElementsByTagName('head')[0].appendChild(link);
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = '(/≧▽≦/)咦！又好了！' + OriginTitile;
+                link.href = "{% static 'favicon.ico' %}";
+                document.getElementsByTagName('head')[0].appendChild(link);
+                titleTime = setTimeout(function () {
+                    document.title = OriginTitile;
+                    }, 2000);
+            }
+        });
+        $.get({url:"{% url 'access' %}",async:true})
+    };
 </script>
-{% include 'baidutouji.html' %}
-=======
-</script>
->>>>>>> bd0610dc688ffcbbcc849ac1ef455f5266e5b48b
+<script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
+{% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' %}
+{% get_setting 'live2d'  as  live2d %}{% get_setting 'baidutouji'  as  baidutouji %}
+{% if  live2d %}{% include 'live2d.html' %}{% endif %}
+{% if  baidutouji %}{% include 'baidutouji.html' %}{% endif %}

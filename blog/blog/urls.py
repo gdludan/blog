@@ -1,7 +1,3 @@
-from django.conf import settings
-from django.conf.urls import static
-import notifications.urls
-from xadmin.plugins import xversion
 """blog URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -17,6 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from blog import views
+from django.conf import settings
+from django.conf.urls import static
+import notifications.urls
+from xadmin.plugins import xversion
 from django.contrib import admin
 from django.urls import path, include
 
@@ -25,10 +26,9 @@ xadmin.autodiscover()
 xversion.register_models()
 urlpatterns = [
     path('admin/', admin.site.urls),  # django原生后台
-    path('xadmin/', xadmin.site.urls),  # xadmin后台
+    # path('xadmin/', xadmin.site.urls),  # xadmin后台
     path('', include('index.urls')),  # 网站首页
     path('api/', include('api.urls')),  # api接口
-    path('fun/', include('fun.urls')),  # 一些小玩意
     path('user/', include('user.urls')),  # 用户中心及其他用户操作
     path('search/', include('search.urls')),  # 站内搜索
     path('config/', include('set_config.urls')),  # 用户配置
@@ -41,5 +41,12 @@ urlpatterns = [
             notifications.urls,
             namespace='notifications')),
 ]
+
 urlpatterns += static.static(settings.STATIC_URL,
                              document_root=settings.STATIC_ROOT)
+
+
+handler400 = views.bad_request
+handler403 = views.permission_denied
+handler404 = views.page_not_found
+handler500 = views.server_error

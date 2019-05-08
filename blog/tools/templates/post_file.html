@@ -7,14 +7,14 @@
         <div style="width: 95%;margin: 0 20px;">
             <form class="form" action="" method="post">
                 {% csrf_token %}
-                <div>{{ form.title.label }}<input id="title" name="title" style="width: 100%" value="{{ post.title }}"></div>
-                <div>{{ form.content.label }}<textarea id="content" name="content">{{ post.content }}</textarea></div>
+                <div>{{ form.title.label }}<input id="title" name="title" style="width: 100%" value="{{ post.title }}"></div><br/>
                 <div>{{ form.type.label }}<select name="type" class="form-control required" id="id_type">
                       <option value="原创">原创文章</option>
                       <option value="转载">转载文章</option>
                       <option value="杂谈">杂谈文章</option>
                     </select>
                 </div><br/>
+                <div>{{ form.content.label }}<textarea id="content" name="content">{{ post.content }}</textarea></div><br/>
                 <button type="submit" class="btn btn-primary btn-block">{{ title__post }}</button>
             </form>
         </div>
@@ -22,6 +22,7 @@
 {% endblock  %}
 {% block style %}<link type="text/css" rel="stylesheet" href="{% static "css/prism.css" %}">{% endblock %}
 {% block script  %}
+
 <script src="{%  static 'js/prism.js' %}"></script>
 <script src="{%  static 'tinymce/js/tinymce/tinymce.min.js' %}"></script>
 <script>

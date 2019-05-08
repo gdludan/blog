@@ -39,12 +39,12 @@
                 </div>
             </div>
             </div>
-            <div class="well well-sm" style="font-size: 1.2em;">
+            <div class="well well-sm " style="font-size: 1.2em;">
             <h2 style="margin-bottom: 5px;">发布过的文章:({{ post_num }}篇)</h2>
             {% for post in pageInfo %}
                 <a href="{% url 'post' post.id %}" style="text-decoration: none;">
                     <div style="padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
-                        <div>{{ post.title }}</div><hr>
+                        <div>【{{ post.type }}】{{ post.title }}</div><br/>
                         <div>{{ post.time }}</div>
                     </div>
                 </a>
@@ -53,17 +53,17 @@
         <div class="page-box">
             <div class="pagebar" id="pageBar" style="padding: 0 0 10px;">
                 {% if pageInfo.has_previous %}
-                <a href="{% url 'user' user.username %}?page={{ pageInfo.previous_page_number }}" class="prev" target="_self"><i></i>上一页</a>
+                <a href="{% url 'user' %}?uid={{ user.id }}&page={{ pageInfo.previous_page_number }}" class="prev" target="_self"><i></i>上一页</a>
                 {% endif %}
                 {% for page in pageInfo.paginator.page_range %}
                     {% if pageInfo.number == page %}
                         <span class="sel">{{ page }}</span>
                     {% else %}
-                        <a href="{% url 'user' user.username %}?page={{ page }}" target="_self">{{ page }}</a>
+                        <a href="{% url 'user' %}?uid={{ user.id }}?page={{ page }}" target="_self">{{ page }}</a>
                     {% endif %}
                 {% endfor %}
                 {% if pageInfo.has_next %}
-                <a href="{% url 'user' user.username %}?page={{ pageInfo.next_page_number }}" class="next" target="_self">下一页<i></i></a>
+                <a href="{% url 'user' %}?uid={{ user.id }}?page={{ pageInfo.next_page_number }}" class="next" target="_self">下一页<i></i></a>
                 {% endif %}
             </div>
         </div>

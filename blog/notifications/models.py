@@ -41,6 +41,7 @@ def assert_soft_delete():
 
 class NotificationQuerySet(models.query.QuerySet):
     ''' Notification QuerySet '''
+
     def unsent(self):
         return self.filter(emailed=False)
 
@@ -53,7 +54,8 @@ class NotificationQuerySet(models.query.QuerySet):
             return self.filter(unread=True, deleted=False)
 
         # When SOFT_DELETE=False, developers are supposed NOT to touch 'deleted' field.
-        # In this case, to improve query performance, don't filter by 'deleted' field
+        # In this case, to improve query performance, don't filter by 'deleted'
+        # field
         return self.filter(unread=True)
 
     def read(self, include_deleted=False):
@@ -62,7 +64,8 @@ class NotificationQuerySet(models.query.QuerySet):
             return self.filter(unread=False, deleted=False)
 
         # When SOFT_DELETE=False, developers are supposed NOT to touch 'deleted' field.
-        # In this case, to improve query performance, don't filter by 'deleted' field
+        # In this case, to improve query performance, don't filter by 'deleted'
+        # field
         return self.filter(unread=False)
 
     def mark_all_as_read(self, recipient=None):
@@ -164,8 +167,11 @@ class Notification(models.Model):
         <a href="http://oebfare.com/">brosner</a> commented on <a href="http://github.com/pinax/pinax">pinax/pinax</a> 2 hours ago # noqa
 
     """
-    LEVELS = Choices('success', 'info', 'warning', 'error','danger')
-    level = models.CharField(choices=LEVELS, default=LEVELS.info, max_length=20)
+    LEVELS = Choices('success', 'info', 'warning', 'error', 'danger')
+    level = models.CharField(
+        choices=LEVELS,
+        default=LEVELS.info,
+        max_length=20)
 
     recipient = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -175,7 +181,10 @@ class Notification(models.Model):
     )
     unread = models.BooleanField(default=True, blank=False, db_index=True)
 
-    actor_content_type = models.ForeignKey(ContentType, related_name='notify_actor', on_delete=models.CASCADE)
+    actor_content_type = models.ForeignKey(
+        ContentType,
+        related_name='notify_actor',
+        on_delete=models.CASCADE)
     actor_object_id = models.CharField(max_length=255)
     actor = GenericForeignKey('actor_content_type', 'actor_object_id')
 
@@ -192,10 +201,17 @@ class Notification(models.Model):
     target_object_id = models.CharField(max_length=255, blank=True, null=True)
     target = GenericForeignKey('target_content_type', 'target_object_id')
 
-    action_object_content_type = models.ForeignKey(ContentType, blank=True, null=True,
-                                                   related_name='notify_action_object', on_delete=models.CASCADE)
-    action_object_object_id = models.CharField(max_length=255, blank=True, null=True)
-    action_object = GenericForeignKey('action_object_content_type', 'action_object_object_id')
+    action_object_content_type = models.ForeignKey(
+        ContentType,
+        blank=True,
+        null=True,
+        related_name='notify_action_object',
+        on_delete=models.CASCADE)
+    action_object_object_id = models.CharField(
+        max_length=255, blank=True, null=True)
+    action_object = GenericForeignKey(
+        'action_object_content_type',
+        'action_object_object_id')
 
     timestamp = models.DateTimeField(default=timezone.now)
 
@@ -311,4 +327,6 @@ def notify_handler(verb, **kwargs):
 
 
 # connect the signal
-notify.connect(notify_handler, dispatch_uid='notifications.models.notification')
+notify.connect(
+    notify_handler,
+    dispatch_uid='notifications.models.notification')

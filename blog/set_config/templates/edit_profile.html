@@ -6,41 +6,67 @@
     <div style="width: 100%;float: right;background-color: white;padding: 10px;border-radius: 5px">
         <form class="exform" enctype="" action="" method="post" id="profile_form">
             {% csrf_token %}
-
-             <div class="form-container row clearfix">
+            <div class="form-container row clearfix">
                 <div class="formColumn column form-column full col col-sm-12 form-horizontal ui-sortable" span="12" horizontal="">
-                    <div class="panel panel-default fieldset unsort no_title"> <div class="panel-heading"><i class="icon fa fa-chevron-up chevron">个人信息</i><h3 class="panel-title"></h3></div> <div class="panel-body "> <div id="div_id_interest" class="form-group"> <label for="id_interest" class="control-label ">
-                         名字
-                    </label> <div class="controls ">
-                        <input type="text" name="first_name" value="{{ user.first_name }}"  class="text-field admintextinputwidget form-control" maxlength="30" id="id_first_name"> </div> </div> <div id="div_first_name" class="form-group"> <label for="first_name" class="control-label ">
-                        姓氏
-                    </label> <div class="controls ">
-                        <input type="text" name="last_name" value="{{ user.last_name }}" class="text-field admintextinputwidget form-control" maxlength="255" id="id_motto"> </div> </div> <div id="div_last_name" class="form-group">
-                        </div></div>
+                    <div class="panel panel-default fieldset unsort no_title">
+                        <div class="panel-heading">
+                            <i class="icon fa fa-chevron-up chevron">个人信息</i>
+                            <h3 class="panel-title"></h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="div_id_interest" class="form-group">
+                                <label for="id_interest" class="control-label">名字</label>
+                                <div class="controls">
+                                    <input type="text" name="first_name" value="{{ user.first_name }}" class="text-field admintextinputwidget form-control" maxlength="30" id="id_first_name">
+                                </div>
+                            </div>
+                            <div id="div_first_name" class="form-group">
+                                <label for="first_name" class="control-label">姓氏</label>
+                                <div class="controls">
+                                    <input type="text" name="last_name" value="{{ user.last_name }}" class="text-field admintextinputwidget form-control" maxlength="255" id="id_motto">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
             <div class="form-container row clearfix">
                 <div class="formColumn column form-column full col col-sm-12 form-horizontal ui-sortable" span="12" horizontal="">
-                    <div class="panel panel-default fieldset unsort no_title"> <div class="panel-heading"><i class="icon fa fa-chevron-up chevron">其他</i><h3 class="panel-title"></h3></div> <div class="panel-body "> <div id="div_id_interest" class="form-group"> <label for="id_interest" class="control-label ">
-                        兴趣
-                    </label> <div class="controls ">
-                        <input type="text" name="interest" value="{{ profile.interest }}" class="text-field admintextinputwidget form-control" maxlength="255" id="id_interest"> </div> </div> <div id="div_id_aims" class="form-group"> <label for="id_aims" class="control-label ">
-                        最近目标
-                    </label> <div class="controls ">
-                        <input type="text" name="aims" value="{{ profile.aims }}" class="text-field admintextinputwidget form-control" maxlength="255" id="id_aims"> </div> </div> <div id="div_id_motto" class="form-group"> <label for="id_motto" class="control-label ">
-                        座右铭
-                    </label> <div class="controls ">
-                        <input type="text" name="motto" value="{{ profile.motto }}" class="text-field admintextinputwidget form-control" maxlength="255" id="id_motto"> </div> </div> <div id="div_id_self_reprot" class="form-group"> <label for="id_self_reprot" class="control-label ">
-                        自我介绍
-                    </label> <div class="controls ">
-                        <input type="text" name="self_reprot" value="{{ profile.self_reprot }}" class="text-field admintextinputwidget form-control" maxlength="1024" id="id_self_reprot"> </div> </div>  </div> </div>
+                    <div class="panel panel-default fieldset unsort no_title">
+                        <div class="panel-heading">
+                            <i class="icon fa fa-chevron-up chevron">其他</i>
+                            <h3 class="panel-title"></h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="div_id_interest" class="form-group">
+                                <label for="id_interest" class="control-label">兴趣</label>
+                                <div class="controls">
+                                    <input type="text" name="interest" value="{{ profile.interest }}" class="text-field admintextinputwidget form-control" maxlength="255" id="id_interest">
+                                </div>
+                            </div>
+                            <div id="div_id_aims" class="form-group">
+                                <label for="id_aims" class="control-label">最近目标</label>
+                                <div class="controls">
+                                    <input type="text" name="aims" value="{{ profile.aims }}" class="text-field admintextinputwidget form-control" maxlength="255" id="id_aims">
+                                </div>
+                            </div>
+                            <div id="div_id_motto" class="form-group">
+                                <label for="id_motto" class="control-label">座右铭</label>
+                                <div class="controls">
+                                    <input type="text" name="motto" value="{{ profile.motto }}" class="text-field admintextinputwidget form-control" maxlength="255" id="id_motto">
+                                </div>
+                            </div>
+                            <div id="div_id_self_reprot" class="form-group">
+                                <label for="id_self_reprot" class="control-label">自我介绍</label>
+                                <div class="controls">
+                                    <input type="text" name="self_reprot" value="{{ profile.self_reprot }}" class="text-field admintextinputwidget form-control" maxlength="1024" id="id_self_reprot">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-        <button type="submit" class="default btn btn-primary hide-xs" name="_save" style="width: 100%;"><i class="fa fa-save"></i> 保存</button>
-
+            <button type="submit" class="default btn btn-primary hide-xs" name="_save" style="width: 100%;"><i class="fa fa-save"></i> 保存</button>
         </form>
     </div>
 {% endblock %}

@@ -13,47 +13,29 @@
     </div>
     </div>
     <div class=" well well-sm">
-    {% if show_all %}
-        {% if  page.object_list %}
-        {% for item in page.object_list %}
-            <a href="{% url 'post' item.id %}" class="js_song" target="play" >
-            <div style="font-size: 1.2em; margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
-                <div class="songlist__songname">
-                    <span class="songlist__songname_txt">标题：{{item.title}}
-                    </span>
-                </div>
-{#                <div class="songlist__album">内容：{{ item.content }}</div>#}
-                <div class="songlist__album">时间：{{ item.time }}</div>
-                <div class="songlist__artist">作者：{% firstof item.user.get_short_name item.user.get_username %}</div>
-            </div>
-            </a>
-        {% endfor %}
-        {% else %}
-            <div style="margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
-                空列表
-            </div>
-        {% endif %}
-    {% else %}
         {# 导入自带高亮功能 #}
         {% load highlight %}
-        {% if  page.object_list %}
-            {% for item in page.object_list %}
-                 <a href="{% url 'post' item.object.id %}" class="js_song" target="play" >
-                    <div style="margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
-                        <div class="songlist__songname">
-                            <span class="songlist__songname_txt">标题：{% highlight item.object.title with query %}
-                            </span>{#{% highlight item.object.song_name with query %}#}
-                        </div>
-                        <div class="songlist__album">内容：{% highlight item.object.content with query %}</div>
-                        <div class="songlist__artist">时间：{% highlight item.object.time with query %}</div>
-                        <div class="songlist__album">作者：{% highlight item.object.user.username with query %}</div>
+        {% for item in page.object_list %}
+             <a href="{% url 'post' item.object.id %}" class="js_song" target="play" >
+                <div style="margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">
+                    <div class="songlist__songname">
+                        <span class="songlist__songname_txt">标题：{% highlight item.object.title with query %}
+                        </span>{#{% highlight item.object.song_name with query %}#}
                     </div>
-                </a>
-            {% endfor %}
-        {% else %}
-            <div style="margin-bottom: 5px;padding: 10px;word-break: break-all;word-wrap: break-word;background-color: #f5f5f5;border: 1px solid #ccc; border-radius: 4px;">找不到关于 {{ query }} 的文章</div>
-        {% endif %}
-    {% endif %}
+{#                        <div class="songlist__album">内容：{% highlight item.object.content with query %}</div>#}
+{#                        <div class="songlist__artist">时间：{% highlight item.object.time with query %}</div>#}
+                    <div class="songlist__album">作者：
+                        {% if item.object.user.get_short_name %}
+                        {% highlight item.object.user.get_short_name with query %}
+                        {% else %}
+                        {% highlight item.object.user.username with query %}
+                        {% endif %}</div>
+                </div>
+            </a>
+        {% empty %}
+        <h3>你没有搜索任何内容。</h3>
+        <p>你可以尝试输入点什么东西，例如：Django</p>
+        {% endfor %}
     </div>
     {# 分页导航 #}
     <div class="page-box">
