@@ -3,7 +3,7 @@ bs4==0.0.1
 Django==2.2.8
 django-haystack==2.8.1
 django-simple-captcha==0.5.9
-django-tinymce==2.8.0
+django-tinymce==3.4.0
 jieba==0.39
 mysqlclient==1.4.2
 oss2==2.6.1
